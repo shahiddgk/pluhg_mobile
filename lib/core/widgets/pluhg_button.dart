@@ -7,8 +7,7 @@ class PluhgButton extends StatelessWidget {
   final Widget? child;
   final double? fontSize;
   final double? borderRadius;
-  final double? hieght;
-  final double? width;
+
   final Function()? onPressed;
   final double? verticalPadding;
   final Color? color, borderColor;
@@ -20,8 +19,6 @@ class PluhgButton extends StatelessWidget {
       this.child,
       this.fontSize,
       this.color,
-      this.hieght,
-      this.width,
       this.borderColor,
       this.verticalPadding,
       this.borderRadius})
@@ -30,9 +27,8 @@ class PluhgButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-     height: hieght,
-     width: width,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: double.infinity),
       child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(

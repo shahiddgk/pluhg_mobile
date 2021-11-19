@@ -85,8 +85,8 @@ flutter:
   fonts:
     - family: Axiforma
       fonts:
-        - asset: resources/fonts/Axiforma-Regular.ttf
-        - asset: resources/fonts/Axiforma-Medium.ttf
+        - asset: assets/fonts/Axiforma-Regular.ttf
+        - asset: assets/fonts/Axiforma-Medium.ttf
 
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

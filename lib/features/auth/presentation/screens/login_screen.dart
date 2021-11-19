@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pluhg/core/navigator/app_route.dart';
 import 'package:pluhg/core/values/colors.dart';
 import 'package:pluhg/core/widgets/pluhg_button.dart';
 import 'package:pluhg/core/widgets/url.dart';
@@ -161,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Text(
-                  'and ',
+                  'and \n',
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 14.sp,
@@ -186,17 +187,27 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 30.h,
             ),
             Center(
-              child: PluhgButton(
-                text: 'Get Started',
-                onPressed: () {},
-                fontSize: 15,
-                hieght: 45,
+              child: SizedBox(
                 width: 261,
-                borderRadius: 50,
-                color: active
-                    ? const Color(0xff2029FF).withAlpha(10)
-                    : const Color(0xff2029FF),
+                child: PluhgButton(
+                  text: 'Get Started',
+                  onPressed: active
+                      ? () {
+                          Navigator.of(context).pushNamed(AppRoute.OTP_SCREEN);
+                        }
+                      : null,
+                  fontSize: 15.sp,
+
+                  borderRadius: 50,
+                  // color: active
+                  //     ? const Color(0xff2029FF).withAlpha(10)
+                  //     : const Color(0xff2029FF),
+                  verticalPadding: 12.5.h,
+                ),
               ),
+            ),
+            SizedBox(
+              height: 20.h,
             )
           ],
         ),
