@@ -143,8 +143,9 @@ class OnboardingScreen extends StatelessWidget {
                             child: PluhgButton(
                               text: currentPage == 3 ? 'Sign Up' : 'Next',
                               onPressed: () {
-                                if(currentPage==3) {
-                                  Navigator.of(context).pushNamed(AppRoute.AUTH_SCREEN);
+                                if (currentPage == 3) {
+                                  Navigator.of(context)
+                                      .pushNamed(AppRoute.AUTH_SCREEN);
                                 } else {
                                   _bloc.add(NextEvent());
                                 }
@@ -165,13 +166,15 @@ class OnboardingScreen extends StatelessWidget {
   }
 
   Widget _indicator(bool isCurrent) {
-    return Container(
-        width: isCurrent ? 25.44.w : 7.79.w,
-        height: 7.79.h,
-        margin: EdgeInsets.only(right: 5.46.w),
-        decoration: BoxDecoration(
-          color: AppColors.pluhgColour,
-          borderRadius: BorderRadius.circular(50.r),
-        ));
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 250),
+      width: isCurrent ? 25.44.w : 7.79.w,
+      height: 7.79.h,
+      margin: EdgeInsets.only(right: 5.46.w),
+      decoration: BoxDecoration(
+        color: AppColors.pluhgColour,
+        borderRadius: BorderRadius.circular(50.r),
+      ),
+    );
   }
 }

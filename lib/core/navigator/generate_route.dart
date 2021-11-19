@@ -4,6 +4,7 @@ import 'package:pluhg/core/navigator/app_route.dart';
 import 'package:pluhg/features/auth/presentation/screens/login_screen.dart';
 import 'package:pluhg/features/auth/presentation/screens/otp_screen.dart';
 import 'package:pluhg/features/auth/presentation/screens/set_profile.dart';
+import 'package:pluhg/features/home/presentation/home_screen.dart';
 import 'package:pluhg/features/onboarding/onboarding_screen.dart';
 import 'package:pluhg/features/splash/splash_screen.dart';
 import 'package:pluhg/features/welcome/welcome_screen.dart';
@@ -25,6 +26,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const OTPScreen());
    case AppRoute.SET_PROFILE:
       return MaterialPageRoute(builder: (_) => const SetProfileScreen());
+   case AppRoute.HOME_SCREEN:
+      return MaterialPageRoute(builder: (_) => const HomeScreen());
     default:
       return MaterialPageRoute(builder: (_) => const UnknownScreen());
   }
