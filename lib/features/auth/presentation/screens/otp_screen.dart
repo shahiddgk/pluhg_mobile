@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:pluhg/core/values/colors.dart';
 import 'package:pluhg/core/widgets/pluhg_button.dart';
+import 'package:pluhg/core/widgets/status_screen.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({Key? key}) : super(key: key);
@@ -159,6 +160,20 @@ class _OTPScreenState extends State<OTPScreen> {
                 width: 261,
                 child: PluhgButton(
                   text: 'Verify',
+                  onPressed: len.length != 4
+                      ? () {}
+                      : () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (contex) => const StatusScreen(
+                                      buttonText: "Continue",
+                                      heading: "Successful",
+                                      iconName: "success_status",
+                                      // onPressed: (){},
+                                      subheading:
+                                          'Your Pone number as been successfuly verified, procced to login')));
+                        },
                   fontSize: 15.sp,
                   borderRadius: 50,
                   verticalPadding: 12.5.h,
