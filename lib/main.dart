@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             child: widget!,
           );
         },
-        initialRoute: AppRoute.AUTH_SCREEN,
+        initialRoute: AppRoute.SPLASH_SCREEN,
         onGenerateRoute: onGenerateRoute,
       ),
     );

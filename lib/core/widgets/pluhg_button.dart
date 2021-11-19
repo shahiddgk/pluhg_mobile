@@ -6,6 +6,8 @@ class PluhgButton extends StatelessWidget {
   final String? text;
   final Widget? child;
   final double? fontSize;
+  final Color? textColor;
+  final double? borderWidth;
   final double? borderRadius;
 
   final Function()? onPressed;
@@ -18,8 +20,10 @@ class PluhgButton extends StatelessWidget {
       this.onPressed,
       this.child,
       this.fontSize,
+      this.textColor,
       this.color,
       this.borderColor,
+      this.borderWidth,
       this.verticalPadding,
       this.borderRadius})
       : assert(text != null || child != null),
@@ -34,8 +38,10 @@ class PluhgButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
               primary: color ?? AppColors.pluhgColour,
               elevation: 0,
-              padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 8.h),
+              shadowColor: Colors.transparent,
+              padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 12.5.h),
               side: BorderSide(
+                width: borderWidth ?? 1,
                   color: onPressed == null
                       ? Colors.transparent
                       : borderColor ?? AppColors.pluhgColour),
@@ -47,7 +53,7 @@ class PluhgButton extends StatelessWidget {
                   text!,
                   style: TextStyle(
                     fontSize: fontSize ?? 15.sp,
-                    color: Colors.white,
+                    color: textColor ?? Colors.white,
                     fontWeight: FontWeight.w400,
                   ),
                 )

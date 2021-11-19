@@ -9,4 +9,6 @@ class AppColors {
   static const Color pluhgMenuGrayColour = Color(0xff7F8C8D);
   static const Color pluhgMenuBlackColour = Color(0xff080F18);
   static const Color pluhgRedColour = Color(0xffFF5652);
+  static const Color pluhgGreyColour = Color(0xFFEBEBEB);
+  static const Color pluhgGrey2Colour = Color(0xFFFDFDFD);
 }

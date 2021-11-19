@@ -3,6 +3,7 @@
 class AppRoute {
   static const String HOME = '/home';
   static const String SPLASH_SCREEN = '/splash-screen';
+  static const String WELCOME_SCREEN = '/welcome-screen';
   static const String CONNECTION_SCREEN = '/connection-screen';
   static const String AUTH_SCREEN = '/auth-screen';
   static const String CHAT_SCREEN = '/chat-screen';
