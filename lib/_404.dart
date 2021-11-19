@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class UnknownScreen extends StatelessWidget {
+  const UnknownScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
-        child: Container(
-          child: const Text('404 Screen not found!'),
-        ),
+        child: Text('404 Screen not found!'),
       ),
     );
   }

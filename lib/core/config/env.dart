@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
-import 'package:pluhg/config/secrets.dart';
+import 'secrets.dart';
 
 enum BuildFlavor { prod, dev }
 
