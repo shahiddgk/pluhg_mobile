@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pluhg/core/values/colors.dart';
+import 'package:pluhg/core/widgets/pluhg_button.dart';
 import 'package:pluhg/core/widgets/url.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,46 +14,47 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool active = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 100.h,
-          ),
-          Center(child: SvgPicture.asset('assets/svgs/auth/login_banner.svg')),
-          Padding(
-            padding: const EdgeInsets.only(left: 18.0, bottom: 0),
-            child: Text(
-              'Hi!',
-              style: TextStyle(
-                fontSize: 48.sp,
-                fontWeight: FontWeight.w400,
-                color: AppColors.pluhgColour,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 100.h,
+            ),
+            Center(
+                child: SvgPicture.asset('assets/svgs/auth/login_banner.svg')),
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0, bottom: 0, top: 75),
+              child: Text(
+                'Hi!',
+                style: TextStyle(
+                  fontSize: 48.sp,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.pluhgColour,
+                ),
               ),
             ),
-          ),
 
-          // SizedBox(hei)ght: size.height * 0.005),
-          Padding(
-            padding: EdgeInsets.only(left: 15.h, right: 15.w, top: 0),
-            child: Text(
-              'Connect people without sharing their contact details.',
-              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15.sp),
+            // SizedBox(hei)ght: size.height * 0.005),
+            Padding(
+              padding: EdgeInsets.only(left: 15.h, right: 15.w, top: 0),
+              child: Text(
+                'Connect people without sharing their contact details.',
+                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15.sp),
+              ),
             ),
-          ),
-          SizedBox(height: 48.8.h),
-          Container(
-            // width: size.width * 0.9,
-            child: Padding(
+            SizedBox(height: 48.8.h),
+            Padding(
               padding: const EdgeInsets.only(left: 18.0, right: 18),
               child: Row(children: [
                 // if (controller.isNumber.value)
-                Container(
-                  width: 60,
+                SizedBox(
+                  width: 60.h,
                   child: CountryCodePicker(
                     // favorite: ['+1', 'US'],
                     onInit: (val) {
@@ -72,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(
-                  width: 50.w,
+                  width: 200.w,
                   child: Form(
                     // key: _formKey,
                     child: TextFormField(
@@ -93,95 +95,111 @@ class _LoginScreenState extends State<LoginScreen> {
                         //   }
                         // },
                         decoration: InputDecoration(
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF080F18)),
-                          ),
+                          border: InputBorder.none,
+
                           // border: UnderlineInputBorder(
                           //   borderSide:
                           //       BorderSide(color: Color(0xFF080F18)),
                           // ),
-                          focusColor: Color(0xFF080F18),
+                          focusColor: const Color(0xFF080F18),
                           hintText: 'Phone Number or Email',
                           hintStyle: TextStyle(
                             fontWeight: FontWeight.w300,
                             fontSize: 14.sp,
-                            color: Color(0xFF080F18),
+                            color: const Color(0xFF080F18),
                           ),
                         )),
                   ),
                 ),
               ]),
             ),
-          ),
+            const Padding(
+              padding: EdgeInsets.only(left: 20, right: 30),
+              child: Divider(
+                height: 2,
+                color: Color(0xff080F18),
+              ),
+            ),
+            SizedBox(
+              height: 20.h,
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  splashRadius: 5.r,
 
-          SizedBox(
-            height: 20.h,
-          ),
-          Row(
-            children: [
-              Checkbox(
-                activeColor: AppColors.pluhgColour,
-                checkColor: Colors.white,
-                // value: controller.hasAccepted.value,
-                onChanged: (val) {
-                  // if (_controller.text.isNotEmpty) {
-                  //   controller.hasAccepted.value = val!;
-                  // } else {
-                  //   Get.snackbar(
-                  //       "Sorry", "Please fill the email or phone box");
-                  // }
-                },
-                value: null,
-              ),
-              Text(
-                '  I agree to ',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w300),
-              ),
-              GestureDetector(
-                onTap: () {
-                  launchURL("https://pluhg.com/terms");
-                },
-                child: Text(
-                  'Terms & Conditions ',
+                  activeColor: AppColors.pluhgColour,
+                  checkColor: Colors.white,
+                  // value: controller.hasAccepted.value,
+                  onChanged: (val) {
+                    // if (_controller.text.isNotEmpty) {
+                    //   controller.hasAccepted.value = val!;
+                    // } else {
+                    //   Get.snackbar(
+                    //       "Sorry", "Please fill the email or phone box");
+                    // }
+                  },
+                  value: true,
+                ),
+                Text(
+                  '  I agree to ',
                   style: TextStyle(
-                      color: AppColors.pluhgColour,
+                      color: Colors.black,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w300),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'and ',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w300),
-              ),
-              GestureDetector(
-                onTap: () {
-                  launchURL("https://pluhg.com/privacy");
-                },
-                child: Text(
-                  'Privacy Policy',
+                GestureDetector(
+                  onTap: () {
+                    launchURL("https://pluhg.com/terms");
+                  },
+                  child: Text(
+                    'Terms & Conditions ',
+                    style: TextStyle(
+                        color: AppColors.pluhgColour,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w300),
+                  ),
+                ),
+                Text(
+                  'and ',
                   style: TextStyle(
-                      color: AppColors.pluhgColour,
+                      color: Colors.black,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w300),
                 ),
+                GestureDetector(
+                  onTap: () {
+                    launchURL("https://pluhg.com/privacy");
+                  },
+                  child: Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                        color: AppColors.pluhgColour,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w300),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(
+              height: 30.h,
+            ),
+            Center(
+              child: PluhgButton(
+                text: 'Get Started',
+                onPressed: () {},
+                fontSize: 15,
+                hieght: 45,
+                width: 261,
+                borderRadius: 50,
+                color: active
+                    ? const Color(0xff2029FF).withAlpha(10)
+                    : const Color(0xff2029FF),
               ),
-            ],
-          ),
-          SizedBox(
-            height: 30.h,
-          ),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
