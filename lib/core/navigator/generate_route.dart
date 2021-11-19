@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pluhg/_404.dart';
 import 'package:pluhg/core/navigator/app_route.dart';
+import 'package:pluhg/features/auth/presentation/screens/login_screen.dart';
 import 'package:pluhg/features/splash_screen/splash_screen.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings){
@@ -10,6 +11,8 @@ Route<dynamic> onGenerateRoute(RouteSettings settings){
   switch(name){
     case AppRoute.SPLASH_SCREEN:
       return MaterialPageRoute(builder: (_)=> const SplashScreen());
+     case AppRoute.AUTH_SCREEN:
+      return MaterialPageRoute(builder: (_)=> const LoginScreen());
     default:
       return MaterialPageRoute(builder: (_)=>const UnknownScreen());
   }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pluhg/core/config/service_locator.dart';
 import 'package:pluhg/core/data_source/local_source.dart';
-import 'package:pluhg/core/styles/colors.dart';
 import 'package:pluhg/core/values/assets.dart';
+import 'package:pluhg/core/values/colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

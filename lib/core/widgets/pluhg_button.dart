@@ -19,10 +19,10 @@ class PluhgButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed, 
       style: ElevatedButton.styleFrom(
-        primary: color ?? colorPrimary,
+        primary: color ?? AppColors.pluhgColour,
         elevation: 0,
         padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 8.h),
-        side: BorderSide(color: onPressed== null ? Colors.transparent : borderColor ?? colorPrimary),
+        side: BorderSide(color: onPressed== null ? Colors.transparent : borderColor ??  AppColors.pluhgColour),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 59.r),
         )
