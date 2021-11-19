@@ -16,4 +16,5 @@ class AppRoute {
   static const String CHAT_MESSAGES = '/chat-messages';
   static const String OTP_SCREEN = '/otp-screen';
   static const String STATUS_SCREEN = '/status-screen';
+  static const String SET_PROFILE = '/setprofile-screen';
 }

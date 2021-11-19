@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:pluhg/core/navigator/app_route.dart';
 import 'package:pluhg/core/values/colors.dart';
 import 'package:pluhg/core/widgets/pluhg_button.dart';
 import 'package:pluhg/core/widgets/status_screen.dart';
@@ -166,11 +167,14 @@ class _OTPScreenState extends State<OTPScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (contex) => const StatusScreen(
+                                  builder: (contex) => StatusScreen(
                                       buttonText: "Continue",
                                       heading: "Successful",
                                       iconName: "success_status",
-                                      // onPressed: (){},
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pushNamed(AppRoute.SET_PROFILE);
+                                      },
                                       subheading:
                                           'Your Pone number as been successfuly verified, procced to login')));
                         },
