@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool active = false;
+  bool active = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Text(
-                  'and \n',
+                  'and ',
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 14.sp,
@@ -197,11 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
                       : null,
                   fontSize: 15.sp,
-
                   borderRadius: 50,
-                  // color: active
-                  //     ? const Color(0xff2029FF).withAlpha(10)
-                  //     : const Color(0xff2029FF),
                   verticalPadding: 12.5.h,
                 ),
               ),
