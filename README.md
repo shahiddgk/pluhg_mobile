@@ -1,4 +1,4 @@
-# pluhg
+# plug
 
 A new Flutter project.
 

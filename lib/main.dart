@@ -1,28 +1,23 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pluhg/core/config/service_locator.dart';
-import 'package:pluhg/core/navigator/app_route.dart';
-import 'package:pluhg/core/navigator/generate_route.dart';
-import 'package:pluhg/core/values/colors.dart';
+
+import 'package:get/get.dart';
+import 'package:plug/app/widgets/colors.dart';
+
+import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initLocator();
-  runApp(const MyApp());
-}
+  await Firebase.initializeApp();
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
+  runApp(
+    ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: () => MaterialApp(
+      builder: () => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Pluhg',
-         theme: ThemeData(fontFamily: "Axiforma", primaryColor: AppColors.pluhgColour),
+         theme: ThemeData(fontFamily: "Axiforma", primaryColor: pluhgColour),
         builder: (context, widget) {
           return MediaQuery(
             //Setting font does not change with system font size
@@ -30,9 +25,9 @@ class MyApp extends StatelessWidget {
             child: widget!,
           );
         },
-        initialRoute: AppRoute.HOME_SCREEN,
-        onGenerateRoute: onGenerateRoute,
+        initialRoute: AppPages.INITIAL,
+        getPages: AppPages.routes,
       ),
-    );
-  }
+    ),
+  );
 }
