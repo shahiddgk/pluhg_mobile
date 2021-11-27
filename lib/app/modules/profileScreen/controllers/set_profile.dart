@@ -1,7 +1,7 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/widgets/dialog_box.dart';
+import 'package:plug/widgets/dialog_box.dart';
 
 class SetProfileScreenController extends GetxController {
   //TODO: Implement ProfileScreenController

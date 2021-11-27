@@ -37,13 +37,16 @@ class StatusScreen extends StatelessWidget {
         SizedBox(
           height: 10.h,
         ),
-        Text(
-          subheading,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontWeight: FontWeight.w300,
-              color: Colors.black,
-              fontSize: 15.sp),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            subheading,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontWeight: FontWeight.w300,
+                color: Colors.black,
+                fontSize: 15.sp),
+          ),
         ),
         const Spacer(),
         SizedBox(

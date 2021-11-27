@@ -1,3 +1,5 @@
+
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AuthScreen/views/auth_screen_view.dart';
 import 'OnboardingScreen/views/onboarding_screen_view.dart';
-import 'connectionScreen/views/waiting_view.dart';
 import 'home/views/home_view.dart';
 
 class DynamicLinkService {
@@ -49,7 +50,7 @@ class DynamicLinkService {
               data != null) {
             var userProfileDetails = await apicalls.getProfile(
                 token: prefs.get("token").toString(),
-                userID: prefs.get("userID").toString());
+               );
             var activeConnections = await apicalls.getActiveConnections(
                 token: prefs.get("token").toString(),
                 // contact: userProfileDetails["data"]["phoneNumber"],
@@ -75,11 +76,11 @@ class DynamicLinkService {
             // dynamic data = await getConnectionDetails(connectionID: id);
             Navigator.pop(context);
             if (data != null) {
-              Get.to(
-                WaitingView(
-                  data: data,
-                ),
-              );
+              // Get.to(
+              //   WaitingView(
+              //     data: data,
+              //   ),
+              // );
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));
@@ -131,7 +132,7 @@ class DynamicLinkService {
           if (token != null && loggedOut != null && !loggedOut) {
             var userProfileDetails = await apicalls.getProfile(
                 token: prefs.get("token").toString(),
-                userID: prefs.get("userID").toString());
+               );
             var activeConnections = await apicalls.getActiveConnections(
                 token: prefs.get("token").toString(),
                 // userPhoneNumber: userProfileDetails["data"]["phoneNumber"],
@@ -155,9 +156,9 @@ class DynamicLinkService {
             print('closing the dialog');
             Navigator.pop(context);
             if (data != null) {
-              Get.to(WaitingView(
-                data: data,
-              ));
+              // Get.to(WaitingView(
+              //   data: data,
+              // ));
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));

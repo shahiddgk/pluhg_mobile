@@ -37,6 +37,7 @@ class PluhgButton extends StatelessWidget {
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
               primary: color ?? AppColors.pluhgColour,
+              onSurface: color ?? AppColors.pluhgColour,
               elevation: 0,
               shadowColor: Colors.transparent,
               padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 12.5.h),

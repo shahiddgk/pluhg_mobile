@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/notificationScreen/views/notification_settings.dart';
 import 'package:plug/app/modules/profileScreen/views/editProfile.dart';
@@ -96,6 +97,8 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
               child: pluhgProgress(),
             );
           } else {
+            print('victorhez');
+            print(snapshot.data);
             return Scaffold(
               body: SingleChildScrollView(
                 child: Container(
@@ -111,10 +114,13 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                               child: snapshot.data == null
                                   ? SvgPicture.asset(
                                       "resources/svg/profile.svg")
-                                  : Image(
-                                      image: NetworkImage(
-                                          "http://143.198.187.200:3001/uploads/${snapshot.data['profileImage'].toString()}"),
-                                      fit: BoxFit.cover),
+                                  //TODO uncomment
+
+                                  : Image.network(
+                                      APICALLS.imageBaseUrl +
+                                          snapshot.data['profileImage']
+                                              .toString(),
+                                    ),
                             ),
                           ),
                           Container(
@@ -155,7 +161,11 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                           : CircleAvatar(
                                               backgroundColor: pluhgColour,
                                               backgroundImage: NetworkImage(
-                                                  "http://143.198.187.200:3001/uploads/${snapshot.data['profileImage'].toString()}"),
+                                                  APICALLS.imageBaseUrl +
+                                                      snapshot.data[
+                                                          'profileImage']),
+
+                                              //TODO uncomment this part
                                               radius: 40.19,
                                             ),
                                       SizedBox(width: 15),

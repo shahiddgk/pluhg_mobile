@@ -4,11 +4,8 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/modules/connectionScreen/views/waiting_view.dart';
-import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profileScreen/controllers/set_profile.dart';
 import 'package:plug/app/widgets/colors.dart';
-import 'package:plug/app/widgets/dialog_box.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -196,7 +193,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                   await SharedPreferences.getInstance();
                               controller.isLoading.value = true;
                               bool d = await apicalls.createProfile(
-                                  userID: userID,
+                                 
                                   token: token,
                                   contact: _contactController.text.contains("@")
                                       ? _contactController.text

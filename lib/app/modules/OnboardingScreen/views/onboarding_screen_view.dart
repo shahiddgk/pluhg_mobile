@@ -9,11 +9,8 @@ import 'package:plug/app/widgets/pluhg_button.dart';
 import '../controllers/onboarding_screen_controller.dart';
 import 'onboarding_screen2_view.dart';
 
-enum screen { first, second, third, fourth, fifth }
-
 class OnboardingScreenView extends GetView<OnboardingScreenController> {
   final controller1 = Get.put(OnboardingScreenController());
-  var currScreen = screen.first;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

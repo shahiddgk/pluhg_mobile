@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/widgets/colours.dart';
 
 showPluhgDailog(BuildContext context, String type, String message) {
@@ -113,7 +115,7 @@ showPluhgDailog2(
   );
 }
 
-showPluhgDailog4(BuildContext context, String contact) {
+showPluhgDailog4(BuildContext context, String connectionID, String party) {
   {
     TextEditingController text = new TextEditingController();
     return showPlatformDialog(
@@ -136,26 +138,33 @@ showPluhgDailog4(BuildContext context, String contact) {
         actions: <Widget>[
           BasicDialogAction(
             title: Container(
-                width: 47.67,
-                height: 31,
+                width: 120.w,
+                height: 51.h,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(59),
+                    borderRadius: BorderRadius.circular(59.r),
                     border: Border.all(
                       color: pluhgColour,
                     )),
                 child: Center(
                   child: Text("Send Reminder",
-                      style: TextStyle(fontSize: 12, color: pluhgColour)),
+                      style: TextStyle(fontSize: 12.sp, color: pluhgColour)),
                 )),
-            onPressed: () {
+            onPressed: () async {
               APICALLS apicalls = APICALLS();
-              Navigator.pop(context);
-              if (text.text.length < 5) {
-                apicalls.sendReminderMessage(
+
+              if (text.text.length > 5) {
+                bool d = await apicalls.sendReminderMessage(
                     message: text.text,
-                    contactContact: contact,
+                    connectionID: connectionID,
+                    party: party,
                     context: context);
+                if (d == false) {
+                  Navigator.pop(context);
+                  pluhgSnackBar('Great', '$party has been notified');
+                }
+              } else {
+                pluhgSnackBar('Sorry', '$party must be up to five text');
               }
             },
           ),

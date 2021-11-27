@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:plug/app/data/api_calls.dart';
 
 import 'colours.dart';
 
 Widget card(BuildContext context, var data) {
   Size size = MediaQuery.of(context).size;
+  if(data==null)return SizedBox();
   return Column(
     children: [
       Container(
@@ -27,7 +29,7 @@ Widget card(BuildContext context, var data) {
                 radius: size.width * 0.05,
                 backgroundColor: pluhgColour,
                 backgroundImage: NetworkImage(
-                    "http://143.198.187.200:3001/uploads/${data['profileImage'].toString()}")),
+                    APICALLS.imageBaseUrl + data['profileImage'].toString())),
       ),
       data.containsKey("userName") && data["userName"] != null
           ? Expanded(
@@ -77,7 +79,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                    "http://143.198.187.200:3001/uploads/${data['profileImage'].toString()}",
+                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
                   ),
                 ),
               )),
@@ -144,7 +146,7 @@ Widget smallCard(var data, var accepted) {
                 child: Center(
                     child: CircleAvatar(
                   backgroundImage: NetworkImage(
-                    "http://143.198.187.200:3001/uploads/${data['profileImage'].toString()}",
+                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
                   ),
                 ))),
         SizedBox(

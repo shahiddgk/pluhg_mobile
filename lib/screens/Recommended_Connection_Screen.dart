@@ -10,7 +10,6 @@ import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/dashed_lines.dart';
 import 'package:plug/widgets/dialog_box.dart';
 
-
 Color primaryColor = Color(0xFF000BFF);
 
 class RecommendedConnectionScreen extends StatefulWidget {
@@ -67,7 +66,8 @@ class _RecommendedConnectionScreenState
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NotificationScreenView()));
+                                builder: (context) =>
+                                    NotificationScreenView()));
                       },
                       child: Icon(Icons.notifications_outlined,
                           color: Color(0xff080F18))),
@@ -205,33 +205,33 @@ class _RecommendedConnectionScreenState
                           SizedBox(
                             height: 14.79,
                           ),
-                          data["both"].toString().isNotEmpty
-                              ? Text("Message to both")
-                              : Text(''),
-                          SizedBox(
-                            height: 6,
-                          ),
-                          data["both"].toString().isNotEmpty
-                              ? Container(
-                                  width: 307.22,
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white),
-                                  child: Text(
-                                    "${data["both"]}",
-                                    textAlign: TextAlign.justify,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                )
-                              : Text(''),
-                          data["both"].toString().isNotEmpty
-                              ? SizedBox(
-                                  height: 14.79,
-                                )
-                              : Text(''),
+                          // data["both"].toString().isNotEmpty
+                          //     ? Text("Message to both")
+                          //     : Text(''),
+                          // SizedBox(
+                          //   height: 6,
+                          // ),
+                          // data["both"].toString().isNotEmpty
+                          //     ? Container(
+                          //         width: 307.22,
+                          //         padding: EdgeInsets.all(8),
+                          //         decoration: BoxDecoration(
+                          //             borderRadius: BorderRadius.circular(15),
+                          //             color: Colors.white),
+                          //         child: Text(
+                          //           "${data["both"]}",
+                          //           textAlign: TextAlign.justify,
+                          //           style: TextStyle(
+                          //               fontSize: 12,
+                          //               fontWeight: FontWeight.w400),
+                          //         ),
+                          //       )
+                          //     : Text(''),
+                          // data["both"].toString().isNotEmpty
+                          //     ? SizedBox(
+                          //         height: 14.79,
+                          //       )
+                          //     : Text(''),
                           Text(data["requester"]["refId"]["userName"] == null
                               ? "Message to @${data["requester"]["name"]}"
                               : "Message to @${data["requester"]["refId"]["userName"]}"),
@@ -334,10 +334,7 @@ class _RecommendedConnectionScreenState
                           child: GestureDetector(
                             onTap: () {
                               showPluhgDailog4(
-                                  context,
-                                  data["requester"]["emailAddress"] != null
-                                      ? data["requester"]["emailAddress"]
-                                      : data["requester"]["phoneNumber"]);
+                                  context, data["_id"], 'requester');
                             },
                             child: button2("Requester"),
                           ),
@@ -349,11 +346,7 @@ class _RecommendedConnectionScreenState
                           visible: data["isContactAccepted"] ? false : true,
                           child: GestureDetector(
                             onTap: () {
-                              showPluhgDailog4(
-                                  context,
-                                  data["contact"]["emailAddress"] != null
-                                      ? data["contact"]["emailAddress"]
-                                      : data["contact"]["phoneNumber"]);
+                              showPluhgDailog4(context, data["_id"], 'contact');
                             },
                             child: button2("Contact"),
                           ),

@@ -1,11 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/widgets/dialog_box.dart';
-
+import 'package:plug/widgets/dialog_box.dart';
 class AuthScreenController extends GetxController {
   //TODO: Implement AuthScreenController
   var isNumber = false.obs;
@@ -20,7 +20,7 @@ class AuthScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    determinePosition();
+    // determinePosition();
     Geolocator.requestPermission();
     getDeviceToken();
   }
@@ -47,29 +47,20 @@ class AuthScreenController extends GetxController {
     deviceTokenString.value = (await FirebaseMessaging.instance.getToken())!;
   }
 
-  Future<Position> determinePosition() async {
+  Future<String> determinePosition() async {
     bool serviceEnabled;
 
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (serviceEnabled) {
-      print("true");
-      Geolocator.getCurrentPosition().then((Position position) async {
-        print(position);
+      Position position = await Geolocator.getCurrentPosition();
+      print(position);
 
-        long = position.longitude;
-        lat = position.latitude;
+      long = position.longitude;
+      lat = position.latitude;
 
-        if (long > 0 && lat > 0) {
-          List<Placemark> placemarks =
-              await placemarkFromCoordinates(lat, long);
-          print(placemarks);
-
-          countryISOCode.value = placemarks[0].isoCountryCode.toString();
-          print(countryISOCode);
-          print("countryISOCode");
-        }
-      });
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+      return placemarks[0].isoCountryCode.toString();
     }
     if (!serviceEnabled) {
       Geolocator.requestPermission();
@@ -82,11 +73,8 @@ class AuthScreenController extends GetxController {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-      return Future.error('Location services are disabled.');
+      return '';
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition();
+    return determinePosition();
   }
 }

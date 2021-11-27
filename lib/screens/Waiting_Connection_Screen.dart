@@ -8,7 +8,6 @@ import 'package:plug/widgets/colours.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 Color primaryColor = Color(0xFF000BFF);
 
 class WaitingConnectionScreen extends StatefulWidget {
@@ -47,15 +46,6 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
     data = widget.data;
     super.initState();
 
-    bool _isRequester = email != null
-        ? email == widget.data["requester"]["emailAddress"]
-        : phone == widget.data["requester"]["phoneNumber"];
-
-    if (_isRequester) {
-      _responded = widget.data["isRequesterAccepted"];
-    } else {
-      _responded = widget.data["isContactAccepted"];
-    }
     getUserID();
   }
 
@@ -238,7 +228,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                               height: 45,
                               child: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                      "http://143.198.187.200:3001/uploads/${data['userId']['profileImage'].toString()}")),
+                                      APICALLS.imageBaseUrl +
+                                          data['userId']['profileImage']
+                                              .toString())),
                             ),
                             SizedBox(
                               width: 10,

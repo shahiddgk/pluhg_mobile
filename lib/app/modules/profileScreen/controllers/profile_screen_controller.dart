@@ -11,6 +11,7 @@ class ProfileScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchProfileDetails();
   }
 
   @override
@@ -25,14 +26,14 @@ class ProfileScreenController extends GetxController {
     APICALLS apicalls = APICALLS();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     profileDetails = await apicalls.getProfile(
-        token: prefs.get("token").toString(),
-        userID: prefs.get("userID").toString());
-    if (profileDetails["hasError"] == false) {
+      token: prefs.get("token").toString(),
+    );
+    if (profileDetails['status'] == true) {
       isLoading.value = false;
       return profileDetails['data'];
     } else {
       isLoading.value = false;
-      pluhgSnackBar("So sorry", "Error occured here, Refresh");
+      pluhgSnackBar("So sorry", "${profileDetails['message']}");
       return null;
     }
   }

@@ -11,8 +11,8 @@ Widget waitingConnectionCard({
 }) {
   RxBool responded = false.obs;
   bool _isRequester = prefs.getString("emailAddress") != null
-      ? prefs.getString("emailAddress") == data["requester"]["emailAddress"]
-      : prefs.getString("phoneNumber") == prefs.getString("phoneNumber");
+      ? prefs.getString("emailAddress") == data["requester"]["contact"]
+      : prefs.getString("phoneNumber") == data["requester"]["contact"];
 
   if (_isRequester) {
     responded.value = data["isRequesterAccepted"];
@@ -113,16 +113,19 @@ Widget waitingConnectionCard({
                                     ),
                                   ),
                                   onTap: () async {
+                                    print(prefs.getString("userID"));
                                     APICALLS apicalls = APICALLS();
                                     responded.value = await apicalls
                                         .respondToConnectionRequest(
                                             connectionID: data["_id"],
-                                            contact: prefs.getString("emailAddress") !=
-                                                    null
-                                                ? prefs
-                                                    .getString("emailAddress")
-                                                : prefs
-                                                    .getString("phoneNumber"),
+                                            contact:
+                                                prefs.getString("emailAddress"),
+                                            // !=
+                                            //         null
+                                            //     ? prefs
+                                            //         .getString("emailAddress")
+                                            //     : prefs
+                                            //         .getString("phoneNumber"),
                                             isContact: data["contact"]["refId"]
                                                             ["_id"]
                                                         .toString() ==
@@ -172,12 +175,14 @@ Widget waitingConnectionCard({
                                     responded.value = await apicalls
                                         .respondToConnectionRequest(
                                             connectionID: data["_id"],
-                                            contact: prefs.getString("emailAddress") !=
-                                                    null
-                                                ? prefs
-                                                    .getString("emailAddress")
-                                                : prefs
-                                                    .getString("phoneNumber"),
+                                            contact:
+                                                prefs.getString("emailAddress"),
+                                            //  !=
+                                            //         null
+                                            //     ? prefs
+                                            //         .getString("emailAddress")
+                                            //     : prefs
+                                            //         .getString("phoneNumber"),
                                             context: Get.context!,
                                             isContact: data["contact"]["refId"]
                                                             ["_id"]
