@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/OnboardingScreen/views/onboarding_screen_view.dart';
-import 'package:plug/app/modules/connectionScreen/views/waiting_view.dart';
 import 'package:plug/app/modules/dynamiclinkservice.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
+import 'package:plug/screens/Recommended_Connection_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreenController extends GetxController {
@@ -33,6 +33,7 @@ class SplashScreenController extends GetxController {
       String token = '';
 
       bool? loggedOut;
+      bool dynamicLink = false;
       String dynamicLinks = '', emailAdress = '', phoneNumber = '';
       dynamic data;
 
@@ -47,15 +48,22 @@ class SplashScreenController extends GetxController {
       }
 
       print("This is the token---splashs screen");
-      if (prefs.getString('token').toString().isNotEmpty  && dynamicLinks.isNotEmpty) {
+      if (prefs.getString('token').toString().isNotEmpty &&
+          dynamicLinks.isNotEmpty) {
         var waitingConnections = await apicalls.getWaitingConnections(
             token: token,
             contact: phoneNumber.isEmpty ? emailAdress : phoneNumber);
-        List waitingConns = waitingConnections['data'];
-        data = waitingConns.singleWhere(
-          (element) => element['_id'] == dynamicLinks,
-          orElse: () => null,
-        );
+        List waitingConns = waitingConnections['data'] == null
+            ? []
+            : waitingConnections['data'];
+        if (waitingConns.length != 0) {
+          dynamicLink = true;
+
+          data = waitingConns.singleWhere(
+            (element) => element['_id'] == dynamicLinks,
+            orElse: () => null,
+          );
+        }
       }
 
       // if (prefs.getString('token') != null) {
@@ -67,11 +75,11 @@ class SplashScreenController extends GetxController {
           ? AuthScreenView()
           : prefs.getString('token') == null
               ? OnboardingScreenView()
-              : prefs.getString('dynamicLink') == null
+              : !dynamicLink
                   ? HomeView(
                       index: 1,
                     )
-                  : WaitingView(
+                  : RecommendedConnectionScreen(
                       data: data,
                     ));
     });

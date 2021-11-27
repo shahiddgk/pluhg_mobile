@@ -8,8 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/profileScreen/controllers/edit_profile.dart';
 import 'package:plug/app/widgets/colors.dart';
-import 'package:plug/app/widgets/dialog_box.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/progressBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,7 +34,9 @@ class EditProfileView extends GetView<EditProfileController> {
   final controller = Get.put(EditProfileController());
   APICALLS apicalls = APICALLS();
   Future<Object?>? getdata() async {
-    controller.data2 = await apicalls.getProfile(token: token, userID: userID);
+    controller.data2 = await apicalls.getProfile(
+      token: token,
+    );
 
     _address = new TextEditingController(
         text: address.isEmpty || address == "null" ? "" : address);
@@ -140,7 +142,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                       : CircleAvatar(
                                           backgroundColor: pluhgColour,
                                           backgroundImage: NetworkImage(
-                                              "http://143.198.187.200:3001/uploads/${pics.toString()}"),
+                                              APICALLS.imageBaseUrl + pics),
                                           radius: 40.19,
                                         ),
                               Positioned(
@@ -269,15 +271,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                       bool res = await apicalls.setProfile2(
                                           context: context,
                                           token: token,
-                                          userID: userID,
-                                          userName: _username.text ==
-                                                  controller.data2["data"]
-                                                          ["userName"]
-                                                      .toString()
-                                              ? "nothing"
-                                              : _username.text.isEmpty
-                                                  ? "nothing"
-                                                  : _username.text,
+                                          userName: _username.text,
                                           name: _name.text.toString() ==
                                                   controller.data2["data"]
                                                           ["name"]
@@ -294,19 +288,8 @@ class EditProfileView extends GetView<EditProfileController> {
                                               : _address.text.isEmpty
                                                   ? "nothing"
                                                   : _address.text,
-                                          phone: _phone.text ==
-                                                  controller.data2["data"]
-                                                          ["phoneNumber"]
-                                                      .toString()
-                                              ? "nothing"
-                                              : _phone.text.isEmpty
-                                                  ? "nothing"
-                                                  : _phone.text,
-                                          email: _email.text == email
-                                              ? "nothing"
-                                              : _email.text.isEmpty
-                                                  ? "nothing"
-                                                  : _email.text);
+                                          phone: _phone.text,
+                                          email: _email.text);
                                       if (res == false) {
                                         controller.isloading.value = false;
                                       }
@@ -360,9 +343,7 @@ class EditProfileView extends GetView<EditProfileController> {
     if (image != null) {
       bool info = await apicalls.updateProfile(
         image,
-        data: data,
         token: token!,
-        userID: userID!,
         context: Get.context!,
       );
       if (info == false) {

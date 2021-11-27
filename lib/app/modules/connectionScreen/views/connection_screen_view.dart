@@ -8,6 +8,7 @@ import 'package:plug/app/modules/connectionScreen/widget/waiting_card.dart';
 import 'package:plug/app/modules/connectionScreen/widget/whoIconnected.dart';
 import 'package:plug/app/modules/notificationScreen/views/notification_screen_view.dart';
 import 'package:plug/app/widgets/colors.dart';
+import 'package:plug/app/widgets/progressbar.dart';
 
 import '../controllers/connection_screen_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -132,17 +133,36 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                   ),
                 ),
                 FutureBuilder(
-                    future: controller.currentIndex.value == 0
-                        ? controller.activeData()
-                        : controller.currentIndex.value == 1
-                            ? controller.waitingData()
-                            : controller.whoIconnectedData(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.none &&
-                          snapshot.hasData == false) {
-                        //print('project snapshot data is: ${projectSnap.data}');
-                        return Center();
-                      }
+                  future: controller.currentIndex.value == 0
+                      ? controller.activeData()
+                      : controller.currentIndex.value == 1
+                          ? controller.waitingData()
+                          : controller.whoIconnectedData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 40.h,
+                          ),
+                          Center(
+                            child: pluhgProgress(),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      //print('project snapshot data is: ${projectSnap.data}');
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 40.h,
+                          ),
+                          Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasData) {
                       return Expanded(
                           child: ListView.builder(
                               shrinkWrap: true,
@@ -169,9 +189,12 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                                             style:
                                                 TextStyle(color: Colors.black),
                                           ))
-                                        : activeConnectionCard(
-                                            data: data[index],
-                                            prefs: controller.prefs)
+                                        : Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: activeConnectionCard(
+                                                data: data[index],
+                                                prefs: controller.prefs),
+                                          )
                                     : controller.currentIndex.value == 1
                                         ?
                                         // controller.waitingList.value == 0 ||
@@ -179,23 +202,42 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                                                 snapshot.connectionState !=
                                                     ConnectionState.done
                                             ? Center(child: Text(" "))
-                                            : waitingConnectionCard(
-                                                data: data[index],
-                                                prefs: controller.prefs)
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: waitingConnectionCard(
+                                                    data: data[index],
+                                                    prefs: controller.prefs),
+                                              )
                                         :
                                         // controller.connectedList.value == 0 ||
                                         snapshot.hasData == false ||
                                                 snapshot.connectionState !=
                                                     ConnectionState.done
                                             ? Center(child: Text(" "))
-                                            : whoIConnectedCard(
-                                                data: data[index],
-                                                prefs: controller.prefs);
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: whoIConnectedCard(
+                                                    data: data[index],
+                                                    prefs: controller.prefs),
+                                              );
                               }));
-                    }),
-                SizedBox(
-                  height: Get.height * 0.1,
-                )
+                    } else {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 40.h,
+                          ),
+                          Center(child: Text('No Connection data yet')),
+                        ],
+                      );
+                    }
+                  },
+                ),
+                // SizedBox(
+                //   height: Get.height * 0.1,
+                // )
               ],
             ),
           );

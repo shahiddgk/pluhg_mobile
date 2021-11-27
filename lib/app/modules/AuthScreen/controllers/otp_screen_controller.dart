@@ -5,7 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/widgets/dialog_box.dart';
 
 class OTPScreenController extends GetxController {
   //TODO: Implement AuthScreenController

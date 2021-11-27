@@ -28,18 +28,18 @@ class ConnecTwoScreenController extends GetxController {
     SharedPreferences pref = await SharedPreferences.getInstance();
     APICALLS apicalls = APICALLS();
     profileDetails = await apicalls.getProfile(
-        token: pref.get("token").toString(),
-        userID: pref.get("userID").toString());
+      token: pref.get("token").toString(),
+    );
     print(pref.get("token").toString());
     print(pref.get("userID").toString());
 
-    if (profileDetails["hasError"] == false) {
+    if (profileDetails["status"] == true) {
       pref.setString("emailAddress", profileDetails["data"]["emailAddress"]);
       pref.setString("phoneNumber", profileDetails["data"]["phoneNumber"]);
       isLoading.value = false;
     } else {
       isLoading.value = false;
-      pluhgSnackBar("So sorry", "Error occured here, pull to refresh");
+      pluhgSnackBar("So sorry", "${profileDetails["message"]}");
     }
   }
 }

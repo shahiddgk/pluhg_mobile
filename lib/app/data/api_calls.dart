@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -8,18 +7,20 @@ import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/AuthScreen/views/otp_screen.dart';
-import 'package:plug/app/modules/connectionScreen/views/waiting_view.dart';
+import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profileScreen/views/setProfileScreen.dart';
-import 'package:plug/app/widgets/dialog_box.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
+import 'package:plug/app/widgets/status_screen.dart';
+import 'package:plug/widgets/dialog_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS {
-  static const url = "http://3.145.68.76";
+  static const url = "http://3.18.123.250";
 
   late Size screenSize;
+  static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
 
   Future<bool> signUpSignIn({String? contact}) async {
     var uri = Uri.parse("$url/api/login");
@@ -91,26 +92,26 @@ class APICALLS {
         if (prefs.getString('dynamicLink') != null) {
           dynamicLinkID = prefs.getString("dynamicLink");
         }
-        if (dynamicLinkID != null) {
-          var waitingConnections = await getWaitingConnections(
-              token: parsedResponse['data']['token'].toString(),
-              contact: parsedResponse['data']['user']['data']['emailAddress']
-                  .toString());
+        // if (dynamicLinkID != null) {
+        //   var waitingConnections = await getWaitingConnections(
+        //       token: parsedResponse['data']['token'].toString(),
+        //       contact: parsedResponse['data']['user']['data']['emailAddress']
+        //           .toString());
 
-          List waitingConns = waitingConnections['data'];
-          dynamic data = waitingConns.singleWhere(
-            (element) => element['_id'] == dynamicLinkID,
-            orElse: () => null,
-          );
-          Get.offAll(() => WaitingView(
-                data: data,
-              ));
-        }
-        if (dynamicLinkID == null) {
-          Get.offAll(() => HomeView(
-                index: 1,
-              ));
-        }
+        //   List waitingConns = waitingConnections['data'];
+        //   dynamic data = waitingConns.singleWhere(
+        //     (element) => element['_id'] == dynamicLinkID,
+        //     orElse: () => null,
+        //   );
+        //   Get.offAll(() => WaitingView(
+        //         data: data,
+        //       ));
+        // }
+        // if (dynamicLinkID == null) {
+        Get.offAll(() => HomeView(
+              index: 1,
+            ));
+        // }
       }
       return false;
     } else {
@@ -120,12 +121,11 @@ class APICALLS {
   }
 
   Future<bool> createProfile(
-      {required String userID,
-      required String token,
+      {required String token,
       required String contact,
       required String contactType,
       required String username}) async {
-    var uri = Uri.parse("$url/api/createProfile/$userID");
+    var uri = Uri.parse("$url/api/createProfile");
 
     var body = {};
 
@@ -151,12 +151,12 @@ class APICALLS {
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse);
 
-    if (parsedResponse["hasError"] == false) {
+    if (response.statusCode == 200) {
       print(parsedResponse);
       pluhgSnackBar('Great', 'Your profile Has been set');
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('profileImage',
-          parsedResponse["data"]["userData"]["profileImage"].toString());
+      // prefs.setString('profileImage',
+      //     parsedResponse["data"]["userData"]["profileImage"].toString()); //TODO check the data it returns
 
       prefs.setString('token', token);
       prefs.setString('userName', username);
@@ -165,30 +165,30 @@ class APICALLS {
           !contact.contains("@") ? "phoneNumber" : "emailAddress", contact);
 
       String? dynamicLinkID;
-      if (prefs.getString('dynamicLink') != null) {
-        dynamicLinkID = prefs.getString("dynamicLink");
-      }
-      if (prefs.getString('dynamicLink') != null) {
-        var waitingConnections = await apicalls.getWaitingConnections(
-            token: token,
-            // userPhoneNumber: d["data"]
-            //     ["phoneNumber"],
-            contact: parsedResponse["data"]["emailAddress"]);
-        List waitingConns = waitingConnections['data'];
-        dynamic data = waitingConns.singleWhere(
-          (element) => element['_id'] == dynamicLinkID,
-          orElse: () => null,
-        );
+      // if (prefs.getString('dynamicLink') != null) {
+      //   dynamicLinkID = prefs.getString("dynamicLink");
+      // }
+      // if (prefs.getString('dynamicLink') != null) {
+      //   var waitingConnections = await apicalls.getWaitingConnections(
+      //       token: token,
+      //       // userPhoneNumber: d["data"]
+      //       //     ["phoneNumber"],
+      //       contact: parsedResponse["data"]["emailAddress"]);
+      //   List waitingConns = waitingConnections['data'];
+      //   dynamic data = waitingConns.singleWhere(
+      //     (element) => element['_id'] == dynamicLinkID,
+      //     orElse: () => null,
+      //   );
 
-        Get.offAll(() => WaitingView(
-              data: data,
-            ));
-      }
-      if (prefs.getString('dynamicLink') == null) {
-        Get.offAll(() => HomeView(
-              index: 1,
-            ));
-      }
+      //   Get.offAll(() => WaitingView(
+      //         data: data,
+      //       ));
+      // }
+      // if (prefs.getString('dynamicLink') == null) {
+      Get.offAll(() => HomeView(
+            index: 1,
+          ));
+      // }
 
       //all good
       return false;
@@ -246,7 +246,7 @@ class APICALLS {
     }
   }
 
-  Future connectTwoPeople(
+  Future<bool> connectTwoPeople(
       {required String requesterName,
       required String contactName,
       required String contactContact,
@@ -257,39 +257,28 @@ class APICALLS {
       // required Uint8List? contactImage,
       // required Uint8List? requesterImage,
       required BuildContext context}) async {
-    print(
-        "Requester => $requesterName : $requesterContact \n Contact => $contactName : $contactContact");
     var uri = Uri.parse("$url/api/connect/people");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userID = prefs.getString("userID");
 
     String? token = prefs.getString("token");
-    var body = {};
-    body["userId"] = userID;
-    body['both'] = bothMessage;
 
-    if (contactContact.contains("@")) {
-      body["contact"] = {"emailAddress": contactContact, "name": contactName};
-    }
-    if (!contactContact.contains("@")) {
-      body["contact"] = {"phoneNumber": contactContact, "name": contactName};
-    }
-    if (requesterContact.contains("@")) {
-      body["requester"] = {
-        "emailAddress": requesterContact,
-        "name": requesterName
-      };
-    }
-    if (!requesterContact.contains("@")) {
-      body["requester"] = {
-        "phoneNumber": requesterContact,
-        "name": requesterName
-      };
-    }
-    print(body);
-
-    /// Set options
-    /// Max and msg required
+    var body = {
+      "requester": {
+        "name": requesterName,
+        "contact": requesterContact,
+        "contactType": requesterContact.contains("@") ? 'email' : 'phone',
+        "message":
+            "${prefs.getString("userName")} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
+      },
+      "contact": {
+        "name": contactName,
+        "contact": contactContact,
+        "contactType": contactContact.contains("@") ? 'email' : 'phone',
+        "message":
+            "${prefs.getString("userName")} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
+      },
+      'generalMessage': bothMessage
+    };
 
     var response = await http.post(uri,
         headers: {
@@ -302,325 +291,37 @@ class APICALLS {
     // print(parsedResponse["data"]["_id"].toString());
     print("Connection ID");
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       print(parsedResponse);
-      Get.snackbar("Great", "You have connected them, about to send message");
+      pluhgSnackBar("Great", "You have connected them, about to send message");
+      Get.off(StatusScreen(
+          buttonText: "Continue",
+          heading: 'Connection Successful',
+          iconName: 'success_status',
+          onPressed: () => Get.offAll(HomeView(index: 2)),
+          subheading:
+              "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 "));
 
-      await connectTwoPeopleMessage(
-          connectionID: parsedResponse["data"]["_id"].toString(),
-          requestermessage: bothMessage.isEmpty
-              ? "${prefs.getString("userName")} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection " +
-                  requesterMessage
-              : bothMessage +
-                  " " +
-                  requesterMessage +
-                  " Click this link to log into Pluhg and respond to ${prefs.getString("userName")}'s connection recommendation ",
-
-          // : " ${prefs.getString("userName")} has recommeded a connection between you and One of ${prefs.getString("userName")}'s Contact. Click this link to log into Pluhg and response to ${prefs.getString("userName")}'s connection recommendation",
-          contactmessage: bothMessage.isEmpty
-              ? "${prefs.getString("userName")} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection " +
-                  contactMessage
-              : bothMessage +
-                  " " +
-                  contactMessage +
-                  " Click this link to log into Pluhg and respond to ${prefs.getString("userName")}'s connection recommendation ",
-          // +
-          //           " Click this link to log into Pluhg and response to ${prefs.getString("userName")}'s connection recommendation"
-          //       : "${prefs.getString("userName")} has recommeded a connection between you and One of ${prefs.getString("userName")}'s Contact. Click this link to log into Pluhg and response to ${prefs.getString("userName")}'s connection recommendation",
-          contactContact: contactContact,
-          requesterContact: requesterContact,
-          context: context);
-      return true;
+      return false;
 
       //all good
     } else {
       // error
-      Get.snackbar("So sorry", "Couldn't connect them");
+      pluhgSnackBar("So sorry", "${parsedResponse['message']}");
 
-      showPluhgDailog(
-          context, "So Sorry", "Couldn't pluhg, Users already pluhged");
-
-      print("Error");
+      return false;
     }
   }
 
-  Future<void> connectTwoPeopleMessage(
-      {required String requestermessage,
-      required String contactmessage,
-      required String contactContact,
-      required String connectionID,
-      required String requesterContact,
-      required BuildContext context}) async {
-    print("contact: $contactContact , requester: $requesterContact");
-    var uriSMS = Uri.parse("$url/api/connect/connectPeople/sendSMS");
-    var uriEmail = Uri.parse("$url/api/connect/connectPeople/sendEmail");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userID = prefs.getString("userID");
-
-    String? token = prefs.getString("token");
-    final DynamicLinkParameters _dynamicLinkParameters = DynamicLinkParameters(
-        uriPrefix: "https://app.pluhg.com",
-        link: Uri.parse("https://app.pluhg.com/?id=$connectionID"),
-        androidParameters: AndroidParameters(
-            packageName: "com.example.plug", minimumVersion: 0),
-        dynamicLinkParametersOptions: DynamicLinkParametersOptions(
-          shortDynamicLinkPathLength: ShortDynamicLinkPathLength.short,
-        ),
-        socialMetaTagParameters: SocialMetaTagParameters(
-            title: "Pluhg App", description: "You have been connected"));
-    Uri uri;
-
-    final ShortDynamicLink _shortDynamicLink =
-        await _dynamicLinkParameters.buildShortLink();
-    uri = _shortDynamicLink.shortUrl;
-
-    var parsedResponse;
-
-    print(
-        'is email ? ${contactContact.contains("@") && requesterContact.contains("@")} \n ${contactContact.toString()} \n ${requesterContact.toString()}');
-
-    if (contactContact.contains("@") && requesterContact.contains("@")) {
-      print('both users using email');
-      var body = {
-        "plugedUser": userID,
-        "sendEmail": [
-          {
-            "emailAddress": contactContact,
-            "emailContent": contactmessage + " " + " " + " " + uri.toString()
-          },
-          {
-            "emailAddress": requesterContact,
-            "emailContent": requestermessage + " " + " " + uri.toString()
-          }
-        ]
-      };
-      print(body);
-      var response = await http.post(uriEmail,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token"
-          },
-          body: jsonEncode(body));
-      parsedResponse = jsonDecode(response.body);
-      if (parsedResponse["hasError"] == false) {
-        print(parsedResponse);
-        Get.snackbar("Great ", "You have sent message successfully");
-
-        showMessagePluhgDailog(context, "Great!!",
-            "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 ");
-
-        //all good
-      } else {
-        showPluhgDailog(context, "So sorry!!",
-            "Could not send messgae, check number format ");
-        // return parsedResponse;
-        Get.snackbar("So sorry ", "Couldn't send message, try sending message");
-      }
-    } else if (!contactContact.contains("@") &&
-        !requesterContact.contains("@")) {
-      var body = {
-        "plugedUser": userID,
-        "sendSMS": [
-          {
-            "phoneNumber": contactContact,
-            "text": contactmessage + " " + " " + uri.toString(),
-          },
-          {
-            "phoneNumber": requesterContact,
-            "text": requestermessage + " " + " " + uri.toString(),
-          },
-        ]
-      };
-      print('body is $body');
-      var response = await http.post(uriSMS,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token"
-          },
-          body: jsonEncode(body));
-      parsedResponse = jsonDecode(response.body);
-      print('parsedResponse is $parsedResponse');
-      if (parsedResponse["hasError"] == false) {
-        print(parsedResponse);
-        Get.snackbar("Great ", "You have sent message successfully");
-
-        showMessagePluhgDailog(context, "Great!!",
-            "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 ");
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => HomeScreen(
-        //               index: 1,
-        //               userID: userID,
-        //               token: token,
-        //               // data: parsedResponse["data"],
-        //             )));
-
-        //all good
-      } else {
-        showPluhgDailog(context, "So sorry!!",
-            "Could not send messgae, Number not supported by twilio  ");
-        Get.snackbar("So sorry ", "Couldn't send message, try sending message");
-      }
-    } else if (contactContact.contains("@") != requesterContact.contains("@")) {
-      if (contactContact.contains("@")) {
-        var body = {
-          "plugedUser": userID,
-          "sendEmail": [
-            {
-              "emailAddress": contactContact,
-              "emailContent": contactmessage + " " + " " + uri.toString()
-            },
-          ]
-        };
-        print(body);
-        var response = await http.post(uriEmail,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer $token"
-            },
-            body: jsonEncode(body));
-        parsedResponse = jsonDecode(response.body);
-        if (parsedResponse["hasError"] == false) {
-          print(parsedResponse);
-          Get.snackbar("Great ", "You have sent message successfully");
-
-          showMessagePluhgDailog(context, "Great!!",
-              "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 ");
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => HomeScreen(
-          //               index: 1,
-          //               userID: userID,
-          //               token: token,
-          //               // data: parsedResponse["data"],
-          //             )));
-
-          //all good
-        } else {
-          showPluhgDailog(context, "So sorry!!",
-              "Could not send messgae, check number format ");
-          Get.snackbar(
-              "So sorry ", "Couldn't send message, try sending message");
-        }
-      } else if (!contactContact.contains("@")) {
-        var body = {
-          "plugedUser": userID,
-          "sendSMS": [
-            {
-              "phoneNumber": contactContact,
-              "text": contactmessage + " " + " " + uri.toString(),
-            },
-          ]
-        };
-        print(body);
-        var response = await http.post(uriSMS,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer $token"
-            },
-            body: jsonEncode(body));
-        parsedResponse = jsonDecode(response.body);
-        if (parsedResponse["hasError"] == false) {
-          print(parsedResponse);
-          Get.snackbar("Great ", "You have sent message successfully");
-
-          showMessagePluhgDailog(context, "Great!!",
-              "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 ");
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => HomeScreen(
-          //               index: 1,
-          //               userID: userID,
-          //               token: token,
-          //               // data: parsedResponse["data"],
-          //             )));
-
-          //a
-          //ll good
-        } else {
-          showPluhgDailog(context, "So sorry!!",
-              "Could not send messgae, check number format ");
-          Get.snackbar(
-              "So sorry ", "Couldn't send message, try sending message");
-        }
-      }
-      if (requesterContact.contains("@")) {
-        var body = {
-          "plugedUser": userID,
-          "sendEmail": [
-            {
-              "emailAddress": requesterContact,
-              "emailContent": requestermessage + " " + " " + uri.toString()
-            },
-          ]
-        };
-        print(body);
-        var response = await http.post(uriEmail,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer $token"
-            },
-            body: jsonEncode(body));
-        parsedResponse = jsonDecode(response.body);
-      } else if (!requesterContact.contains("@")) {
-        var body = {
-          "plugedUser": userID,
-          "sendSMS": [
-            {
-              "phoneNumber": requesterContact,
-              "text": requestermessage + " " + " " + uri.toString(),
-            },
-          ]
-        };
-        print(body);
-        var response = await http.post(uriSMS,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer $token"
-            },
-            body: jsonEncode(body));
-        parsedResponse = jsonDecode(response.body);
-        if (parsedResponse["hasError"] == false) {
-          print(parsedResponse);
-          Get.snackbar("Great ", "You have sent message successfully");
-
-          showMessagePluhgDailog(context, "Great!!",
-              "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 ");
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => HomeScreen(
-          //               index: 1,
-          //               userID: userID,
-          //               token: token,
-          //               // data: parsedResponse["data"],
-          //             )));
-
-          //all good
-        } else {
-          showPluhgDailog(context, "So sorry!!",
-              "Could not send messgae, check number format");
-          Get.snackbar(
-              "So sorry ", "Couldn't send message, try sending message");
-        }
-      }
-      print(parsedResponse);
-    }
-    print(parsedResponse);
-  }
-
-  Future<void> sendReminderMessage(
+  Future<bool> sendReminderMessage(
       {required String message,
-      required String contactContact,
+      required String party,
+      required String connectionID,
       required BuildContext context}) async {
-    print("contact: $contactContact");
-    var uriSMS = Uri.parse("$url/api/connect/connectPeople/sendSMS");
-    var uriEmail = Uri.parse("$url/api/connect/connectPeople/sendEmail");
+    var uri = Uri.parse("$url/api/connect/sendReminder");
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userID = prefs.getString("userID");
+
     ProgressDialog pd = ProgressDialog(context: context);
     String? token = prefs.getString("token");
     var parsedResponse;
@@ -629,63 +330,40 @@ class APICALLS {
       msg: 'Please wait...',
       progressBgColor: Colors.transparent,
     );
-    if (contactContact.contains("@")) {
-      var body = {
-        "plugedUser": userID,
-        "sendEmail": [
-          {"emailAddress": contactContact, "emailContent": message},
-        ]
-      };
-      print(body);
-      var response = await http.post(uriEmail,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token"
-          },
-          body: jsonEncode(body));
-      parsedResponse = jsonDecode(response.body);
-    } else if (!contactContact.contains("@")) {
-      var body = {
-        "plugedUser": userID,
-        "sendSMS": [
-          {
-            "phoneNumber": contactContact,
-            "text": message,
-          },
-        ]
-      };
-      print(body);
-      var response = await http.post(uriSMS,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token"
-          },
-          body: jsonEncode(body));
-      parsedResponse = jsonDecode(response.body);
-    }
-    print(parsedResponse);
+
+    var body = {
+      'connectionId': connectionID,
+      'message': message,
+      'party': party
+    };
+
+    var response = await http.post(uri,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode(body));
+    parsedResponse = jsonDecode(response.body);
 
     /// Set options
     /// Max and msg required
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       pd.close();
       print(parsedResponse);
-      showPluhgDailog(context, "Success", "You have sent a reminder");
-
+      pluhgSnackBar("Great", "You have sent a reminder to the $party");
+      return false;
       //all good
     } else {
       // error
       pd.close();
-      showPluhgDailog(
-          context, "So sorry", "Couldn't complete your request, try again");
-
-      print("Error");
+      pluhgSnackBar("So sorry", "${parsedResponse['message']}");
+      return false;
     }
   }
 
-  Future getProfile({required String token, required String userID}) async {
-    var uri = Uri.parse("$url/api/profileDetails/$userID");
+  Future getProfile({required String token}) async {
+    var uri = Uri.parse("$url/api/profileDetails");
 
     var response =
         await http.get(uri, headers: {"Authorization": "Bearer $token"});
@@ -695,21 +373,17 @@ class APICALLS {
     if (response.statusCode == 401) {
       pluhgSnackBar("So sorry", "You have to login again, session expired");
       Get.offAll(() => AuthScreenView());
-    }
-    if (parsedResponse["hasError"] == false) {
+    } else if (response.statusCode == 200) {
       return parsedResponse;
       // all good, details in parsedResponse
     } else {
-      return parsedResponse;
+      return null;
     }
   }
 
   void setProfile(
-      {required String token,
-      required String userID,
-      String name = "",
-      String address = ""}) async {
-    var uri = Uri.parse("$url/api/updateProfileDetails/$userID");
+      {required String token, String name = "", String address = ""}) async {
+    var uri = Uri.parse("$url/api/updateProfileDetails");
 
     var body = {};
 
@@ -737,7 +411,6 @@ class APICALLS {
 
   Future<bool> setProfile2({
     required String? token,
-    required String? userID,
     String name = "",
     String userName = "",
     String address = "",
@@ -745,7 +418,7 @@ class APICALLS {
     required String email,
     required BuildContext context,
   }) async {
-    var uri = Uri.parse("$url/api/updateProfileDetails/$userID");
+    var uri = Uri.parse("$url/api/updateProfileDetails");
 
     var body = {};
     if (email != "nothing") {
@@ -770,14 +443,14 @@ class APICALLS {
 
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       // All okay
 
-      Future.delayed(Duration(microseconds: 7000), () {
-        Get.offAll(() => HomeView(
-              index: 3,
-            ));
-      });
+      Get.offAll(() => HomeView(
+            index: 3,
+          ));
+      pluhgSnackBar("Great", "You have changed your profile details");
+
       return false;
     } else {
       //ERROR
@@ -790,15 +463,13 @@ class APICALLS {
   Future<bool> updateProfile(
     var imageFile, {
     required String token,
-    required var data,
-    required String userID,
     required BuildContext context,
   }) async {
     var stream = http.ByteStream(imageFile.openRead());
     stream.cast();
     var length = await imageFile.length();
 
-    var uri = Uri.parse("$url/api/updateProfileDetails/$userID");
+    var uri = Uri.parse("$url/api/uploadProfileImage");
     Map<String, String> headers = {"Authorization": "Bearer $token"};
     var request = http.MultipartRequest("POST", uri)
       // ..fields["name"] = name
@@ -822,12 +493,13 @@ class APICALLS {
       var jar = response.stream.transform(utf8.decoder);
     });
     if (response.statusCode == 200) {
-      Future.delayed(Duration(microseconds: 7000), () {
+      Future.delayed(Duration(microseconds: 10000), () {
         Get.offAll(() => HomeView(
               index: 3,
             ));
+        pluhgSnackBar("Great", "You have changed your picture");
       });
-      Get.snackbar("Great", "You have changed your picture");
+
       return false;
     } else {
       pluhgSnackBar("So Sorry", response.reasonPhrase.toString());
@@ -837,29 +509,27 @@ class APICALLS {
 
   dynamic getNotificationSettings({
     required String token,
-    required String userID,
   }) async {
-    var uri = Uri.parse("$url/api/notification/settings/$userID");
+    var uri = Uri.parse("$url/api/notification/settings");
     // NotificationSettings settingz;
     var response =
         await http.get(uri, headers: {"Authorization": "Bearer $token"});
 
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
-      print("vICTORHEZ CORRCTION");
+    if (parsedResponse["status"] == true) {
       print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
+      return null;
       //ERROR
       // showPluhgDailog(context, "Error", parsedResponse["message"].toString());
     }
   }
 
-  void updateNotificationSettings({
+  Future<bool> updateNotificationSettings({
     required String token,
-    required String userID,
     required BuildContext context,
     required bool pushNotification,
     required bool textNotification,
@@ -867,7 +537,6 @@ class APICALLS {
   }) async {
     var uri = Uri.parse("$url/api/notification/settings/update");
     var body = {
-      "userId": userID,
       "textNotification": textNotification,
       "emailNotification": emailNotification,
       "pushNotification": pushNotification
@@ -882,17 +551,17 @@ class APICALLS {
 
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
-      showPluhgDailog(
-          context, "Great!!!", "Notification  settings has been updated");
+    if (response.statusCode == 200) {
+      pluhgSnackBar("Great", "${parsedResponse['message']}");
       print(parsedResponse);
+      return false;
       //All okay
     } else {
       //ERROR
 
       print("Victorhez notification update successful");
-      showPluhgDailog(context, "Message", "Try again");
-      print(parsedResponse);
+      pluhgSnackBar("Sorry", "${parsedResponse['message']}");
+      return false;
     }
   }
 
@@ -901,7 +570,7 @@ class APICALLS {
     required String token,
     required String userID,
   }) async {
-    Uri uri = Uri.parse("$url/api/connect/whoIconnected/$userID");
+    Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
       response =
@@ -915,7 +584,7 @@ class APICALLS {
 
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       print("All Good Here");
       print(parsedResponse);
       return parsedResponse;
@@ -953,7 +622,7 @@ class APICALLS {
 
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       print("All Good Here");
       print(parsedResponse);
       return parsedResponse;
@@ -961,7 +630,8 @@ class APICALLS {
     } else {
       print("Ran into Error");
       print(parsedResponse);
-      Get.snackbar("So Sorry", "Error Occured");
+      return null;
+      // pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
     }
   }
 
@@ -986,7 +656,7 @@ class APICALLS {
 
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       print("All Good Here");
       print(parsedResponse);
       return parsedResponse;
@@ -994,7 +664,7 @@ class APICALLS {
     } else {
       print("Ran into Error");
       print(parsedResponse);
-      Get.snackbar("So Sorry", "Error Occured");
+      // pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
 
       // return null;
     }
@@ -1021,61 +691,64 @@ class APICALLS {
       msg: 'Please wait...',
       progressBgColor: Colors.transparent,
     );
-    if (contact.contains("@")) {
-      var body = {
-        "connectionId": connectionID,
-        "pluhggedBy": plugID,
-        "acceptRequest": isAccepting,
-        "isRequester": isRequester,
-        "isContact": isContact,
-        "emailAddress": contact
-      };
-      print(body);
-      var response = await http.post(uri,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token"
-          },
-          body: jsonEncode(body));
-      parsedResponse = jsonDecode(response.body);
-    } else if (!contact.contains("@")) {
-      var body = {
-        "connectionId": connectionID,
-        "pluhggedBy": plugID,
-        "acceptRequest": isAccepting,
-        "isRequester": isRequester,
-        "isContact": isContact,
-        "phoneNumber": contact
-      };
-      print(body);
-      var response = await http.post(uri,
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer $token"
-          },
-          body: jsonEncode(body));
-      parsedResponse = jsonDecode(response.body);
-    }
+    // if (contact.contains("@")) {
+    var body = {
+      "connectionId": connectionID,
+      "pluhggedBy": plugID,
+      "acceptRequest": isAccepting,
+      "isRequester": isRequester,
+      "isContact": isContact,
+      "emailAddress": contact
+    };
+    print(body);
+    var response = await http.post(uri,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode(body));
+    parsedResponse = jsonDecode(response.body);
+    // }
+    // else if (!contact.contains("@")) {
+    //   var body = {
+    //     "connectionId": connectionID,
+    //     "pluhggedBy": plugID,
+    //     "acceptRequest": isAccepting,
+    //     "isRequester": isRequester,
+    //     "isContact": isContact,
+    //     "phoneNumber": contact
+    //   };
+    //   print(body);
+    //   var response = await http.post(uri,
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": "Bearer $token"
+    //       },
+    //       body: jsonEncode(body));
+    //   parsedResponse = jsonDecode(response.body);
+    // }
     print(parsedResponse);
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       pd.close();
       print(parsedResponse);
       showPluhgDailog2(context, "Success",
           "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
-          onCLosed: () {});
+          onCLosed: () {
+        Get.off(HomeView(index: 2));
+      });
 
       //all good
+      return false;
     } else {
       // error
       pd.close();
-      showPluhgDailog(context, "So sorry", parsedResponse["message"]);
-      Get.snackbar("So sorry", parsedResponse["message"]);
+
+      pluhgSnackBar("So sorry", parsedResponse["message"]);
 
       print("Error");
+      return false;
     }
-
-    return !parsedResponse["hasError"];
   }
 
   Future<bool> closeConnection({
@@ -1129,30 +802,17 @@ class APICALLS {
     }
   }
 
-  Future checkPluhgUsers({
-    required String contact,
-    required String name,
-  }) async {
+  Future<List<PluhgContact>> checkPluhgUsers(
+      {required List<PluhgContact> contacts}) async {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? token = prefs.getString("token");
-    var parsedResponse;
 
-    Map body = {};
-    if (contact.contains("@")) {
-      body = {
-        "contacts": [
-          {"name": name, "emailaddress": contact.trim()}
-        ]
-      };
-    } else {
-      body = {
-        "contacts": [
-          {"name": name, "phoneNumber": contact.trim()}
-        ]
-      };
-    }
+    Map body = {
+      "contacts": contacts.map((item) => item.toCleanedJson()).toList()
+    };
+
     var response = await http.post(
       uri,
       headers: {
@@ -1161,39 +821,33 @@ class APICALLS {
       },
       body: jsonEncode(body),
     );
-    print(token);
-    parsedResponse = jsonDecode(response.body);
+    Map parsedResponse = jsonDecode(response.body);
 
     print(parsedResponse);
+    print("ASDDSX");
 
-    if (parsedResponse["hasError"] == false) {
-      print(parsedResponse);
-      return parsedResponse["data"][0]["isPlughedUser"];
+    List data = parsedResponse['data'];
 
-      //all good
-    } else {
-      // error
-
-      print("Error");
+    for (int i = 0; i < data.length; i++) {
+      contacts[i] =
+          contacts[i].copyWith(isPlughedUser: data[i]['isPlughedUser']);
     }
+    return contacts;
   }
 
   Future<dynamic> getNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userId = prefs.getString('userID');
-    String? token = prefs.getString('token');
-    if (userId != null) {
-      var uri = Uri.parse("$url/api/getNotificationList/$userId");
 
-      var response =
-          await http.get(uri, headers: {"Authorization": "Bearer $token"});
-      var parsedResponse = jsonDecode(response.body);
-      print(parsedResponse);
-      return parsedResponse["data"];
-    } else {
-      print("error");
-      return null;
-    }
+    String? token = prefs.getString('token');
+
+    var uri = Uri.parse("$url/api/getNotificationList");
+
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var parsedResponse = jsonDecode(response.body);
+    print(parsedResponse);
+    return parsedResponse["data"];
+    //TODO Work on this
   }
 
   Future<dynamic> getConnectionDetails({required String connectionID}) async {

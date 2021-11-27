@@ -4,13 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/connectionScreen/controllers/connect_two.dart';
 import 'package:plug/app/modules/contact/views/contact_view.dart';
 import 'package:plug/app/modules/notificationScreen/views/notification_screen_view.dart';
 import 'package:plug/app/widgets/colors.dart';
+import 'package:plug/widgets/image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 
 class ConnectScreenView extends GetView<ConnecTwoScreenController> {
   final dynamic data, token, userId;
@@ -122,9 +122,9 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                     ),
                     Center(
                         child: controller.isLoading.value
-                            ? Text("Loading...")
+                            ? defaultImage()
                             : controller.profileDetails['data'] == null
-                                ? Container()
+                                ? defaultImage()
                                 : Container(
                                     width: 51.69,
                                     height: 48.88,
@@ -132,7 +132,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                         borderRadius: BorderRadius.circular(14),
                                         image: DecorationImage(
                                             image: NetworkImage(
-                                                "http://143.198.187.200:3001/uploads/${controller.profileDetails['data']['profileImage'].toString()}"))),
+                                                "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"))),
                                   )),
                     Center(child: Text("The Pluhg")),
                     SizedBox(

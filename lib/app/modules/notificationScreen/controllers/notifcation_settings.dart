@@ -31,11 +31,13 @@ class NotificationSettingsController extends GetxController {
     print(prefs.get("userID"));
 
     // getData();
-    notificationDetails = await apicalls.getNotificationSettings(
-        token: prefs.get("token").toString(),
-        userID: prefs.get("userID").toString());
-    push.value = notificationDetails["data"]["pushNotification"];
-    email.value = notificationDetails["data"]["emailNotification"];
-    text.value = notificationDetails["data"]["textNotification"];
+    var notificationDetails = await apicalls.getNotificationSettings(
+      token: prefs.get("token").toString(),
+    );
+    if (notificationDetails["data"] != null) {
+      push.value = notificationDetails["data"]["pushNotification"];
+      email.value = notificationDetails["data"]["emailNotification"];
+      text.value = notificationDetails["data"]["textNotification"];
+    }
   }
 }
