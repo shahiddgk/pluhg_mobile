@@ -70,32 +70,30 @@ class AuthScreenView extends GetView<AuthScreenController> {
                         ? Container(
                             padding: EdgeInsets.symmetric(horizontal: 18.w),
                             child: Row(children: [
-                              Visibility(
-                                visible: controller.isNumber.value,
-                                child: Container(
-                                  width: 60.w,
-                                  child: CountryCodePicker(
-                                    // favorite: ['+1', 'US'],
-                                    onInit: (val) {
-                                      controller.currentCountryCode.value =
-                                          val!.dialCode!;
-                                      print(val.dialCode!);
-                                    },
-                                    initialSelection: snapshot.data.toString(),
-                                    padding: EdgeInsets.zero,
-                                    showFlag: false,
-                                    onChanged: (val) {
-                                      controller.currentCountryCode.value =
-                                          val.dialCode.toString().trim();
-                                      //   print("#" +
-                                      //       currentCountryCode +
-                                      //       "#");
-                                    },
-                                  ),
+                              if (controller.isNumber.value)
+                              Container(
+                                width: 60.w,
+                                child: CountryCodePicker(
+                                  // favorite: ['+1', 'US'],
+                                  onInit: (val) {
+                                    controller.currentCountryCode.value =
+                                        val!.dialCode!;
+                                    print(val.dialCode!);
+                                  },
+                                  initialSelection: snapshot.data.toString(),
+                                  padding: EdgeInsets.zero,
+                                  showFlag: false,
+                                  onChanged: (val) {
+                                    controller.currentCountryCode.value =
+                                        val.dialCode.toString().trim();
+                                    //   print("#" +
+                                    //       currentCountryCode +
+                                    //       "#");
+                                  },
                                 ),
                               ),
-                              SizedBox(
-                                width: controller.size.width * 0.7,
+                              Expanded(
+                                //width: controller.size.width * 0.7,
                                 child: Form(
                                   key: _formKey,
                                   child: TextFormField(
@@ -142,66 +140,61 @@ class AuthScreenView extends GetView<AuthScreenController> {
                     SizedBox(
                       height: 20.h,
                     ),
-                    Center(
-                      child: Container(
-                        width: 263.25.w,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Checkbox(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(3.r),
-                              ),
-                              activeColor: pluhgColour,
-                              checkColor: Colors.white,
-                              value: controller.hasAccepted.value,
-                              onChanged: (val) {
-                                if (_textController.text.isNotEmpty) {
-                                  controller.hasAccepted.value = val!;
-                                } else {
-                                  Get.snackbar("Sorry",
-                                      "Please fill the email or phone box");
-                                }
-                              },
-                            ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: 'I agree to ',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w300,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: 'Terms & Conditions ',
-                                    style: TextStyle(
-                                      color: pluhgColour,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () =>
-                                          launchURL("https://pluhg.com/terms"),
-                                  ),
-                                  TextSpan(
-                                    text: 'and\n',
-                                  ),
-                                  TextSpan(
-                                    text: 'Privacy Policy',
-                                    style: TextStyle(
-                                      color: pluhgColour,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => launchURL(
-                                          "https://pluhg.com/privacy"),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Checkbox(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(3.r),
+                          ),
+                          activeColor: pluhgColour,
+                          checkColor: Colors.white,
+                          value: controller.hasAccepted.value,
+                          onChanged: (val) {
+                            if (_textController.text.isNotEmpty) {
+                              controller.hasAccepted.value = val!;
+                            } else {
+                              Get.snackbar("Sorry",
+                                  "Please fill the email or phone box");
+                            }
+                          },
                         ),
-                      ),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: 'I agree to ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w300,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Terms & Conditions ',
+                                style: TextStyle(
+                                  color: pluhgColour,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () =>
+                                      launchURL("https://pluhg.com/terms"),
+                              ),
+                              TextSpan(
+                                text: 'and\n',
+                              ),
+                              TextSpan(
+                                text: 'Privacy Policy',
+                                style: TextStyle(
+                                  color: pluhgColour,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => launchURL(
+                                      "https://pluhg.com/privacy"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 30,
