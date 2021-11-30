@@ -348,16 +348,14 @@ class APICALLS {
     /// Set options
     /// Max and msg required
 
-    if (parsedResponse["status"] == true) {
+    if (parsedResponse["status"]) {
       pd.close();
       print(parsedResponse);
-      pluhgSnackBar("Great", "You have sent a reminder to the $party");
-      return false;
+      return true;
       //all good
     } else {
       // error
       pd.close();
-      pluhgSnackBar("So sorry", "${parsedResponse['message']}");
       return false;
     }
   }
