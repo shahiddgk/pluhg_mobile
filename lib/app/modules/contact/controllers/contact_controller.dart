@@ -29,6 +29,7 @@ class ContactController extends GetxController {
   RxString person = "Select Requester".obs;
   RxString status = "".obs;
   SharedPreferences? prefs;
+
   @override
   void onInit() {
     super.onInit();
@@ -47,6 +48,7 @@ class ContactController extends GetxController {
 
   @override
   void onClose() {}
+
   String getContact({required Contact contact}) {
     if (contact.emails.isNotEmpty && contact.emails.first.address != null) {
       return contact.emails.first.address;
@@ -102,7 +104,7 @@ class ContactController extends GetxController {
         print(ex);
       }
 
-      contacts_= await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
+      contacts_ = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
       return contacts_;
     }
   }
