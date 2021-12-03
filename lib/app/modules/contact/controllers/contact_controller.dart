@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_contacts/contact.dart';
@@ -12,7 +13,10 @@ class ContactController extends GetxController {
   //TODO: Implement ContactController
 
   final count = 0.obs;
-  List<PluhgContact> contacts_ = [];
+  List<PluhgContact> _allContacts = [];
+  Completer<List<PluhgContact>> contactsFuture = Completer();
+
+  // List<PluhgContact> contacts_ = [];
   RxBool permissionDenied = false.obs;
 
   Uint8List? contactImage;
@@ -29,6 +33,7 @@ class ContactController extends GetxController {
   RxString person = "Select Requester".obs;
   RxString status = "".obs;
   SharedPreferences? prefs;
+
   @override
   void onInit() {
     super.onInit();
@@ -38,6 +43,7 @@ class ContactController extends GetxController {
 
   Future init() async {
     prefs = await SharedPreferences.getInstance();
+    getContactList();
   }
 
   @override
@@ -47,6 +53,7 @@ class ContactController extends GetxController {
 
   @override
   void onClose() {}
+
   String getContact({required Contact contact}) {
     if (contact.emails.isNotEmpty && contact.emails.first.address != null) {
       return contact.emails.first.address;
@@ -55,13 +62,17 @@ class ContactController extends GetxController {
     }
   }
 
-  Future<List<PluhgContact>> getContactList() async {
+  void getContactList() async {
+    if (contactsFuture.isCompleted) {
+      return;
+    }
+
     final perm = await Permission.contacts.request();
 
     print(perm.isDenied);
     if (perm.isDenied) {
       permissionDenied.value = true;
-      return [];
+      return;
     } else {
       final contacts = await FlutterContacts.getContacts(
           withProperties: true, withPhoto: true, withThumbnail: true);
@@ -102,8 +113,13 @@ class ContactController extends GetxController {
         print(ex);
       }
 
-      contacts_= await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
-      return contacts_;
+      _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
+      contactsFuture.complete(_allContacts);
     }
   }
+
+  List<PluhgContact> get contacts_ =>  _allContacts.where((contact) {
+        final regexp = RegExp(search.value, caseSensitive: false);
+        return regexp.hasMatch(contact.name);
+      }).toList();
 }

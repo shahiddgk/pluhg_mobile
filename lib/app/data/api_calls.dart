@@ -827,10 +827,24 @@ class APICALLS {
     List data = parsedResponse['data'];
 
     for (int i = 0; i < data.length; i++) {
-      contacts[i] =
-          contacts[i].copyWith(isPlughedUser: data[i]['isPlughedUser']);
+      final user = data[i] as Map<String, dynamic>;
+      final userPhoneNumber = _formatPhoneNumber(user['phoneNumber'] as String);
+
+      final registeredContacts = contacts.where((c) {
+        final contactPhoneNumber = _formatPhoneNumber(c.phoneNumber);
+        return contactPhoneNumber == userPhoneNumber;
+      });
+
+      registeredContacts.forEach((rc) {
+        rc.isPlughedUser = true;
+      });
     }
     return contacts;
+  }
+
+  // Remove special characters from phone number
+  String _formatPhoneNumber(String phoneNumber) {
+    return phoneNumber.replaceAll(RegExp(r'[\-() ]'), '');
   }
 
   Future<dynamic> getNotifications() async {
