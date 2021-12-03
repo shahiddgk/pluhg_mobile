@@ -1,6 +1,8 @@
 import 'package:country_code_picker/country_code_picker.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sim_country_code/flutter_sim_country_code.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
@@ -8,11 +10,13 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../controllers/auth_screen_controller.dart';
+import 'dart:io' show Platform;
 
 class AuthScreenView extends GetView<AuthScreenController> {
   final TextEditingController _textController = TextEditingController();
@@ -25,7 +29,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
     return WillPopScope(
       onWillPop: () => controller.willPopCallback(),
       child: FutureBuilder(
-        future: controller.determinePosition(),
+        future: null,
         builder: (context, snapshot) {
           print('Here now!');
           print(snapshot.data);
@@ -66,76 +70,72 @@ class AuthScreenView extends GetView<AuthScreenController> {
                       ),
                     ),
                     SizedBox(height: controller.size.height * 0.015),
-                    snapshot.hasData
-                        ? Container(
-                            padding: EdgeInsets.symmetric(horizontal: 18.w),
-                            child: Row(children: [
-                              if (controller.isNumber.value)
-                              Container(
-                                width: 60.w,
-                                child: CountryCodePicker(
-                                  // favorite: ['+1', 'US'],
-                                  onInit: (val) {
-                                    controller.currentCountryCode.value =
-                                        val!.dialCode!;
-                                    print(val.dialCode!);
-                                  },
-                                  initialSelection: snapshot.data.toString(),
-                                  padding: EdgeInsets.zero,
-                                  showFlag: false,
-                                  onChanged: (val) {
-                                    controller.currentCountryCode.value =
-                                        val.dialCode.toString().trim();
-                                    //   print("#" +
-                                    //       currentCountryCode +
-                                    //       "#");
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                //width: controller.size.width * 0.7,
-                                child: Form(
-                                  key: _formKey,
-                                  child: TextFormField(
-                                      validator: (value) {
-                                        if (value == null ||
-                                            value.trim().length == 0) {
-                                          return "Field is required";
-                                        }
-                                        if (value.length < 6) {
-                                          return "Add valid data";
-                                        }
-                                      },
-                                      controller: _textController,
-                                      onChanged: (val) {
-                                        if (controller.isNumeric(val)) {
-                                          controller.isNumber.value = true;
-                                        } else {
-                                          controller.isNumber.value = false;
-                                        }
-                                      },
-                                      decoration: InputDecoration(
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFF080F18)),
-                                        ),
-                                        // border: UnderlineInputBorder(
-                                        //   borderSide:
-                                        //       BorderSide(color: Color(0xFF080F18)),
-                                        // ),
-                                        focusColor: Color(0xFF080F18),
-                                        hintText: 'Phone Number or Email',
-                                        hintStyle: TextStyle(
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 14,
-                                          color: Color(0xFF080F18),
-                                        ),
-                                      )),
-                                ),
-                              ),
-                            ]),
-                          )
-                        : Center(child: pluhgProgress()),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: Row(children: [
+                        if (controller.isNumber.value)
+                          Container(
+                            width: 60.w,
+                            child: CountryCodePicker(
+                              // favorite: ['+1', 'US'],
+                              // onInit: (val) async {
+                              //   controller.currentCountryCode.value =
+                              //       val!.dialCode!;
+                              //   print(val.dialCode!);
+                              // },
+                              initialSelection:
+                                  controller.currentCountryCode.value,
+                              padding: EdgeInsets.zero,
+                              showFlag: false,
+                              onChanged: (val) {
+                                controller.currentCountryCode.value =
+                                    val.dialCode.toString().trim();
+                                //   print("#" +
+                                //       currentCountryCode +
+                                //       "#");
+                              },
+                            ),
+                          ),
+                        Expanded(
+                          //width: controller.size.width * 0.7,
+                          child: Form(
+                            key: _formKey,
+                            child: TextFormField(
+                                validator: (value) {
+                                  if (value == null ||
+                                      value.trim().length == 0) {
+                                    return "Field is required";
+                                  }
+                                  if (value.length < 6) {
+                                    return "Add valid data";
+                                  }
+                                },
+                                controller: _textController,
+                                onChanged: (val) {
+                                  if (controller.isNumeric(val)) {
+                                    controller.isNumber.value = true;
+                                  } else {
+                                    controller.isNumber.value = false;
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Color(0xFF080F18)),
+                                  ),
+                                
+                                  focusColor: Color(0xFF080F18),
+                                  hintText: 'Phone Number or Email',
+                                  hintStyle: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14,
+                                    color: Color(0xFF080F18),
+                                  ),
+                                )),
+                          ),
+                        ),
+                      ]),
+                    ),
 
                     SizedBox(
                       height: 20.h,
@@ -155,8 +155,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             if (_textController.text.isNotEmpty) {
                               controller.hasAccepted.value = val!;
                             } else {
-                              Get.snackbar("Sorry",
-                                  "Please fill the email or phone box");
+                              pluhgSnackBar(
+                                  "Sorry", "Please add email or phone number");
                             }
                           },
                         ),
@@ -188,8 +188,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
                                   color: pluhgColour,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () => launchURL(
-                                      "https://pluhg.com/privacy"),
+                                  ..onTap = () =>
+                                      launchURL("https://pluhg.com/privacy"),
                               ),
                             ],
                           ),

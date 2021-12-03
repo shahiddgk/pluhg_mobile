@@ -62,7 +62,7 @@ class ContactView extends GetView<ContactController> {
                     color: Color(0xff080F18),
                   ),
                   suffixIcon: Visibility(
-                      visible: controller.search.value.isEmpty ? true : false,
+                      visible: controller.search.value.isEmpty ? false : true,
                       child: IconButton(
                         icon: Icon(
                           Icons.cancel,
@@ -215,14 +215,94 @@ class ContactView extends GetView<ContactController> {
                           return ListView.builder(
                               itemCount: controller.contacts_.length,
                               itemBuilder: (context, index) {
-                                if (controller
-                                    .contacts_[index].phoneNumber.isNotEmpty) {
+                                if (controller.contacts_[index].phoneNumber
+                                        .isNotEmpty ||
+                                    controller.contacts_[index].emailAddress
+                                        .isNotEmpty) {
                                   if (controller.search.value.isNotEmpty &&
                                       controller.contacts_[index].name
                                           .toLowerCase()
                                           .contains(controller.search.value
                                               .toLowerCase())) {
-                                    return SizedBox();
+                                    return contactItem(
+                                      controller.contacts_[index],
+                                      () async {
+                                        if (controller
+                                                .requesterName.value.isEmpty ||
+                                            controller
+                                                .contactName.value.isEmpty) {
+                                          Contact? contact =
+                                              await FlutterContacts.getContact(
+                                                  controller
+                                                      .contacts_[index].id!);
+
+                                          if (contact != null) {
+                                            PluhgContact pluhgContact =
+                                                PluhgContact.fromContact(
+                                                    contact);
+
+                                            if (controller
+                                                .requesterName.value.isEmpty) {
+                                              controller.requesterId.value =
+                                                  controller
+                                                      .contacts_[index].id!;
+                                              controller.requesterImage =
+                                                  pluhgContact.photo;
+                                              controller.requesterContact
+                                                  .value = pluhgContact
+                                                      .phoneNumber.isEmpty
+                                                  ? pluhgContact.emailAddress
+                                                  : pluhgContact.phoneNumber;
+                                              controller.requesterName.value =
+                                                  pluhgContact.name;
+                                              controller.person.value =
+                                                  "Select Contact";
+                                              controller.contacts_
+                                                  .remove(pluhgContact);
+
+                                              if (controller
+                                                  .contactName.value.isEmpty) {
+                                                showPluhgDailog(context, "Info",
+                                                    "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
+                                              }
+                                            } else if (controller.contactName
+                                                    .value.isEmpty &&
+                                                controller.requesterName.value
+                                                    .isNotEmpty) {
+                                              if (pluhgContact.phoneNumber !=
+                                                  controller
+                                                      .requesterContact.value) {
+                                                controller.contactId.value =
+                                                    controller
+                                                        .contacts_[index].id!;
+                                                controller.contactImage =
+                                                    pluhgContact.photo;
+                                                controller.contactContact
+                                                    .value = pluhgContact
+                                                        .phoneNumber.isEmpty
+                                                    ? pluhgContact.emailAddress
+                                                    : pluhgContact.phoneNumber;
+                                                controller.contactName.value =
+                                                    pluhgContact.name;
+                                                controller.person.value =
+                                                    "Click Next";
+                                                controller.contacts_
+                                                    .remove(pluhgContact);
+                                              } else {
+                                                showPluhgDailog(context, "Info",
+                                                    "So Sorry !  You can select the same person");
+                                              }
+                                            }
+                                          } else if (controller.contactName
+                                                  .value.isNotEmpty &&
+                                              controller.requesterName.value
+                                                  .isNotEmpty) {
+                                            showPluhgDailog(context, "Info",
+                                                "You can't have more than two contacts selected");
+                                          }
+                                        }
+                                      },
+                                    );
                                   }
                                   return contactItem(
                                     controller.contacts_[index],
@@ -238,8 +318,7 @@ class ContactView extends GetView<ContactController> {
 
                                         if (contact != null) {
                                           PluhgContact pluhgContact =
-                                              PluhgContact.fromContact(
-                                                  contact);
+                                              PluhgContact.fromContact(contact);
 
                                           if (controller
                                               .requesterName.value.isEmpty) {
@@ -248,7 +327,9 @@ class ContactView extends GetView<ContactController> {
                                             controller.requesterImage =
                                                 pluhgContact.photo;
                                             controller.requesterContact.value =
-                                                pluhgContact.phoneNumber;
+                                                pluhgContact.phoneNumber.isEmpty
+                                                    ? pluhgContact.emailAddress
+                                                    : pluhgContact.phoneNumber;
                                             controller.requesterName.value =
                                                 pluhgContact.name;
                                             controller.person.value =
@@ -273,8 +354,11 @@ class ContactView extends GetView<ContactController> {
                                                       .contacts_[index].id!;
                                               controller.contactImage =
                                                   pluhgContact.photo;
-                                              controller.contactContact.value =
-                                                  pluhgContact.phoneNumber;
+                                              controller.contactContact
+                                                  .value = pluhgContact
+                                                      .phoneNumber.isEmpty
+                                                  ? pluhgContact.emailAddress
+                                                  : pluhgContact.phoneNumber;
                                               controller.contactName.value =
                                                   pluhgContact.name;
                                               controller.person.value =
@@ -310,7 +394,7 @@ class ContactView extends GetView<ContactController> {
           )),
     );
   }
-
+//TOD
   Future onTap(context) async {
     String finalRequester = controller.requesterContact.value
         .trim()
