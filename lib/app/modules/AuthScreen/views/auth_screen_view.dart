@@ -78,13 +78,12 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             width: 60.w,
                             child: CountryCodePicker(
                               // favorite: ['+1', 'US'],
-                              // onInit: (val) async {
-                              //   controller.currentCountryCode.value =
-                              //       val!.dialCode!;
-                              //   print(val.dialCode!);
-                              // },
-                              initialSelection:
-                                  controller.currentCountryCode.value,
+                              onInit: (val) async {
+                                controller.currentCountryCode.value =
+                                    val!.dialCode!;
+                                print(val.dialCode!);
+                              },
+                              initialSelection: controller.isoCountryCode.value,
                               padding: EdgeInsets.zero,
                               showFlag: false,
                               onChanged: (val) {
@@ -123,7 +122,6 @@ class AuthScreenView extends GetView<AuthScreenController> {
                                     borderSide:
                                         BorderSide(color: Color(0xFF080F18)),
                                   ),
-                                
                                   focusColor: Color(0xFF080F18),
                                   hintText: 'Phone Number or Email',
                                   hintStyle: TextStyle(

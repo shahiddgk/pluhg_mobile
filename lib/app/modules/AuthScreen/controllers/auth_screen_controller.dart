@@ -14,6 +14,7 @@ class AuthScreenController extends GetxController {
   var hasAccepted = false.obs;
   RxBool checked = false.obs;
   var currentCountryCode = ''.obs;
+  var isoCountryCode = ''.obs;
   RxString deviceTokenString = ''.obs;
 
   double lat = 0, long = 0;
@@ -50,7 +51,7 @@ class AuthScreenController extends GetxController {
 
   Future<String> determinePosition() async {
     String? platformVersion = await FlutterSimCountryCode.simCountryCode;
-    currentCountryCode.value = platformVersion!;
-    return currentCountryCode.value;
+    isoCountryCode.value = platformVersion!;
+    return isoCountryCode.value;
   }
 }
