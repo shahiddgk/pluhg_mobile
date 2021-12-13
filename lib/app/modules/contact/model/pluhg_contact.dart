@@ -35,6 +35,11 @@ class PluhgContact {
     );
   }
 
+  @override
+  String toString() {
+    return "{id: ${this.id}, name: ${this.name}, emailAddress: ${this.emailAddress}, isPlughedUser: ${this.isPlughedUser}, phoneNumber: ${this.phoneNumber}, photo: ${this.photo}}";
+  }
+
   Map toJson() {
     return {
       "id": this.id,
@@ -80,7 +85,8 @@ class PluhgContact {
       isPlughedUser: false,
       // photo: '',//contact.photo,
       phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
-      emailAddress: contact.emails.isNotEmpty ? contact.emails.first.address : '',
+      emailAddress:
+          contact.emails.isNotEmpty ? contact.emails.first.address : '',
     );
   }
 }
