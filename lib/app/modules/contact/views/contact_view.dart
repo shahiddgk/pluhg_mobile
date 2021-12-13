@@ -324,6 +324,7 @@ class ContactView extends GetView<ContactController> {
       ),
     );
   }
+
 //TOD
   Future onTap(context) async {
     String finalRequester = controller.requesterContact.value
@@ -343,7 +344,15 @@ class ContactView extends GetView<ContactController> {
     String countryCode = controller.prefs!.getString("countryCode") ?? '';
     String phoneNumber = controller.prefs!.getString("phoneNumber") ?? '';
     String emailAddress = controller.prefs!.getString("emailAddress") ?? '';
-
+    String lastRequester =
+        finalRequester.substring(0, countryCode.length).contains(countryCode)
+            ? finalRequester
+            : countryCode + finalRequester;
+    String lastContact =
+        finalcontact.substring(0, countryCode.length).contains(countryCode)
+            ? finalcontact
+            : countryCode + finalcontact;
+    print(lastRequester);
     if (countryCode + finalcontact != phoneNumber &&
         countryCode + finalRequester != phoneNumber &&
         emailAddress != controller.requesterContact.value &&
@@ -352,14 +361,21 @@ class ContactView extends GetView<ContactController> {
         finalcontact != phoneNumber) {
       if (controller.contactContact.value.contains("@")) {
         finalcontact = controller.contactContact.value;
-      } else if (!controller.contactContact.value.contains("+")) {
-        finalcontact = "$countryCode$finalcontact";
+      } else if (!finalcontact.contains("+")) {
+        finalcontact =
+            finalcontact.substring(0, countryCode.length).contains(countryCode)
+                ? finalcontact
+                : countryCode + finalcontact;
       }
 
       if (controller.requesterContact.value.contains("@")) {
         finalRequester = controller.requesterContact.value;
-      } else if (!controller.requesterContact.value.contains("+")) {
-        finalRequester = "$countryCode$finalRequester";
+      } else if (!finalRequester.contains("+")) {
+        finalRequester = finalRequester
+                .substring(0, countryCode.length)
+                .contains(countryCode)
+            ? finalRequester
+            : countryCode + finalRequester;
       }
 
       Get.to(

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,7 +29,10 @@ class ProfileScreenController extends GetxController {
     profileDetails = await apicalls.getProfile(
       token: prefs.get("token").toString(),
     );
-    if (profileDetails['status'] == true) {
+    if (profileDetails == null) {
+      return Get.offAll(AuthScreenView());
+    }
+   else if (profileDetails['status'] == true) {
       isLoading.value = false;
       return profileDetails['data'];
     } else {

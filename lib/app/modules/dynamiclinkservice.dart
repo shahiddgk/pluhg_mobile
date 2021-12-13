@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AuthScreen/views/auth_screen_view.dart';
 import 'OnboardingScreen/views/onboarding_screen_view.dart';
+import 'home/controllers/home_controller.dart';
 import 'home/views/home_view.dart';
 
 class DynamicLinkService {
@@ -49,8 +48,8 @@ class DynamicLinkService {
               !loggedOut &&
               data != null) {
             var userProfileDetails = await apicalls.getProfile(
-                token: prefs.get("token").toString(),
-               );
+              token: prefs.get("token").toString(),
+            );
             var activeConnections = await apicalls.getActiveConnections(
                 token: prefs.get("token").toString(),
                 // contact: userProfileDetails["data"]["phoneNumber"],
@@ -131,8 +130,8 @@ class DynamicLinkService {
           // state;
           if (token != null && loggedOut != null && !loggedOut) {
             var userProfileDetails = await apicalls.getProfile(
-                token: prefs.get("token").toString(),
-               );
+              token: prefs.get("token").toString(),
+            );
             var activeConnections = await apicalls.getActiveConnections(
                 token: prefs.get("token").toString(),
                 // userPhoneNumber: userProfileDetails["data"]["phoneNumber"],
@@ -214,13 +213,12 @@ class DynamicLinkService {
       userID = prefs.getString('userID')!;
       loggedOut = prefs.getBool("logged_out");
       state;
-      print("This is the token---splashs screen");
       Get.to(loggedOut == true
           ? AuthScreenView()
           : token == null
               ? OnboardingScreenView()
               : HomeView(
-                  index: 2,
+                  index: 2.obs,
                 ));
     });
   }
