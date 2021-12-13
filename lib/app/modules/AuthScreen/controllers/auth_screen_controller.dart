@@ -14,7 +14,7 @@ class AuthScreenController extends GetxController {
   var hasAccepted = false.obs;
   RxBool checked = false.obs;
   var currentCountryCode = ''.obs;
-  var isoCountryCode = ''.obs;
+  var isoCountryCode = 'US'.obs;
   RxString deviceTokenString = ''.obs;
 
   double lat = 0, long = 0;

@@ -32,8 +32,10 @@ class ConnecTwoScreenController extends GetxController {
     );
     print(pref.get("token").toString());
     print(pref.get("userID").toString());
-
-    if (profileDetails["status"] == true) {
+    if (profileDetails == null) {
+      return Get.offAll(AuthScreenView());
+    }
+    else if (profileDetails["status"] == true) {
       pref.setString("emailAddress", profileDetails["data"]["emailAddress"]);
       pref.setString("phoneNumber", profileDetails["data"]["phoneNumber"]);
       isLoading.value = false;

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConnectionScreenController extends GetxController
@@ -42,7 +43,11 @@ class ConnectionScreenController extends GetxController
       // contact: prefs.get("phoneNumber").toString(),
       contact: prefs!.getString("emailAddress").toString(),
     );
-    if (data["data"] != null) {
+    if (data == null) {
+      return Get.offAll
+      (AuthScreenView());
+    }
+    else if (data["data"] != null) {
       activeList.value = data["data"].length;
       return data["data"];
     } else {

@@ -5,6 +5,7 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/OnboardingScreen/views/onboarding_screen_view.dart';
 import 'package:plug/app/modules/dynamiclinkservice.dart';
+import 'package:plug/app/modules/home/controllers/home_controller.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/screens/Recommended_Connection_Screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +25,9 @@ class SplashScreenController extends GetxController {
   getInit() {
     final DynamicLinkService _dynamicLinkService = DynamicLinkService();
     _dynamicLinkService.retrieveDynamicLink(context: Get.context!);
-
-    Future.delayed(Duration(milliseconds: 5000), () async {
+    final contrl = Get.put(HomeController());
+    
+    Future.delayed(Duration(milliseconds: 7500), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       // String? deviceTokenString = await FirebaseMessaging.instance.getToken();
@@ -71,14 +73,13 @@ class SplashScreenController extends GetxController {
       //       token: prefs.get("token").toString(),
       //       userID: prefs.get("userID").toString());
       // }
+     
       Get.offAll(() => loggedOut == true
           ? AuthScreenView()
           : prefs.getString('token') == null
               ? OnboardingScreenView()
               : !dynamicLink
-                  ? HomeView(
-                      index: 1,
-                    )
+                  ? HomeView(index: 1.obs,)
                   : RecommendedConnectionScreen(
                       data: data,
                     ));

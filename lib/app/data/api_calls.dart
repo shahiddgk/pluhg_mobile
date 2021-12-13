@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/AuthScreen/views/otp_screen.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
+import 'package:plug/app/modules/home/controllers/home_controller.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profileScreen/views/setProfileScreen.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
@@ -92,26 +93,9 @@ class APICALLS {
         if (prefs.getString('dynamicLink') != null) {
           dynamicLinkID = prefs.getString("dynamicLink");
         }
-        // if (dynamicLinkID != null) {
-        //   var waitingConnections = await getWaitingConnections(
-        //       token: parsedResponse['data']['token'].toString(),
-        //       contact: parsedResponse['data']['user']['data']['emailAddress']
-        //           .toString());
-
-        //   List waitingConns = waitingConnections['data'];
-        //   dynamic data = waitingConns.singleWhere(
-        //     (element) => element['_id'] == dynamicLinkID,
-        //     orElse: () => null,
-        //   );
-        //   Get.offAll(() => WaitingView(
-        //         data: data,
-        //       ));
-        // }
-        // if (dynamicLinkID == null) {
-        Get.offAll(() => HomeView(
-              index: 1,
+        Get.to(() => HomeView(
+              index: 1.obs,
             ));
-        // }
       }
       return false;
     } else {
@@ -186,7 +170,7 @@ class APICALLS {
       // }
       // if (prefs.getString('dynamicLink') == null) {
       Get.offAll(() => HomeView(
-            index: 1,
+            index: 1.obs,
           ));
       // }
 
@@ -290,17 +274,26 @@ class APICALLS {
     var parsedResponse = jsonDecode(response.body);
     // print(parsedResponse["data"]["_id"].toString());
     print("Connection ID");
-
+    bool bothemail =
+        requesterContact.contains("@") && contactContact.contains("@");
+    bool bothphone =
+        !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
       print(parsedResponse);
       pluhgSnackBar("Great", "You have connected them, about to send message");
+
       Get.off(StatusScreen(
           buttonText: "Continue",
           heading: 'Connection Successful',
           iconName: 'success_status',
-          onPressed: () => Get.offAll(HomeView(index: 2)),
-          subheading:
-              "$requesterContact and $contactContact will be notified.  Don’t worry we will not share any contact details between them 🤐 "));
+          onPressed: () => Get.offAll(HomeView(
+                index: 0.obs,
+              )),
+          subheading: bothemail
+              ? "$requesterName in phone and $contactName in phone will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
+              : bothphone
+                  ? "$requesterName in phone and $contactName in phone will be notified by text of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
+                  : "$requesterName in Phone will be notified by ${requesterContact.contains("@") ? "email" : "phone"} and $contactName in phone will be notified by ${contactContact.contains("@") ? "email" : "phone"} of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐 "));
 
       return false;
 
@@ -445,7 +438,7 @@ class APICALLS {
       // All okay
 
       Get.offAll(() => HomeView(
-            index: 3,
+            index: 3.obs,
           ));
       pluhgSnackBar("Great", "You have changed your profile details");
 
@@ -493,7 +486,7 @@ class APICALLS {
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
         Get.offAll(() => HomeView(
-              index: 3,
+              index: 3.obs,
             ));
         pluhgSnackBar("Great", "You have changed your picture");
       });
@@ -733,7 +726,9 @@ class APICALLS {
       showPluhgDailog2(context, "Success",
           "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
           onCLosed: () {
-        Get.off(HomeView(index: 2));
+        Get.off(HomeView(
+          index: 2.obs,
+        ));
       });
 
       //all good
