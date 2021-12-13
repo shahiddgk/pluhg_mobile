@@ -18,7 +18,8 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              _avatar(contact.name.substring(0, 1), contact.photo, contact.isPlughedUser),
+              _avatar(contact.name.substring(0, 1), contact.photo,
+                  contact.isPlughedUser),
               SizedBox(
                 width: 12,
               ),
@@ -33,7 +34,9 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                         color: Colors.black),
                   ),
                   Text(
-                    contact.phoneNumber,
+                    contact.phoneNumber.isEmpty
+                        ? contact.emailAddress
+                        : contact.phoneNumber,
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -73,7 +76,6 @@ Widget _avatar(String initials, Uint8List? photo, bool isPluhgUser) {
                 radius: 25.w,
                 backgroundImage: MemoryImage(photo),
               ),
-
         Visibility(
           visible: isPluhgUser,
           child: Align(
