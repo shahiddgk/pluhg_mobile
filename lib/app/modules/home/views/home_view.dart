@@ -1,40 +1,67 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
-import 'package:plug/app/modules/ChatScreen/views/chat_screen_view.dart';
-import 'package:plug/app/modules/connectionScreen/views/connect_two_people.dart';
-import 'package:plug/app/modules/connectionScreen/views/connection_screen_view.dart';
-import 'package:plug/app/modules/profileScreen/views/profile_screen_view.dart';
+import 'package:plug/app/modules/chat_screen/views/chat_screen_view.dart';
+import 'package:plug/app/modules/connection_screen/views/connect_two_people.dart';
+import 'package:plug/app/modules/connection_screen/views/connection_screen_view.dart';
+import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
 import 'package:plug/app/widgets/colors.dart';
 
 import '../controllers/home_controller.dart';
 
-class HomeView extends GetView<HomeController> {
+class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
   // final dynamic data;
   HomeView({
     required this.index,
   });
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   List<Widget> pages = [
     ConnectionScreenView(),
     ConnectScreenView(),
     ChatScreenView(),
     ProfileScreenView()
   ];
+
   final controller = Get.put(HomeController());
+
+  //Timer for retrieving dynamic in IOS
+  late Timer _timerLink;
+  @override
+  void initState() {
+    super.initState();
+    controller.retrieveDynamicLink();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(const Duration(milliseconds: 1000), () {
+        controller.retrieveDynamicLink();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (index.value == null) {
-      index.value = 0;
+    if (widget.index.value == null) {
+      widget.index.value = 0;
     }
     return WillPopScope(
       onWillPop: () => controller.willPopCallback(),
       child: Scaffold(
-        body: Obx(() => pages[index.value]),
+        body: Obx(() => pages[widget.index.value]),
         bottomNavigationBar: _bottomNavigationBar(),
       ),
     );
@@ -63,9 +90,9 @@ class HomeView extends GetView<HomeController> {
               topRight: Radius.circular(30.r),
             ),
             child: BottomNavigationBar(
-              currentIndex: index.value,
+              currentIndex: widget.index.value,
               onTap: (int index1) {
-                index.value = index1;
+                widget.index.value = index1;
                 // index = index1;
               },
               enableFeedback: false,
@@ -113,5 +140,14 @@ class HomeView extends GetView<HomeController> {
       index: controller.currentIndex.value,
       children: pages,
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
   }
 }

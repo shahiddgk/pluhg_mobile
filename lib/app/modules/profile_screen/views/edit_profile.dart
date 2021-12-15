@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/modules/profileScreen/controllers/edit_profile.dart';
+import 'package:plug/app/modules/profile_screen/controllers/edit_profile.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/widgets/dialog_box.dart';

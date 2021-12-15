@@ -1,13 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:plug/app/modules/notificationScreen/views/notification_screen_view.dart';
-import 'package:plug/resources/dateFormatter.dart';
+import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/widgets/button.dart';
-import 'package:plug/widgets/colours.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
-import 'package:plug/widgets/dashed_lines.dart';
 import 'package:plug/widgets/dialog_box.dart';
 
 Color primaryColor = Color(0xFF000BFF);

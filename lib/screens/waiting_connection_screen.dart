@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/modules/notificationScreen/views/notification_screen_view.dart';
+import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/widgets/button.dart';
 import 'package:plug/widgets/colours.dart';
 import 'package:plug/widgets/connection_profile_card.dart';

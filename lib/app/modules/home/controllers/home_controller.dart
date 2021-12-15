@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:plug/app/modules/dynamiclinkservice.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
@@ -22,7 +23,6 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-      
   }
 
   @override
@@ -35,5 +35,10 @@ class HomeController extends GetxController {
   void increment() => count.value++;
    Future<bool> willPopCallback() async {
     exit(0);
+  }
+
+  void retrieveDynamicLink() {
+    final DynamicLinkService _dynamicLinkService = DynamicLinkService();
+    _dynamicLinkService.retrieveDynamicLink(context: Get.context!);
   }
 }

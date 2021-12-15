@@ -2,12 +2,12 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
+import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/screens/recommended_connection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'AuthScreen/views/auth_screen_view.dart';
-import 'OnboardingScreen/views/onboarding_screen_view.dart';
-import 'home/controllers/home_controller.dart';
 import 'home/views/home_view.dart';
 
 class DynamicLinkService {
@@ -50,10 +50,10 @@ class DynamicLinkService {
             var userProfileDetails = await apicalls.getProfile(
               token: prefs.get("token").toString(),
             );
-            var activeConnections = await apicalls.getActiveConnections(
+            /*      var activeConnections = await apicalls.getActiveConnections(
                 token: prefs.get("token").toString(),
                 // contact: userProfileDetails["data"]["phoneNumber"],
-                contact: userProfileDetails["data"]["emailAddress"]);
+                contact: userProfileDetails["data"]["emailAddress"]);*/
             var waitingConnections = await apicalls.getWaitingConnections(
                 token: prefs.get("token").toString(),
                 // userPhoneNumber: userProfileDetails["data"]["phoneNumber"],
@@ -70,16 +70,10 @@ class DynamicLinkService {
             );
             print('data is $data');
             print(userProfileDetails);
-            print(activeConnections);
             print('waiting to get data... ${data.toString()}');
-            // dynamic data = await getConnectionDetails(connectionID: id);
-            Navigator.pop(context);
+
             if (data != null) {
-              // Get.to(
-              //   WaitingView(
-              //     data: data,
-              //   ),
-              // );
+              Get.to(RecommendedConnectionScreen());
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));
@@ -104,14 +98,14 @@ class DynamicLinkService {
     }
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-      print('85 \n\n deepLink ::: ${dynamicLink?.link}');
+      print('Dynamic Link Page \n\n deepLink ::: ${dynamicLink?.link}');
       // final PendingDynamicLinkData? data =
       //     await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = dynamicLink?.link;
       if (deepLink != null) {
         if (deepLink.queryParameters.containsKey("id")) {
           var id = deepLink.queryParameters["id"];
-          print('92 the dynamic link id is $id');
+          print('Dynamic Link page the dynamic link id is $id');
           showDialog(
             barrierDismissible: false,
             context: context,
@@ -155,9 +149,7 @@ class DynamicLinkService {
             print('closing the dialog');
             Navigator.pop(context);
             if (data != null) {
-              // Get.to(WaitingView(
-              //   data: data,
-              // ));
+              Get.to(RecommendedConnectionScreen());
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));
@@ -173,53 +165,10 @@ class DynamicLinkService {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('No data Found')));
           }
-
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (con) => logged_out == true
-          //             ? Auth()
-          //             : token == null
-          //                 ? OnBoardingScreen()
-          //                 : ActiveConnectionScreen(data: ddd, isRequester: userProfileDetails['data']
-          //                                 ["emailAddress"] !=
-          //                             null
-          //                         ? userProfileDetails['data']
-          //                                 ["emailAddress"] ==
-          //                             data["requester"]["emailAddress"]
-          //                         : userProfileDetails['data']
-          //                                 ["phoneNumber"] ==
-          //                             data["requester"]["phoneNumber"])));
-          // });
         }
       }
     }, onError: (error) async {
       print('error is $error');
-    });
-  }
-
-  navigateUser(context, Function state) {
-    Future.delayed(Duration(milliseconds: 5000), () async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      // String? deviceTokenString = await FirebaseMessaging.instance.getToken();
-      // print("DEVICE TOEKKKKKK- $deviceTokenString");
-      String? token;
-      String userID;
-      bool? loggedOut;
-
-      token = prefs.getString('token');
-
-      userID = prefs.getString('userID')!;
-      loggedOut = prefs.getBool("logged_out");
-      state;
-      Get.to(loggedOut == true
-          ? AuthScreenView()
-          : token == null
-              ? OnboardingScreenView()
-              : HomeView(
-                  index: 2.obs,
-                ));
     });
   }
 }
