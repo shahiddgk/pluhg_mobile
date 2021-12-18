@@ -1,21 +1,21 @@
 import 'package:get/get.dart';
+import 'package:plug/app/modules/auth_screen/bindings/auth_screen_binding.dart';
+import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
+import 'package:plug/app/modules/chat_screen/bindings/chat_screen_binding.dart';
+import 'package:plug/app/modules/chat_screen/views/chat_screen_view.dart';
+import 'package:plug/app/modules/connection_screen/bindings/connection_screen_binding.dart';
+import 'package:plug/app/modules/connection_screen/views/connection_screen_view.dart';
+import 'package:plug/app/modules/notification_screen/bindings/notification_screen_binding.dart';
+import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
+import 'package:plug/app/modules/onboarding_screen/bindings/onboarding_screen_binding.dart';
+import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
+import 'package:plug/app/modules/profile_screen/bindings/profile_screen_binding.dart';
+import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
+import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.dart';
+import 'package:plug/app/modules/splash_screen/views/splash_screen_view.dart';
+import 'package:plug/app/modules/support_screen/bindings/support_screen_binding.dart';
 
-import 'package:plug/app/modules/AuthScreen/bindings/auth_screen_binding.dart';
-import 'package:plug/app/modules/AuthScreen/views/auth_screen_view.dart';
-import 'package:plug/app/modules/ChatScreen/bindings/chat_screen_binding.dart';
-import 'package:plug/app/modules/ChatScreen/views/chat_screen_view.dart';
-import 'package:plug/app/modules/OnboardingScreen/bindings/onboarding_screen_binding.dart';
-import 'package:plug/app/modules/OnboardingScreen/views/onboarding_screen_view.dart';
-import 'package:plug/app/modules/connectionScreen/bindings/connection_screen_binding.dart';
-import 'package:plug/app/modules/connectionScreen/views/connection_screen_view.dart';
-import 'package:plug/app/modules/notificationScreen/bindings/notification_screen_binding.dart';
-import 'package:plug/app/modules/notificationScreen/views/notification_screen_view.dart';
-import 'package:plug/app/modules/profileScreen/bindings/profile_screen_binding.dart';
-import 'package:plug/app/modules/profileScreen/views/profile_screen_view.dart';
-import 'package:plug/app/modules/profileScreen/views/setProfileScreen.dart';
-import 'package:plug/app/modules/splashScreen/views/splash_screen_view.dart';
-import 'package:plug/app/modules/supportScreen/bindings/support_screen_binding.dart';
-import 'package:plug/app/modules/supportScreen/views/support_screen_view.dart';
+import 'package:plug/app/modules/support_screen/views/support_screen_view.dart';
 
 part 'app_routes.dart';
 
@@ -28,7 +28,7 @@ class AppPages {
     GetPage(
       name: _Paths.SPLASH_SCREEN,
       page: () => SplashScreenView(),
-      // binding: SplashScreenBinding(),
+      binding: SplashScreenBinding(),
     ),
     GetPage(
       name: _Paths.CONNECTION_SCREEN,
