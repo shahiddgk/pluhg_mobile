@@ -8,10 +8,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
+import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/modules/send_message/views/send_message_view.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/search_app_bar.dart';
 import 'package:plug/widgets/contact_item.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/text_style.dart';
@@ -37,6 +39,8 @@ class ContactView extends GetView<ContactController> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
+          leadingWidth: 30,
+          centerTitle: false,
           shadowColor: Colors.transparent,
           leading: GestureDetector(
             onTap: () => Navigator.pop(context),
@@ -47,7 +51,7 @@ class ContactView extends GetView<ContactController> {
           ),
           title: Container(
             width: double.infinity,
-            height: 39.23,
+            height: 40,
             decoration: BoxDecoration(
               color: Color(0xffEBEBEB),
               borderRadius: BorderRadius.circular(39),
@@ -55,10 +59,12 @@ class ContactView extends GetView<ContactController> {
             child: TextFormField(
               controller: searchController,
               onChanged: (value) {
+                print(searchController.text);
                 controller.search.value = searchController.text;
+                print(searchController.text);
               },
               decoration: InputDecoration(
-                hintText: "search contact..",
+                hintText: "Search contact",
                 prefixIcon: Icon(
                   Icons.search_outlined,
                   color: Color(0xff080F18),
@@ -88,9 +94,17 @@ class ContactView extends GetView<ContactController> {
             ),
           ),
           actions: [
-            Icon(
-              Icons.notifications_outlined,
-              color: Color(0xff080F18),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (contex) => NotificationScreenView()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Icon(Icons.notifications_outlined, color: Color(0xff080F18)),
+              ),
             ),
           ],
         ),

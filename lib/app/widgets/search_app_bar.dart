@@ -5,7 +5,9 @@ import 'package:plug/app/widgets/colors.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   TextEditingController searchController = new TextEditingController();
-   SearchAppBar(this.searchController);
+  bool backButton;
+  Function onChanged;
+  SearchAppBar(this.searchController,this.onChanged, {this.backButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,17 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: false,
-      leadingWidth: 0,
+      leadingWidth: backButton?30:0,
+      leading: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Icon(
+            Icons.arrow_back_ios_outlined,
+            color: Colors.grey,
+          ),
+        ),
+      ),
       title: Container(
         height: 40.0,
         alignment: Alignment.center,
@@ -23,7 +35,9 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: TextFormField(
           controller: searchController,
-          onChanged: (value) {},
+          onChanged: (value) {
+            onChanged(value);
+          },
           decoration: InputDecoration(
               hintText: "Search Contact",
               prefixIcon: Icon(
@@ -66,6 +80,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
+
   static final _appBar = AppBar();
   @override
   Size get preferredSize => _appBar.preferredSize;
