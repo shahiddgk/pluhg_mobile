@@ -5,7 +5,7 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
 import 'package:plug/app/widgets/progressbar.dart';
-import 'package:plug/screens/recommended_connection_screen.dart';
+import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home/views/home_view.dart';
@@ -24,15 +24,8 @@ class DynamicLinkService {
           var id = deepLink.queryParameters["id"];
           //navigate to a specific page andparse the id
           print('the dynamic link id is $id');
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => Center(child: pluhgProgress()),
-          );
           SharedPreferences prefs = await SharedPreferences.getInstance();
 
-          // String? deviceTokenString = await FirebaseMessaging.instance.getToken();
-          // print("DEVICE TOEKKKKKK- $deviceTokenString");
           String? token;
           bool? loggedOut;
 
@@ -47,45 +40,17 @@ class DynamicLinkService {
               loggedOut != null &&
               !loggedOut &&
               data != null) {
-            var userProfileDetails = await apicalls.getProfile(
-              token: prefs.get("token").toString(),
-            );
-            /*      var activeConnections = await apicalls.getActiveConnections(
-                token: prefs.get("token").toString(),
-                // contact: userProfileDetails["data"]["phoneNumber"],
-                contact: userProfileDetails["data"]["emailAddress"]);*/
-            var waitingConnections = await apicalls.getWaitingConnections(
-                token: prefs.get("token").toString(),
-                // userPhoneNumber: userProfileDetails["data"]["phoneNumber"],
-                contact: userProfileDetails["data"]["emailAddress"]);
-            print(
-                'token $token \n Phone ${userProfileDetails["data"]["phoneNumber"]} ${userProfileDetails["data"]["emailAddress"]}');
-            print(
-                'waiting Connections are ${waitingConnections['data'][0]['_id']}');
-            List waitingConns = waitingConnections['data'];
-            print('length ${waitingConns.length}');
-            dynamic data = waitingConns.singleWhere(
-              (element) => element['_id'] == id,
-              orElse: () => null,
-            );
-            print('data is $data');
-            print(userProfileDetails);
-            print('waiting to get data... ${data.toString()}');
-
             if (data != null) {
-              Get.to(RecommendedConnectionScreen());
+              Get.to(RecommendedConnectionScreen(id: id,));
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));
             }
           } else if (token != null && loggedOut != null && loggedOut) {
-            Get.back();
             Get.offAll(AuthScreenView());
           } else if (token == null) {
-            Get.back();
             Get.offAll(OnboardingScreenView());
           } else {
-            Get.back();
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('No data Found')));
           }
@@ -96,6 +61,7 @@ class DynamicLinkService {
     } catch (e) {
       print(e);
     }
+
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData? dynamicLink) async {
       print('Dynamic Link Page \n\n deepLink ::: ${dynamicLink?.link}');

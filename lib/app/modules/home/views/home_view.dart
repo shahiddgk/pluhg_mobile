@@ -59,7 +59,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       widget.index.value = 0;
     }
     return WillPopScope(
-      onWillPop: () => controller.willPopCallback(),
+      onWillPop: () => controller.onWillPop(),
       child: Scaffold(
         body: Obx(() => pages[widget.index.value]),
         bottomNavigationBar: _bottomNavigationBar(),

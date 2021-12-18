@@ -10,10 +10,9 @@ Color primaryColor = Color(0xFF000BFF);
 
 class RecommendedConnectionScreen extends StatefulWidget {
   final dynamic data;
-  const RecommendedConnectionScreen({
-    Key? key,
-    this.data,
-  }) : super(key: key);
+  final String? id;
+  const RecommendedConnectionScreen({Key? key, this.data, this.id})
+      : super(key: key);
 
   @override
   _RecommendedConnectionScreenState createState() =>
@@ -40,39 +39,29 @@ class _RecommendedConnectionScreenState
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            elevation: 0, leading: Container(), backgroundColor: Colors.white),
+            elevation: 0,
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Icon(Icons.arrow_back_ios_outlined, color: Colors.black),
+            ),actions: [
+          InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            NotificationScreenView()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Icon(Icons.notifications_outlined,
+                    color: Color(0xff080F18)),
+              )),
+        ],
+            backgroundColor: Colors.white),
         body: CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
-            SliverToBoxAdapter(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_ios_outlined,
-                        color: Colors.black),
-                  ),
-                  Spacer(),
-                  InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    NotificationScreenView()));
-                      },
-                      child: Icon(Icons.notifications_outlined,
-                          color: Color(0xff080F18))),
-                  SizedBox(
-                    width: 10,
-                  )
-                ],
-              ),
-            ),
             SliverToBoxAdapter(
               child: SizedBox(
                 height: size.width * 0.05,

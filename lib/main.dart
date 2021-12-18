@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.dart';
 import 'package:plug/app/widgets/colors.dart';
 
 import 'app/routes/app_pages.dart';
@@ -26,6 +27,7 @@ void main() async {
           );
         },
         initialRoute: AppPages.INITIAL,
+        initialBinding: SplashScreenBinding(),
         getPages: AppPages.routes,
       ),
     ),

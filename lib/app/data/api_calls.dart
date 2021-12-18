@@ -92,7 +92,7 @@ class APICALLS {
         if (prefs.getString('dynamicLink') != null) {
           dynamicLinkID = prefs.getString("dynamicLink");
         }
-        Get.to(() => HomeView(
+        Get.offAll( () => HomeView(
               index: 1.obs,
             ));
       }

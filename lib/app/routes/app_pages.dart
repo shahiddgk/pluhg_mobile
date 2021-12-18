@@ -11,6 +11,7 @@ import 'package:plug/app/modules/onboarding_screen/bindings/onboarding_screen_bi
 import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
 import 'package:plug/app/modules/profile_screen/bindings/profile_screen_binding.dart';
 import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
+import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.dart';
 import 'package:plug/app/modules/splash_screen/views/splash_screen_view.dart';
 import 'package:plug/app/modules/support_screen/bindings/support_screen_binding.dart';
 
@@ -27,7 +28,7 @@ class AppPages {
     GetPage(
       name: _Paths.SPLASH_SCREEN,
       page: () => SplashScreenView(),
-      // binding: SplashScreenBinding(),
+      binding: SplashScreenBinding(),
     ),
     GetPage(
       name: _Paths.CONNECTION_SCREEN,
