@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
+import 'package:plug/app/widgets/search_app_bar.dart';
+import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/button.dart';
 import 'package:plug/widgets/colours.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
@@ -58,43 +60,10 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-            elevation: 0, leading: Container(), backgroundColor: Colors.white),
+        appBar: SimpleAppBar(backButton: true,),
         body: CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
-            SliverToBoxAdapter(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_ios_outlined,
-                        color: Colors.black),
-                  ),
-                  SizedBox(
-                    width: 26,
-                  ),
-                  Spacer(),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NotificationScreenView()));
-                    },
-                    child: Icon(Icons.notifications_outlined,
-                        color: Color(0xff080F18)),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  )
-                ],
-              ),
-            ),
             SliverToBoxAdapter(
               child: SizedBox(
                 height: size.width * 0.05,

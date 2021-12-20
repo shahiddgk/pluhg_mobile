@@ -12,6 +12,7 @@ import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
+import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
@@ -92,7 +93,7 @@ class APICALLS {
         if (prefs.getString('dynamicLink') != null) {
           dynamicLinkID = prefs.getString("dynamicLink");
         }
-        Get.offAll( () => HomeView(
+        Get.offAll(() => HomeView(
               index: 1.obs,
             ));
       }
@@ -609,15 +610,10 @@ class APICALLS {
     Uri uri = Uri.parse("$url/api/connect/waitingConnections");
     http.Response response;
 
-    response = await http.post(uri,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json"
-        },
-        body: jsonEncode({
-          "${!contact.contains("@") ? "phoneNumber" : "emailAddress"}":
-              "${contact.toString()}",
-        }));
+    response = await http.get(uri, headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json"
+    });
     print('response ${response.body}');
 
     var parsedResponse = jsonDecode(response.body);
@@ -832,23 +828,19 @@ class APICALLS {
     //TODO Work on this
   }
 
-  Future<dynamic> getConnectionDetails({required String connectionID}) async {
+  Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
-    if (token != null) {
       ///api/connect/getconnectionsDetails/
       print('connectionID is $connectionID');
-      var uri = Uri.parse("$url/api/getconnectionsDetails/$connectionID");
+      print('connection id $token');
+      var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
       print('uri ${uri.toString()}');
-      var response =
+     var response =
           await http.get(uri, headers: {"Authorization": "Bearer $token"});
-      print('1250 response ${response.body}');
-      var parsedResponse = jsonDecode(response.body);
-      print(parsedResponse);
-      return parsedResponse["data"];
-    } else {
-      print("error");
-    }
+     print(response.body);
+      Map<String,dynamic> map  = jsonDecode(response.body);
+      return RecommendationResponse.fromJson(map);
   }
 
   Future<dynamic> uploadFile(String senderId, List<String> files) async {

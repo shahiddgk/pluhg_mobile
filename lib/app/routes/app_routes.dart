@@ -18,6 +18,7 @@ abstract class Routes {
   static const SEND_MESSAGE = _Paths.SEND_MESSAGE;
   static const CHAT_MESSAGES = _Paths.CHAT_MESSAGES;
   static const SET_PROFILE = _Paths.SETPROFILE;
+  static const RECOMMENDATION_SCREEN = _Paths.RECOMMENDATION_SCREEN;
 }
 
 abstract class _Paths {
@@ -35,4 +36,5 @@ abstract class _Paths {
   static const SEND_MESSAGE = '/send-message';
   static const CHAT_MESSAGES = '/chat-messages';
   static const SETPROFILE = '/set-profile';
+  static const RECOMMENDATION_SCREEN ='/recommendation_screen';
 }

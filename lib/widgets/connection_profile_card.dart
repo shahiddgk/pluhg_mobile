@@ -83,9 +83,6 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                   ),
                 ),
               )),
-      SizedBox(
-        height: 8,
-      ),
       data.containsKey("userName") && data["userName"] != null
           ? Expanded(
               child: Text("@${data["userName"]}",

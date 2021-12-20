@@ -35,13 +35,15 @@ class DynamicLinkService {
           prefs.setString("dynamicLink", id!);
           // state;
           print("This is the token---splashs screen");
+          //stop progress bar
+          Get.back();
 
           if (token != null &&
               loggedOut != null &&
               !loggedOut &&
-              data != null) {
-            if (data != null) {
-              Get.to(RecommendedConnectionScreen(id: id,));
+              id != null) {
+            if (id != null) {
+              Get.to(RecommendedScreenView(connectionID: id));
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));
@@ -88,46 +90,23 @@ class DynamicLinkService {
 
           loggedOut = prefs.getBool("logged_out");
           // state;
-          if (token != null && loggedOut != null && !loggedOut) {
-            var userProfileDetails = await apicalls.getProfile(
-              token: prefs.get("token").toString(),
-            );
-            var activeConnections = await apicalls.getActiveConnections(
-                token: prefs.get("token").toString(),
-                // userPhoneNumber: userProfileDetails["data"]["phoneNumber"],
-                contact: userProfileDetails["data"]["emailAddress"]);
-            var waitingConnections = await apicalls.getWaitingConnections(
-                token: prefs.get("token").toString(),
-                // userPhoneNumber: userProfileDetails["data"]["phoneNumber"],
-                contact: userProfileDetails["data"]["emailAddress"]);
-            print(
-                'token $token \n Phone ${userProfileDetails["data"]["phoneNumber"]} ${userProfileDetails["data"]["emailAddress"]}');
-            print(
-                'waiting Connections are ${waitingConnections['data'][0]['_id']}');
-            List waitingConns = waitingConnections['data'];
-            print('length ${waitingConns.length}');
-            dynamic data = waitingConns
-                .singleWhere((element) => element['_id'] == id, orElse: null);
-            print(userProfileDetails);
-            print(activeConnections);
-            print('waiting to get data... ${data.toString()}');
-            // dynamic data = await getConnectionDetails(connectionID: id);
-            print('closing the dialog');
-            Navigator.pop(context);
-            if (data != null) {
-              Get.to(RecommendedConnectionScreen());
+          //stop progress bar
+          Get.back();
+          if (token != null &&
+              loggedOut != null &&
+              !loggedOut &&
+              id != null) {
+            if (id != null) {
+              Get.to(RecommendedScreenView(connectionID: id));
             } else {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text('No data Found!')));
             }
           } else if (token != null && loggedOut != null && loggedOut) {
-            Get.back();
             Get.offAll(AuthScreenView());
           } else if (token == null) {
-            Get.back();
             Get.offAll(OnboardingScreenView());
           } else {
-            Navigator.pop(context);
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('No data Found')));
           }
