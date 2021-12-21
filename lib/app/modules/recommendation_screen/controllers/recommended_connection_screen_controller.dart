@@ -14,9 +14,9 @@ class RecommendedConnectionScreenController extends GetxController {
     try{
       RecommendationResponse data =
       await apicalls.getConnectionDetails(connectionID: connectionID);
-      print(data.data.userId);
       return data;
     }catch(e){
+      print(e);
       throw e;
     }
 

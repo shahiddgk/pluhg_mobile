@@ -66,7 +66,7 @@ class ResponseData {
     rejectReason = json['rejectReason'];
     requesterMessage = json['requesterMessage'];
     contactMessage = json['contactMessage'];
-    both = json['both'];
+    both = json['both'] ?? "";
     closeConnection = json['closeConnection'];
     id = json['_id'];
     userId = UserId.fromJson(json['userId']);
@@ -149,7 +149,7 @@ class RefId {
 
   RefId.fromJson(Map<String, dynamic> json) {
     numberOfConnections = json['numberOfConnections'];
-    name = json['name'];
+    name = json['name'] ?? "";
     profileImage = json['profileImage'];
     id = json['_id'];
     createdAt = json['created_at'];
@@ -178,14 +178,14 @@ class Contact {
     required this.message,
     required this.refId,
   });
-  late final String name;
-  late final String contact;
+  String? name;
+  String? contact;
   late final String contactType;
   late final String message;
   late final RefId refId;
 
   Contact.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
+    name = json['name'] ?? "";
     contact = json['contact'];
     contactType = json['contactType'];
     message = json['message'];

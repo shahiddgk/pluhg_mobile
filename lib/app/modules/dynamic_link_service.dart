@@ -38,10 +38,7 @@ class DynamicLinkService {
           //stop progress bar
           Get.back();
 
-          if (token != null &&
-              loggedOut != null &&
-              !loggedOut &&
-              id != null) {
+          if (token != null && loggedOut != null && !loggedOut && id != null) {
             if (id != null) {
               Get.to(RecommendedScreenView(connectionID: id));
             } else {
@@ -92,10 +89,7 @@ class DynamicLinkService {
           // state;
           //stop progress bar
           Get.back();
-          if (token != null &&
-              loggedOut != null &&
-              !loggedOut &&
-              id != null) {
+          if (token != null && loggedOut != null && !loggedOut && id != null) {
             if (id != null) {
               Get.to(RecommendedScreenView(connectionID: id));
             } else {

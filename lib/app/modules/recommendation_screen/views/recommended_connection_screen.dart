@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:intl/intl.dart';
-import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/modules/recommendation_screen/controllers/recommended_connection_screen_controller.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
@@ -32,7 +31,7 @@ class RecommendedScreenView
               return Center(child: pluhgProgress());
             } else if (snapshot.hasError) {
               return Center(
-                child: Text('Error: ${snapshot.error}'),
+                child: Text("$snapshot.error"),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData && snapshot.data!.status == true) {
