@@ -16,7 +16,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: false,
       leadingWidth: backButton?30:0,
-      leading: GestureDetector(
+      leading: backButton?GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -25,10 +25,9 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.grey,
           ),
         ),
-      ),
+      ):SizedBox.shrink(),
       title: Container(
         height: 40.0,
-        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Color(0xffEBEBEB),
           borderRadius: BorderRadius.circular(39.r),
@@ -55,11 +54,15 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                       searchController.clear();
                     },
                   )),
-
-              // labelText: "Bill",
               border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              contentPadding: EdgeInsets.all(12.0),
+              // labelText: "Bill",
               hintStyle: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   color: pluhgMenuBlackColour,
                   fontWeight: FontWeight.w300)),
         ),

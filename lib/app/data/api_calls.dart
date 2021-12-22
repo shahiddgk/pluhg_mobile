@@ -13,16 +13,18 @@ import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
 import 'package:plug/models/recommendation_response.dart';
+import 'package:plug/utils/validation_mixin.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
-class APICALLS {
+class APICALLS with ValidationMixin {
   static const url = "http://3.18.123.250";
 
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
 
+  ///API to login or sign up.
   Future<bool> signUpSignIn({String? contact}) async {
     var uri = Uri.parse("$url/api/login");
 
@@ -31,8 +33,6 @@ class APICALLS {
       'phoneNumber': !contact.contains("@") ? contact : '',
       'type': contact.contains("@") ? 'email' : 'phone'
     };
-
-    //print("signUp encoded body ${jsonEncode(body)}");
 
     var response = await http.post(uri,
         body: jsonEncode(body), headers: {"Content-Type": "application/json"});
@@ -47,6 +47,7 @@ class APICALLS {
     }
   }
 
+  //Verify OTP
   Future<bool> verifyOTP({
     required String contact,
     required BuildContext context,
@@ -70,9 +71,6 @@ class APICALLS {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Successfully logged in');
-      // Get.to(OTPScreenView(contact: contact));
-
-      // prefs.setString('userID', userid);
       if (parsedResponse['data']['user']['isRegistered'] == false) {
         Get.offAll(SetProfileScreenView(
           userID: parsedResponse['data']['user']['data']['_id'].toString(),
@@ -88,11 +86,6 @@ class APICALLS {
         prefs.setString('token', parsedResponse['data']['token'].toString());
         prefs.setString(
             'userID', parsedResponse['data']['user']['data']['_id'].toString());
-        print(parsedResponse['data']['user']['data']['_id'].toString());
-        String? dynamicLinkID;
-        if (prefs.getString('dynamicLink') != null) {
-          dynamicLinkID = prefs.getString("dynamicLink");
-        }
         Get.offAll(() => HomeView(
               index: 1.obs,
             ));
@@ -794,10 +787,10 @@ class APICALLS {
 
     for (int i = 0; i < data.length; i++) {
       final user = data[i] as Map<String, dynamic>;
-      final userPhoneNumber = _formatPhoneNumber(user['phoneNumber'] as String);
+      final userPhoneNumber = formatPhoneNumber(user['phoneNumber'] as String);
 
       final registeredContacts = contacts.where((c) {
-        final contactPhoneNumber = _formatPhoneNumber(c.phoneNumber);
+        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
         return contactPhoneNumber == userPhoneNumber;
       });
 
@@ -806,11 +799,6 @@ class APICALLS {
       });
     }
     return contacts;
-  }
-
-  // Remove special characters from phone number
-  String _formatPhoneNumber(String phoneNumber) {
-    return phoneNumber.replaceAll(RegExp(r'[\-() ]'), '');
   }
 
   Future<dynamic> getNotifications() async {
@@ -828,27 +816,26 @@ class APICALLS {
     //TODO Work on this
   }
 
-  Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
+  ///to get connection details used in dynamic for milestone one
+  Future<RecommendationResponse> getConnectionDetails(
+      {required String connectionID}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
-      ///api/connect/getconnectionsDetails/
-      print('connectionID is $connectionID');
-      print('connection id $token');
-      var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
-      print('uri ${uri.toString()}');
-     var response =
-          await http.get(uri, headers: {"Authorization": "Bearer $token"});
-     print(response.body);
-      Map<String,dynamic> map  = jsonDecode(response.body);
-      return RecommendationResponse.fromJson(map);
+    print('connectionID is $connectionID');
+    print('connection id $token');
+    var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
+    print('uri ${uri.toString()}');
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    print(response.body);
+    Map<String, dynamic> map = jsonDecode(response.body);
+    return RecommendationResponse.fromJson(map);
   }
 
   Future<dynamic> uploadFile(String senderId, List<String> files) async {
-    // api/upload/uploadFile/{senderId}
     String token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGY3OWY5NGUxYWI2YzMwZmM5MTJkODEiLCJwaG9uZSI6IjcyMjY4MjYyNjQiLCJpYXQiOjE2MjY4NDEwMTcsImV4cCI6MTYyNzAxMzgxN30.nRIF6kLCXC7YZZZkSAItXJgabDLJacc0fBQXcHqs_uI';
-    // var uri = Uri.parse("$url/api/upload/uploadFile/$senderId");
-    // var body = files;
+
     var request = http.MultipartRequest(
       'POST',
       Uri.parse("$url/api/upload/uploadFile/$senderId"),
@@ -866,14 +853,7 @@ class APICALLS {
     http.StreamedResponse response = await request.send();
     var httpResponse = await http.Response.fromStream(response);
     var data = json.decode(httpResponse.body);
-    // var response = await http.post(uri,
-    //     headers: {
-    //       "Content-Type": "application/form-data",
-    //       "Authorization": "Bearer $token"
-    //     },
-    //     body: body);
-    // var parsedResponse = jsonDecode(response.body);
-    // print(parsedResponse);
+
     if (data["hasError"] == false)
       return data['data']['fileName'];
     else

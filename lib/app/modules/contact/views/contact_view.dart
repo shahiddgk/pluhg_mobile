@@ -70,7 +70,7 @@ class ContactView extends GetView<ContactController> {
                   color: Color(0xff080F18),
                 ),
                 suffixIcon: Visibility(
-                  visible: controller.search.value.isEmpty ? true : false,
+                  visible: controller.search.value.isEmpty ? false : true,
                   child: IconButton(
                     icon: Icon(
                       Icons.cancel,
