@@ -36,7 +36,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller = Get.put(HomeController());
 
   //Timer for retrieving dynamic in IOS
-  late Timer _timerLink;
+  Timer? _timerLink;
   @override
   void initState() {
     super.initState();
@@ -146,7 +146,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     if (_timerLink != null) {
-      _timerLink.cancel();
+      _timerLink!.cancel();
     }
     super.dispose();
   }

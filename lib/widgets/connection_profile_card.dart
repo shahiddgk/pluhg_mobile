@@ -9,7 +9,7 @@ import 'colours.dart';
 
 Widget card(BuildContext context, var data) {
   Size size = MediaQuery.of(context).size;
-  if(data==null)return SizedBox();
+  if (data == null) return SizedBox();
   return Column(
     children: [
       Container(

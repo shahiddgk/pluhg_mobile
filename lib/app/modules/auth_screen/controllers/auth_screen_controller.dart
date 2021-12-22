@@ -44,6 +44,7 @@ class AuthScreenController extends GetxController {
     deviceTokenString.value = (await FirebaseMessaging.instance.getToken())!;
   }
 
+//fetch country code without location using FlutterSimCountryCode
   Future<String> determinePosition() async {
     final countryCode = await FlutterSimCountryCode.simCountryCode;
     isoCountryCode.value = countryCode!;

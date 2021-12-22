@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,12 @@ void main() async {
       designSize: const Size(375, 812),
       builder: () => GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        supportedLocales: [
+          Locale("en"),   /// THIS IS FOR COUNTRY CODE PICKER
+        ],
+        localizationsDelegates: [
+          CountryLocalizations.delegate,  /// THIS IS FOR COUNTRY CODE PICKER
+        ],
         title: 'Pluhg',
          theme: ThemeData(fontFamily: "Axiforma", primaryColor: pluhgColour),
         builder: (context, widget) {

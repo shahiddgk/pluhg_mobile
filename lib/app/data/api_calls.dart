@@ -563,15 +563,12 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/activeConnections");
     var response;
     try {
-      response = await http.post(uri,
+      response = await http.get(uri,
           headers: {
             "Authorization": "Bearer $token",
             "Content-Type": "application/json"
           },
-          body: jsonEncode({
-            "${!contact.contains("@") ? "phoneNumber" : "emailAddress"}":
-                "${contact.toString()}",
-          }));
+       );
       print('response ${response.body}');
     } catch (e) {
       print("API has Error");
@@ -590,8 +587,8 @@ class APICALLS with ValidationMixin {
     } else {
       print("Ran into Error");
       print(parsedResponse);
+      pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
       return null;
-      // pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
     }
   }
 
@@ -649,11 +646,7 @@ class APICALLS with ValidationMixin {
     // if (contact.contains("@")) {
     var body = {
       "connectionId": connectionID,
-      "pluhggedBy": plugID,
-      "acceptRequest": isAccepting,
-      "isRequester": isRequester,
-      "isContact": isContact,
-      "emailAddress": contact
+      "action": isAccepting?"accept":"reject",
     };
     print(body);
     var response = await http.post(uri,
@@ -682,7 +675,7 @@ class APICALLS with ValidationMixin {
     //       body: jsonEncode(body));
     //   parsedResponse = jsonDecode(response.body);
     // }
-    print(parsedResponse);
+    print("ACCEPT_REJECT"+parsedResponse.toString());
 
     if (parsedResponse["status"] == true) {
       pd.close();

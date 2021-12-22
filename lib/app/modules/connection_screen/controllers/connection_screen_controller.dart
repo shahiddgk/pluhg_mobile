@@ -43,11 +43,11 @@ class ConnectionScreenController extends GetxController
       // contact: prefs.get("phoneNumber").toString(),
       contact: prefs!.getString("emailAddress").toString(),
     );
-    if (data == null) {
+/*    if (data == null) {
       return Get.offAll
       (AuthScreenView());
-    }
-    else if (data["data"] != null) {
+    }*/
+    if (data["data"] != null) {
       activeList.value = data["data"].length;
       return data["data"];
     } else {

@@ -43,105 +43,103 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
             ),
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
-              child: SafeArea(
-                child: Container(
-                  width: Get.width.w,
-                  padding: EdgeInsets.symmetric(horizontal: 18.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 32,
-                      ),
-                      Text(
-                        "Connect Two People",
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(
-                            fontSize: 30,
-                            color: pluhgColour,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(height: 54),
-                      Container(
-                        width: Get.width,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                Get.to(() => ContactView(
-                                      who: "Requester",
-                                      token:
-                                          prefs.getString("token").toString(),
-                                      userID:
-                                          prefs.getString("userID").toString(),
-                                    ));
-                              },
-                              child: SizedBox(
-                                width: Get.width / 3 -18,
-                                child: SvgPicture.asset(
-                                  "resources/svg/requester.svg",
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: Get.width / 3,
+              child: Container(
+                width: Get.width,
+                padding: EdgeInsets.symmetric(horizontal: 18.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 32,
+                    ),
+                    Text(
+                      "Connect Two People",
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: pluhgColour,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(height: 54),
+                    Container(
+                      width: Get.width,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              Get.to(() => ContactView(
+                                    who: "Requester",
+                                    token:
+                                        prefs.getString("token").toString(),
+                                    userID:
+                                        prefs.getString("userID").toString(),
+                                  ));
+                            },
+                            child: SizedBox(
+                              width: Get.width / 3 -18,
                               child: SvgPicture.asset(
-                                "resources/svg/middle.svg",
-                                width: Get.width / 3,
+                                "resources/svg/requester.svg",
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () async {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                Get.to(() => ContactView(
-                                      who: "Requester",
-                                      token:
-                                          prefs.getString("token").toString(),
-                                      userID:
-                                          prefs.getString("userID").toString(),
-                                    ));
-                              },
-                              child: SizedBox(
-                                width: Get.width / 3-18,
-                                child: SvgPicture.asset(
-                                  "resources/svg/contact.svg",
-                                ),
+                          ),
+                          SizedBox(
+                            width: Get.width / 3,
+                            child: SvgPicture.asset(
+                              "resources/svg/middle.svg",
+                              width: Get.width / 3,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              Get.to(() => ContactView(
+                                    who: "Requester",
+                                    token:
+                                        prefs.getString("token").toString(),
+                                    userID:
+                                        prefs.getString("userID").toString(),
+                                  ));
+                            },
+                            child: SizedBox(
+                              width: Get.width / 3-18,
+                              child: SvgPicture.asset(
+                                "resources/svg/contact.svg",
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Center(
-                          child: controller.isLoading.value
-                              ? defaultImage()
-                              : controller.profileDetails['data'] == null
-                                  ? defaultImage()
-                                  : Container(
-                                      width: 51.69,
-                                      height: 48.88,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(14),
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"))),
-                                    )),
-                      Center(child: Text("The Pluhg")),
-                      SizedBox(
-                        height: 73,
-                      ),
-                      Center(
-                          child: SvgPicture.asset(
-                        "resources/svg/dots.svg",
-                      )),
-                    ],
-                  ),
+                    ),
+                    Center(
+                        child: controller.isLoading.value
+                            ? defaultImage()
+                            : controller.profileDetails['data'] == null
+                                ? defaultImage()
+                                : Container(
+                                    width: 51.69,
+                                    height: 48.88,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(14),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"))),
+                                  )),
+                    Center(child: Text("The Pluhg")),
+                    SizedBox(
+                      height: 73,
+                    ),
+                    Center(
+                        child: SvgPicture.asset(
+                      "resources/svg/dots.svg",
+                    )),
+                  ],
                 ),
               ),
             ),
