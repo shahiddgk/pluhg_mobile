@@ -25,7 +25,6 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               child: WebView(
                 initialUrl: AppConstants.privacyPolicyUrl,
                 onPageFinished: (finished) {
-                  print("FINISH PAGE");
                   setState(() {
                     isLoading = false;
                   });
