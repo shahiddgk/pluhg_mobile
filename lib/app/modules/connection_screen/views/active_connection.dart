@@ -8,6 +8,7 @@ import 'package:plug/app/widgets/button.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
+import 'package:plug/screens/chat_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/text_style.dart';
 
@@ -204,12 +205,26 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                         children: [
                           GestureDetector(
                             child: button3("Close Connection", pluhgRedColour),
-                            onTap: () async {},
+                            onTap: ()  {
+
+                            },
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          outline_button("Conversation"),
+                          outline_button("Conversation",onPressed:(){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      senderId: isRequester
+                                          ? data["requester"]["refId"]["_id"]
+                                          : data["contact"]["refId"]["_id"],
+                                      recevierId: !isRequester
+                                          ? data["requester"]["refId"]["_id"]
+                                          : data["contact"]["refId"]["_id"],
+                                    )));
+                          }),
 
                         ],
                       )

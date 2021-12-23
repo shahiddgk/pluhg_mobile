@@ -91,8 +91,8 @@ Widget button3(String text, Color color) {
   );
 }
 
-Widget outline_button(String text) {
-  return Container(
+Widget outline_button(String text,{onPressed}) {
+  return InkWell(child: Container(
     height: 45.h,
     width: 150.w,
     decoration: BoxDecoration(
@@ -118,7 +118,9 @@ Widget outline_button(String text) {
         ],
       ),
     ),
-  );
+  ),onTap: (){
+    onPressed();
+  });
 }
 
 Widget button4(Widget widget, String text, Color color) {
