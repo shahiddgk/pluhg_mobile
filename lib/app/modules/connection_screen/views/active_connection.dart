@@ -8,7 +8,7 @@ import 'package:plug/app/widgets/button.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
-import 'package:plug/screens/chat_screen.dart';
+import 'package:plug/screens/chat/chat_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/text_style.dart';
 
@@ -63,9 +63,11 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                               height: 16,
                             ),
                             Row(
-                             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Container(width: 20.w,),
+                                Container(
+                                  width: 20.w,
+                                ),
                                 Column(
                                   children: [
                                     Row(
@@ -111,7 +113,9 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                     ),
                                   ],
                                 ),
-                                Container(width: 20.w,),
+                                Container(
+                                  width: 20.w,
+                                ),
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -205,27 +209,34 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                         children: [
                           GestureDetector(
                             child: button3("Close Connection", pluhgRedColour),
-                            onTap: ()  {
-
-                            },
+                            onTap: () {},
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          outline_button("Conversation",onPressed:(){
+                          outline_button("Conversation", onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ChatScreen(
-                                      senderId: isRequester
-                                          ? data["requester"]["refId"]["_id"]
-                                          : data["contact"]["refId"]["_id"],
-                                      recevierId: !isRequester
-                                          ? data["requester"]["refId"]["_id"]
-                                          : data["contact"]["refId"]["_id"],
-                                    )));
+                                          username_receiver: !isRequester
+                                              ? "@${data["requester"]["refId"]["userName"]}"
+                                              : "@${data["contact"]["refId"]["userName"]}",
+                                          name_receiver: !isRequester
+                                              ? data["requester"]["name"]
+                                              : data["contact"]["name"],
+                                          profile_receiver:
+                                              "${APICALLS.imageBaseUrl}${!isRequester ? data["requester"]["refId"]['profileImage'] : data["contact"]["refId"]['profileImage'].toString()}",
+                                          senderId: isRequester
+                                              ? data["requester"]["refId"]
+                                                  ["_id"]
+                                              : data["contact"]["refId"]["_id"],
+                                          recevierId: !isRequester
+                                              ? data["requester"]["refId"]
+                                                  ["_id"]
+                                              : data["contact"]["refId"]["_id"],
+                                        )));
                           }),
-
                         ],
                       )
                     ],
