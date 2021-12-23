@@ -58,7 +58,6 @@ class ConnectionScreenController extends GetxController
 
   waitingData() async {
     prefs = await SharedPreferences.getInstance();
-
     var data = await apicalls.getWaitingConnections(
       token: prefs!.getString("token").toString(),
       // contact: prefs.get("phoneNumber").toString(),

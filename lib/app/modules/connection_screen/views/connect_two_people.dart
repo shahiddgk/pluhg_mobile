@@ -10,6 +10,7 @@ import 'package:plug/app/modules/contact/views/contact_view.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/image.dart';
+import 'package:plug/widgets/notif_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConnectScreenView extends GetView<ConnecTwoScreenController> {
@@ -26,19 +27,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
               actions: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (contex) => NotificationScreenView()));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(Icons.notifications_outlined,
-                        color: Color(0xff080F18)),
-                  ),
-                ),
+                NotifIcon()
               ],
             ),
             backgroundColor: Colors.white,

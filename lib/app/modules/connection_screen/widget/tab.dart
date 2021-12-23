@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //connection tab widget
 Widget connectionTab(
@@ -6,7 +7,8 @@ Widget connectionTab(
   bool active,
 ) {
   return Container(
-    height: 40,
+    height: 50.h,
+    margin:  EdgeInsets.symmetric(vertical: 6.0.h),
     decoration: BoxDecoration(
         color: active == true ? Colors.white : Colors.transparent,
         borderRadius: BorderRadius.circular(25)),

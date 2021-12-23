@@ -16,6 +16,7 @@ import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/search_app_bar.dart';
 import 'package:plug/widgets/contact_item.dart';
 import 'package:plug/widgets/dialog_box.dart';
+import 'package:plug/widgets/notif_icon.dart';
 import 'package:plug/widgets/text_style.dart';
 
 import '../controllers/contact_controller.dart';
@@ -94,18 +95,7 @@ class ContactView extends GetView<ContactController> {
             ),
           ),
           actions: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (contex) => NotificationScreenView()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(Icons.notifications_outlined, color: Color(0xff080F18)),
-              ),
-            ),
+            NotifIcon()
           ],
         ),
         bottomSheet: Container(

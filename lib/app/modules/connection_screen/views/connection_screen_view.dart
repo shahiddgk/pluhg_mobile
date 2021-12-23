@@ -19,8 +19,10 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
 
   @override
   Widget build(BuildContext context) {
+    //double width_item = (MediaQuery.of(context).size.width - 4.w) / 3;
+
     return Scaffold(
-      appBar: SearchAppBar(searchController,(value){}),
+      appBar: SearchAppBar(searchController, (value) {}),
       backgroundColor: Colors.white,
       body: FutureBuilder(
         builder: (context, snapshot) {
@@ -44,7 +46,7 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                 ),
                 Container(
                   width: Get.width,
-                  margin: EdgeInsets.symmetric(horizontal: 16.0),
+                  margin: EdgeInsets.symmetric(horizontal: 12.0.w),
                   height: 42,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(53),
@@ -53,30 +55,42 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
-                        onTap: () {
-                          controller.currentIndex.value = 0;
-                        },
-                        child: connectionTab("Active",
-                            controller.currentIndex.value == 0 ? true : false),
-                      ),
+                          onTap: () {
+                            controller.currentIndex.value = 0;
+                          },
+                          child: Container(
+                            width:
+                                (MediaQuery.of(context).size.width - 4.w) / 4,
+                            child: connectionTab(
+                                "Accepted",
+                                controller.currentIndex.value == 0
+                                    ? true
+                                    : false),
+                          )),
                       InkWell(
                           onTap: () {
                             controller.currentIndex.value = 1;
                           },
-                          child: connectionTab(
-                              "Waiting",
-                              controller.currentIndex.value == 1
-                                  ? true
-                                  : false)),
+                          child: Container(
+                              width:
+                                  (MediaQuery.of(context).size.width - 4.w) / 4,
+                              child: connectionTab(
+                                  "Waiting",
+                                  controller.currentIndex.value == 1
+                                      ? true
+                                      : false))),
                       InkWell(
                           onTap: () {
                             controller.currentIndex.value = 2;
                           },
-                          child: connectionTab(
-                              "Who I Connected",
-                              controller.currentIndex.value == 2
-                                  ? true
-                                  : false))
+                          child: Container(
+                              width: (MediaQuery.of(context).size.width - 4.w) /
+                                  2.5,
+                              child: connectionTab(
+                                  "Who I Connected",
+                                  controller.currentIndex.value == 2
+                                      ? true
+                                      : false)))
                     ],
                   ),
                 ),

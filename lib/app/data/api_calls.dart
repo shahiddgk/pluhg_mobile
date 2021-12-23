@@ -530,6 +530,8 @@ class APICALLS with ValidationMixin {
     required String token,
     required String userID,
   }) async {
+
+
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
@@ -545,8 +547,7 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
+
       return parsedResponse;
       //All okay
     } else {
@@ -598,6 +599,8 @@ class APICALLS with ValidationMixin {
   }) async {
     print(token);
     Uri uri = Uri.parse("$url/api/connect/waitingConnections");
+    print("$url/api/connect/waitingConnections");
+
     http.Response response;
 
     response = await http.get(uri, headers: {

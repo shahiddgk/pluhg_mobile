@@ -20,6 +20,7 @@ class SendMessageView extends GetView<SendMessageController> {
   final Uint8List? contactImage, requesterImage;
   final APICALLS apicalls = APICALLS();
   final controller = Get.put(SendMessageController());
+
   SendMessageView(
       {required this.contactName,
       required this.contactContact,
@@ -27,6 +28,7 @@ class SendMessageView extends GetView<SendMessageController> {
       required this.requesterContact,
       required this.requesterImage,
       required this.requesterName});
+
   final TextEditingController _bothMessage = TextEditingController();
   final TextEditingController _recieverMessage = TextEditingController();
   final TextEditingController _contactMessage = TextEditingController();
@@ -47,7 +49,8 @@ class SendMessageView extends GetView<SendMessageController> {
             ),
           ),
           actions: [
-            Icon(Icons.notifications_outlined, color: Color(0xff080F18)),
+            SvgPicture.asset("assets/images/notification.svg",
+                color: Color(0xff080F18)),
           ],
         ),
         body: SingleChildScrollView(

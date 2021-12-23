@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget whoIConnectedCard({
   required dynamic data,
@@ -77,7 +78,7 @@ Widget whoIConnectedCard({
                       ],
                     )),
                     Container(
-                      height: 20,
+                      height: 24.h,
                       margin: EdgeInsets.symmetric(horizontal: 12.0),
                       decoration: BoxDecoration(
                           color: data["isRequesterAccepted"] &&
