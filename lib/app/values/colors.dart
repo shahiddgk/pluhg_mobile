@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color pluhgColour = Color(0xff000BFF);
   static const Color pluhgWhite = Colors.white;
+  static const Color chatColour = Color(0xFF2255C8);
 
   static const Color activeLabelColour = Color(0xFF013FE0);
   static const Color activeIconColour = Color(0xFF2029FF);

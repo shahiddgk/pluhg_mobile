@@ -149,7 +149,7 @@ class _InputChatWidgetState extends State<InputChatWidget> {
             // alignment: Alignment.center,
             margin: EdgeInsets.only(left: 4.w, right: 4.w),
             decoration: BoxDecoration(
-                color: AppColors.activeIconColour,
+                color: AppColors.chatColour,
                 borderRadius: BorderRadius.all(Radius.circular(30))),
             child: Padding(
                 padding: const EdgeInsets.all(2.0),
@@ -169,7 +169,7 @@ class _InputChatWidgetState extends State<InputChatWidget> {
             // alignment: Alignment.center,
             margin: EdgeInsets.only(left: 4.w, right: 8.w),
             decoration: BoxDecoration(
-                color: AppColors.activeIconColour,
+                color: AppColors.chatColour,
                 borderRadius: BorderRadius.all(Radius.circular(30))),
             child: Padding(
                 padding: const EdgeInsets.all(2.0),
@@ -204,7 +204,7 @@ class _InputChatWidgetState extends State<InputChatWidget> {
               ? Offstage(
                   offstage: !isemojiShowing,
                   child: SizedBox(
-                    height: 300,
+                    height: 300.h,
                     child: EmojiPicker(
                         onEmojiSelected:
                             (emojipic.Category category, Emoji emoji) {
@@ -218,7 +218,7 @@ class _InputChatWidgetState extends State<InputChatWidget> {
                             horizontalSpacing: 0,
                             initCategory: emojipic.Category.RECENT,
                             bgColor: Color(0xFFF2F2F2),
-                            indicatorColor: AppColors.activeIconColour,
+                            indicatorColor: AppColors.chatColour,
                             iconColor: Colors.grey,
                             iconColorSelected: AppColors.pluhgGreyColour,
                             progressIndicatorColor: Colors.blue,

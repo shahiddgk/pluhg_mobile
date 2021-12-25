@@ -1,17 +1,21 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/screens/chat/chat_appbar.dart';
+import 'package:plug/screens/chat/dialog_options_android.dart';
 import 'package:plug/screens/chat/input_chat_widget.dart';
+import 'package:plug/screens/chat/media_options/multi_image_picker.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../widgets/chat_widgets.dart';
 import '../../../widgets/header.dart';
 import '../../../widgets/models/message.dart';
 import '../../../widgets/text_style.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen(
@@ -84,9 +88,7 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       });
     });
-    socket.onConnectError((data) {
-
-    });
+    socket.onConnectError((data) {});
     print(socket.connected);
   }
 
@@ -169,7 +171,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  send_message(String text){
+  send_message(String text) {
     sendMessage(
       text,
       widget.senderId,
@@ -179,17 +181,89 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.clear();
   }
 
-  send_document() async{
+  send_document() {
+   /* if (Platform.isIOS) {
+      final action = CupertinoActionSheet(
+        title: Text(
+          "Flutter Agency",
+          style: TextStyle(fontSize: 30),
+        ),
+        message: Text(
+          "Select your action ",
+          style: TextStyle(fontSize: 15.0),
+        ),
+        actions: <Widget>[
+          CupertinoActionSheetAction(
+            child: Text("First Action"),
+            isDefaultAction: true,
+            onPressed: () {
+              print("First Action is clicked ");
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text(" Second Action"),
+            isDestructiveAction: true,
+            onPressed: () {
+              print("Second Action clicked");
+            },
+          )
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+      showCupertinoModalPopup(context: context, builder: (context) => action);
+    } else {*/
+
+      showDialog<void>(
+          barrierDismissible: true,
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+                insetPadding: EdgeInsets.all(12.w),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0)),
+                child: Container(
+                    padding: EdgeInsets.all(4),
+                    height: 200.h,
+                    child: DialogOptionsAndroid(
+                        send_camera_image: () {},
+                        send_document: upload_document,
+                        send_gallery_images: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MultiImagePicker(
+                                        title: "Choose Image",
+                                        callback: upload_document,
+                                        writeMessage:
+                                            (String? url, int time) async {
+                                          if (url != null) {
+                                            ///send message
+                                          }
+                                        },
+                                      )));
+                        })));
+          });
+
+  }
+
+  upload_document() async {
+    print("thiiiiiiss");
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
-      List<String> files =
-      result.paths.map((path) => path!).toList();
+      List<String> files = result.paths.map((path) => path!).toList();
       // files.forEach((element) {
       //   print(element.absolute);
       // });
       APICALLS apicalls = APICALLS();
       var response = await apicalls.uploadFile(widget.senderId, files);
+      print(
+          "------------------------------------------------------------------------");
       print(response);
       response.forEach((files) {
         sendMessage(
@@ -210,8 +284,10 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Colors.white,
       appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver,
           widget.username_receiver),
-      bottomSheet:
-          InputChatWidget(send_function: send_message, send_doc: send_document) /*Container(
+      bottomSheet: InputChatWidget(
+          send_function: send_message,
+          send_doc:
+              send_document) /*Container(
         height: 58,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(

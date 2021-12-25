@@ -18,21 +18,19 @@ Widget activeConnectionCard({
       .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data["created_at"])
       .toLocal();
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
+
   return GestureDetector(
     onTap: () {
       Get.to(() => ActiveConnectionScreenView(
           data: data,
           isRequester: prefs.getString("emailAddress").toString() ==
-                      data["requester"]["emailAddress"] ||
-                  prefs.getString("phoneNumber").toString() ==
-                      data["requester"]["phoneNumber"]
+              data["requester"]["emailAddress"] ||
+              prefs.getString("phoneNumber").toString() ==
+                  data["requester"]["phoneNumber"]
               ? true
               : false));
     },
     child: Container(
-        margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
-        width: Get.width,
-        height: 145.98,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
@@ -42,167 +40,179 @@ Widget activeConnectionCard({
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                height: 145.98,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
-                    ]),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                        height: 84,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromARGB(5, 0, 0, 0),
-                                  blurRadius: 20)
-                            ]),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 64,
-                              width: 64,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16)),
-                              child: data == null ||
-                                      !data["requester"]["refId"]
-                                          .containsKey("profileImage") ||
-                                      data["requester"]["refId"]
-                                              ["profileImage"] ==
-                                          null
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                        ),
-                                        child: SvgPicture.asset(
-                                            "resources/svg/profile.svg"),
-                                      ),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: networkImage(
-                                        64,
-                                        64,
-                                        APICALLS.imageBaseUrl +
-                                            "${data["requester"]["refId"]['profileImage'].toString()}",
-                                      ),
+                child: Container(
+                    padding: EdgeInsets.all(30.w),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color(0xffEBEBEB), blurRadius: 20)
+                        ]),
+                    child: Row(children: [
+                      Container(
+                          height: Get.size.width * 0.266,
+                          padding: EdgeInsets.all(Get.size.width * 0.018),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color(0xffEBEBEB), blurRadius: 20)
+                              ]),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: Get.size.width * 0.18 -
+                                    (Get.size.width * 0.036),
+                                height: Get.size.width * 0.18 -
+                                    (Get.size.width * 0.036),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16)),
+                                child: data == null ||
+                                    !data["requester"]["refId"]
+                                        .containsKey("profileImage") ||
+                                    data["requester"]["refId"]
+                                    ["profileImage"] ==
+                                        null
+                                    ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      Get.size.width * 0.042),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
                                     ),
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            data != null &&
-                                    data["requester"].containsKey("userName") &&
-                                    data["requester"]["userName"] != null
-                                ? Expanded(
-                                    child: Text(
-                                        "@${data["requester"]["userName"]}",
-                                        style: TextStyle(
-                                            color: Color(0xff8D8D8D),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center),
-                                  )
-                                : Expanded(
-                                    child: Text(
-                                        data == null
-                                            ? "Empty"
-                                            : "@${data["requester"]["name"]}",
-                                        style: TextStyle(
-                                            color: Color(0xff8D8D8D),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center),
+                                    child: SvgPicture.asset(
+                                        "resources/svg/profile.svg"),
                                   ),
-                          ],
-                        )),
-                    Container(
-                        height: 84,
-                        margin: EdgeInsets.all(4.0),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromARGB(5, 0, 0, 0),
-                                  blurRadius: 20)
-                            ]),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 64,
-                              width: 64,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: data == null ||
-                                      !data["contact"]["refId"]
-                                          .containsKey("profileImage") ||
-                                      data["contact"]["refId"]
-                                              ["profileImage"] ==
-                                          null
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: pluhgColour,
-                                        ),
-                                        child: SvgPicture.asset(
-                                            "resources/svg/profile.svg"),
-                                      ),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: networkImage(
-                                        64,
-                                        64,
-                                        APICALLS.imageBaseUrl +
-                                            "${data["contact"]["refId"]['profileImage'].toString()}",
-                                      ),
+                                )
+                                    : ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      Get.size.width * 0.042),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: pluhgColour,
                                     ),
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            data != null &&
-                                    data["contact"].containsKey("userName") &&
-                                    data["contact"]["userName"] != null
-                                ? Expanded(
-                                    child: Text(
-                                        "@${data["contact"]["userName"]}",
-                                        style: TextStyle(
-                                            color: Color(0xff8D8D8D),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center),
-                                  )
-                                : Expanded(
-                                    child: Text(
-                                        data == null
-                                            ? "Contact"
-                                            : "@${data["contact"]["name"]}",
-                                        style: TextStyle(
-                                            color: Color(0xff8D8D8D),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center),
+                                    child: Image.network(
+                                      "${APICALLS.imageBaseUrl}${data["requester"]["refId"]['profileImage'].toString()}",
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                          ],
-                        )),
-                  ],
-                ),
-              ),
-            ),
+                                ),
+                              ),
+                              Container(
+                                height: 8.h,
+                              ),
+                              data != null &&
+                                  data["requester"]
+                                      .containsKey("userName") &&
+                                  data["requester"]["userName"] != null
+                                  ? Expanded(
+                                child: Text(
+                                    "@${data["requester"]["userName"]}",
+                                    style: TextStyle(
+                                        color: Color(0xff8D8D8D),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center),
+                              )
+                                  : Expanded(
+                                child: Text(
+                                    data == null
+                                        ? "Empty"
+                                        : "@${data["requester"]["name"]}",
+                                    style: TextStyle(
+                                        color: Color(0xff8D8D8D),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center),
+                              ),
+                            ],
+                          )),
+                      Container(
+                        width: 36.w,
+                      ),
+                      Container(
+                          height: Get.size.width * 0.266,
+                          padding: EdgeInsets.all(Get.size.width * 0.018),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color(0xffEBEBEB), blurRadius: 20)
+                              ]),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: Get.size.width * 0.18 -
+                                    (Get.size.width * 0.036),
+                                height: Get.size.width * 0.18 -
+                                    (Get.size.width * 0.036),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16)),
+                                child: data == null ||
+                                    !data["contact"]["refId"]
+                                        .containsKey("profileImage") ||
+                                    data["contact"]["refId"]
+                                    ["profileImage"] ==
+                                        null
+                                    ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      Get.size.width * 0.042),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    child: SvgPicture.asset(
+                                        "resources/svg/profile.svg"),
+                                  ),
+                                )
+                                    : ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      Get.size.width * 0.042),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: pluhgColour,
+                                    ),
+                                    child: Image.network(
+                                      "${APICALLS.imageBaseUrl}${data["contact"]["refId"]['profileImage'].toString()}",
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 8.h,
+                              ),
+                              data != null &&
+                                  data["contact"].containsKey("userName") &&
+                                  data["contact"]["userName"] != null
+                                  ? Expanded(
+                                child: Text(
+                                    "@${data["contact"]["userName"]}",
+                                    style: TextStyle(
+                                        color: Color(0xff8D8D8D),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center),
+                              )
+                                  : Expanded(
+                                child: Text(
+                                    data == null
+                                        ? "Empty"
+                                        : "@${data["contact"]["name"]}",
+                                    style: TextStyle(
+                                        color: Color(0xff8D8D8D),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center),
+                              ),
+                            ],
+                          )),
+                    ]))),
             SizedBox(
-              width: 12,
+              width: 20.w,
             ),
             Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -251,9 +261,7 @@ Widget activeConnectionCard({
                         color: Color(0xff575858)),
                   ),
                 ]),
-            SizedBox(
-              width: 12,
-            ),
+            Container(width: 12.w),
             Center(
               child: Icon(
                 Icons.arrow_forward_ios_outlined,
@@ -261,7 +269,7 @@ Widget activeConnectionCard({
               ),
             ),
             SizedBox(
-              width: 12,
+              width: 10,
             )
           ],
         )),
