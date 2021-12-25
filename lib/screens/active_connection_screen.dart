@@ -7,13 +7,14 @@ import 'package:plug/widgets/button.dart';
 import 'package:plug/widgets/colours.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'chat_screen.dart';
+import 'chat/chat_screen.dart';
 
 Color primaryColor = Color(0xFF000BFF);
 
 class ActiveConnectionScreen extends StatefulWidget {
   final dynamic data;
   final bool isRequester;
+
   const ActiveConnectionScreen({
     Key? key,
     required this.data,
@@ -27,6 +28,7 @@ class ActiveConnectionScreen extends StatefulWidget {
 class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
     with SingleTickerProviderStateMixin {
   late dynamic data;
+
   @override
   void initState() {
     data = null;
@@ -37,6 +39,7 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
   }
 
   String? userID;
+
   getUserID() async {
     SharedPreferences pres = await SharedPreferences.getInstance();
     setState(() {
@@ -469,8 +472,10 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                             child: button3("Close Connection", pluhgRedColour),
                             onTap: () async {
                               APICALLS apicall = APICALLS();
-                              bool _isSuccessfull = await apicall.closeConnection(
-                                  context: context, connectionID: data["_id"]);
+                              bool _isSuccessfull =
+                                  await apicall.closeConnection(
+                                      context: context,
+                                      connectionID: data["_id"]);
                             },
                           ),
                     SizedBox(
@@ -490,6 +495,14 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ChatScreen(
+                                      username_receiver: !widget.isRequester
+                                          ? "@${data["requester"]["userName"]}"
+                                          : "@${data["contact"]["userName"]}",
+                                      name_receiver: !widget.isRequester
+                                          ? data["requester"]["name"]
+                                          : data["contact"]["name"],
+                                      profile_receiver:
+                                          "${APICALLS.imageBaseUrl}${!widget.isRequester ? data["requester"]["refId"]['profileImage'] : data["contact"]["refId"]['profileImage'].toString()}",
                                       senderId: widget.isRequester
                                           ? data["requester"]["refId"]["_id"]
                                           : data["contact"]["refId"]["_id"],
@@ -516,6 +529,7 @@ class ChatBubble extends StatelessWidget {
   final Size size;
   final bool isMe;
   final String? image;
+
   @override
   Widget build(BuildContext context) {
     return Row(

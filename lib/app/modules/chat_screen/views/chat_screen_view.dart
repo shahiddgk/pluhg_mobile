@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/search_app_bar.dart';
-import 'package:plug/screens/chat_screen.dart';
+import 'package:plug/screens/chat/chat_screen.dart';
 
 import '../controllers/chat_screen_controller.dart';
 
@@ -44,6 +44,9 @@ class ChatScreenView extends GetView<ChatScreenController> {
                 itemBuilder: (ctx, i) => InkWell(
                   onTap: () {
                     Get.to(() => ChatScreen(
+                      username_receiver: "",
+                        name_receiver: controller.users[i].name,
+                        profile_receiver:  controller.users[i].profileImage! ,
                         senderId: controller.users[i].senderId,
                         recevierId: controller.users[i].recevierId));
                   },

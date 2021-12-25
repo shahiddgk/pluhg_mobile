@@ -4,17 +4,28 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/screens/chat/chat_appbar.dart';
+import 'package:plug/screens/chat/input_chat_widget.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../../widgets/chat_widgets.dart';
-import '../../widgets/header.dart';
-import '../../widgets/models/message.dart';
-import '../../widgets/text_style.dart';
+import '../../../widgets/chat_widgets.dart';
+import '../../../widgets/header.dart';
+import '../../../widgets/models/message.dart';
+import '../../../widgets/text_style.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key, required this.senderId, required this.recevierId})
+  const ChatScreen(
+      {Key? key,
+      required this.name_receiver,
+      required this.profile_receiver,
+      required this.username_receiver,
+      required this.senderId,
+      required this.recevierId})
       : super(key: key);
+  final String username_receiver;
 
+  final String name_receiver;
+  final String profile_receiver;
   final String senderId;
   final String recevierId;
 
@@ -34,7 +45,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void connect() {
-    socket = IO.io('http://143.198.187.200:3001', <String, dynamic>{
+    socket = IO.io("http://143.198.187.200:3001", <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
@@ -74,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     });
     socket.onConnectError((data) {
-      print(data);
+
     });
     print(socket.connected);
   }
@@ -158,15 +169,49 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  send_message(String text){
+    sendMessage(
+      text,
+      widget.senderId,
+      widget.recevierId,
+      'text',
+    );
+    _controller.clear();
+  }
+
+  send_document() async{
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null) {
+      List<String> files =
+      result.paths.map((path) => path!).toList();
+      // files.forEach((element) {
+      //   print(element.absolute);
+      // });
+      APICALLS apicalls = APICALLS();
+      var response = await apicalls.uploadFile(widget.senderId, files);
+      print(response);
+      response.forEach((files) {
+        sendMessage(
+          files['filename'],
+          widget.senderId,
+          widget.recevierId,
+          files['mimetype'].split('/')[0],
+        );
+      });
+    } else {
+      // User canceled the picker
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff000BFF),
-      appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Color(0xffF3F9FF),
-          leading: Container()),
-      bottomSheet: Container(
+      backgroundColor: Colors.white,
+      appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver,
+          widget.username_receiver),
+      bottomSheet:
+          InputChatWidget(send_function: send_message, send_doc: send_document) /*Container(
         height: 58,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -202,28 +247,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Spacer(),
             GestureDetector(
               onTap: () async {
-                FilePickerResult? result =
-                    await FilePicker.platform.pickFiles(allowMultiple: true);
-                if (result != null) {
-                  List<String> files =
-                      result.paths.map((path) => path!).toList();
-                  // files.forEach((element) {
-                  //   print(element.absolute);
-                  // });
-                  APICALLS apicalls = APICALLS();
-                  var response = await apicalls.uploadFile(widget.senderId, files);
-                  print(response);
-                  response.forEach((files) {
-                    sendMessage(
-                      files['filename'],
-                      widget.senderId,
-                      widget.recevierId,
-                      files['mimetype'].split('/')[0],
-                    );
-                  });
-                } else {
-                  // User canceled the picker
-                }
+
               },
               child: Image.asset("resources/attachment.png"),
             ),
@@ -232,13 +256,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             GestureDetector(
               onTap: () {
-                sendMessage(
-                  _controller.text,
-                  widget.senderId,
-                  widget.recevierId,
-                  'text',
-                );
-                _controller.clear();
+
               },
               child: Image.asset("resources/send_icon.png"),
             ),
@@ -247,16 +265,16 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-      ),
+      )*/
+      ,
       body: Container(
         decoration: BoxDecoration(
-            color: Color(0xffF3F9FF),
+            color: Colors.white,
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
                 bottomRight: Radius.circular(50))),
         child: Column(
           children: [
-            header("Rose", context, false),
             SizedBox(
               height: 20,
             ),

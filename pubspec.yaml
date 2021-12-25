@@ -61,6 +61,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
 
 
+  emoji_picker_flutter:
 
 dev_dependencies:
   flutter_test:
