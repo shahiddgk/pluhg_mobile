@@ -32,24 +32,22 @@ Widget card(BuildContext context, var data) {
                     APICALLS.imageBaseUrl + data['profileImage'].toString())),
       ),
       data.containsKey("userName") && data["userName"] != null
-          ? Expanded(
-              child: Text("@${data["userName"]}",
-                  maxLines: 2,
-                  style: TextStyle(
-                      color: Color(0xff8D8D8D),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center),
-            )
-          : Expanded(
-              child: Text("@${data["name"]}",
-                  maxLines: 2,
-                  style: TextStyle(
-                      color: Color(0xff8D8D8D),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center),
-            ),
+          ? Text("@${data["userName"]}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Color(0xff8D8D8D),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+              textAlign: TextAlign.center)
+          : Text("@${data["name"]}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Color(0xff8D8D8D),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+              textAlign: TextAlign.center),
     ],
   );
 }
@@ -108,7 +106,6 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                       fontWeight: FontWeight.w400),
                   textAlign: TextAlign.center),
             ),
-
       Text(
         text,
         style: TextStyle(

@@ -23,9 +23,9 @@ Widget activeConnectionCard({
       Get.to(() => ActiveConnectionScreenView(
           data: data,
           isRequester: prefs.getString("emailAddress").toString() ==
-              data["requester"]["emailAddress"] ||
-              prefs.getString("phoneNumber").toString() ==
-                  data["requester"]["phoneNumber"]
+                      data["requester"]["emailAddress"] ||
+                  prefs.getString("phoneNumber").toString() ==
+                      data["requester"]["phoneNumber"]
               ? true
               : false));
     },
@@ -55,14 +55,13 @@ Widget activeConnectionCard({
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
+                        width: 84,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20)
+                              BoxShadow(color: Colors.black12, blurRadius: 20)
                             ]),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -73,39 +72,40 @@ Widget activeConnectionCard({
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16)),
                               child: data == null ||
-                                  !data["requester"]["refId"]
-                                      .containsKey("profileImage") ||
-                                  data["requester"]["refId"]
-                                  ["profileImage"] ==
-                                      null
+                                      !data["requester"]["refId"]
+                                          .containsKey("profileImage") ||
+                                      data["requester"]["refId"]
+                                              ["profileImage"] ==
+                                          null
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                  ),
-                                  child: SvgPicture.asset(
-                                      "resources/svg/profile.svg"),
-                                ),
-                              )
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: SvgPicture.asset(
+                                            "resources/svg/profile.svg"),
+                                      ),
+                                    )
                                   : ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: networkImage(
-                                  64,
-                                  64,
-                                  APICALLS.imageBaseUrl +
-                                      "${data["requester"]["refId"]['profileImage'].toString()}",
-                                ),
-                              ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: networkImage(
+                                        64,
+                                        64,
+                                        APICALLS.imageBaseUrl +
+                                            "${data["requester"]["refId"]['profileImage'].toString()}",
+                                      ),
+                                    ),
                             ),
                             SizedBox(
                               height: 4.0,
                             ),
                             data != null &&
-                                data["requester"].containsKey("userName") &&
-                                data["requester"]["userName"] != null
-                                ? Text(
-                                    "@${data["requester"]["userName"]}",
+                                    data["requester"].containsKey("userName") &&
+                                    data["requester"]["userName"] != null
+                                ? Text("@${data["requester"]["userName"]}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
                                         fontSize: 12,
@@ -115,6 +115,8 @@ Widget activeConnectionCard({
                                     data == null
                                         ? "Empty"
                                         : "@${data["requester"]["name"]}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
                                         fontSize: 12,
@@ -123,14 +125,13 @@ Widget activeConnectionCard({
                           ],
                         )),
                     Container(
+                        width: 84,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 20)
+                              BoxShadow(color: Colors.black12, blurRadius: 20)
                             ]),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -141,39 +142,40 @@ Widget activeConnectionCard({
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12)),
                               child: data == null ||
-                                  !data["contact"]["refId"]
-                                      .containsKey("profileImage") ||
-                                  data["contact"]["refId"]
-                                  ["profileImage"] ==
-                                      null
+                                      !data["contact"]["refId"]
+                                          .containsKey("profileImage") ||
+                                      data["contact"]["refId"]
+                                              ["profileImage"] ==
+                                          null
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: pluhgColour,
-                                  ),
-                                  child: SvgPicture.asset(
-                                      "resources/svg/profile.svg"),
-                                ),
-                              )
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: pluhgColour,
+                                        ),
+                                        child: SvgPicture.asset(
+                                            "resources/svg/profile.svg"),
+                                      ),
+                                    )
                                   : ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: networkImage(
-                                  64,
-                                  64,
-                                  APICALLS.imageBaseUrl +
-                                      "${data["contact"]["refId"]['profileImage'].toString()}",
-                                ),
-                              ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: networkImage(
+                                        64,
+                                        64,
+                                        APICALLS.imageBaseUrl +
+                                            "${data["contact"]["refId"]['profileImage'].toString()}",
+                                      ),
+                                    ),
                             ),
                             SizedBox(
                               height: 4.0,
                             ),
                             data != null &&
-                                data["contact"].containsKey("userName") &&
-                                data["contact"]["userName"] != null
-                                ? Text(
-                                    "@${data["contact"]["userName"]}",
+                                    data["contact"].containsKey("userName") &&
+                                    data["contact"]["userName"] != null
+                                ? Text("@${data["contact"]["userName"]}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
                                         fontSize: 12,
@@ -183,6 +185,8 @@ Widget activeConnectionCard({
                                     data == null
                                         ? "Contact"
                                         : "@${data["contact"]["name"]}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
                                         fontSize: 12,
