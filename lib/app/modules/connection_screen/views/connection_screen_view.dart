@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:plug/app/modules/connection_screen/widget/active_card.dart';
 import 'package:plug/app/modules/connection_screen/widget/tab.dart';
 import 'package:plug/app/modules/connection_screen/widget/waiting_card.dart';
-import 'package:plug/app/modules/connection_screen/widget/whoIconnected.dart';
+import 'package:plug/app/modules/connection_screen/widget/who_i_connected.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/search_app_bar.dart';

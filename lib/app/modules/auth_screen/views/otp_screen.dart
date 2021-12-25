@@ -184,7 +184,6 @@ class OTPScreenView extends GetView<OTPScreenController> {
       controller.loading.value = true;
       bool data = await apicalls.verifyOTP(
           context: context, contact: contact, code: _otp.text);
-
       if (data == false) {
         controller.loading.value = false;
       }

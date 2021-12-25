@@ -16,7 +16,11 @@ networkImage(double height, double width, String imageUrl) {
     width: width,
     child: CachedNetworkImage(
       imageUrl: imageUrl,
-      placeholder: (context, url) => CircularProgressIndicator(),
+      fit: BoxFit.fill,
+      placeholder: (context, url) => Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: CircularProgressIndicator(),
+      ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     ),
   );

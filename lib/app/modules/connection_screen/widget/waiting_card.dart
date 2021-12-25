@@ -30,7 +30,6 @@ Widget waitingConnectionCard({
       },
       child: Container(
           margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
-          width: 340.33,
           height: 145.98,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -41,7 +40,6 @@ Widget waitingConnectionCard({
               Expanded(
                 child: Container(
                   height: 145.98,
-                  width: 180,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
@@ -57,8 +55,7 @@ Widget waitingConnectionCard({
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                              height: 85.54,
-                              width: 67.99,
+                              height: 84,
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(15),
@@ -74,7 +71,6 @@ Widget waitingConnectionCard({
                           ),
                           Container(
                               height: 85.54,
-                              width: 67.99,
                               decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(15),

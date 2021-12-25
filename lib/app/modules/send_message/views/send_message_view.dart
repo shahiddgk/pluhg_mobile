@@ -10,6 +10,7 @@ import 'package:plug/app/widgets/button.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/text_style.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -38,21 +39,7 @@ class SendMessageView extends GetView<SendMessageController> {
     return Obx(
       () => Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Colors.grey,
-            ),
-          ),
-          actions: [
-            SvgPicture.asset("assets/images/notification.svg",
-                color: Color(0xff080F18)),
-          ],
-        ),
+        appBar: SimpleAppBar(backButton: true,),
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(

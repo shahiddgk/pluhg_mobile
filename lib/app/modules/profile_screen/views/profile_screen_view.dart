@@ -307,7 +307,6 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                             SizedBox(height: controller.size.height * 0.02),
                             GestureDetector(
                               onTap: () {
-                                //launchURL("https://pluhg.com/privacy/");
                                 Get.to(() => PrivacyPolicyScreen());
                               },
                               child: Tile(

@@ -26,9 +26,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
-              actions: [
-                NotifIcon()
-              ],
+              actions: [NotifIcon()],
             ),
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
@@ -63,14 +61,13 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                   await SharedPreferences.getInstance();
                               Get.to(() => ContactView(
                                     who: "Requester",
-                                    token:
-                                        prefs.getString("token").toString(),
+                                    token: prefs.getString("token").toString(),
                                     userID:
                                         prefs.getString("userID").toString(),
                                   ));
                             },
                             child: SizedBox(
-                              width: Get.width / 3 -18,
+                              width: Get.width / 3 - 18,
                               child: SvgPicture.asset(
                                 "resources/svg/requester.svg",
                               ),
@@ -89,14 +86,13 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                   await SharedPreferences.getInstance();
                               Get.to(() => ContactView(
                                     who: "Requester",
-                                    token:
-                                        prefs.getString("token").toString(),
+                                    token: prefs.getString("token").toString(),
                                     userID:
                                         prefs.getString("userID").toString(),
                                   ));
                             },
                             child: SizedBox(
-                              width: Get.width / 3-18,
+                              width: Get.width / 3 - 18,
                               child: SvgPicture.asset(
                                 "resources/svg/contact.svg",
                               ),
@@ -114,11 +110,10 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                     width: 51.69,
                                     height: 48.88,
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(14),
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                                "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"))),
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    child: networkImage(50, 52,
+                                        "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"),
                                   )),
                     Center(child: Text("The Pluhg")),
                     SizedBox(

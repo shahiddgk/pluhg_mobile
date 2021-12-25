@@ -19,7 +19,7 @@ Widget whoIConnectedCard({
     },
     child: Container(
         margin: EdgeInsets.symmetric(vertical: 4.0),
-        height: 145.98,
+        height: 164,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           color: Color(0xffEBEBEB),
@@ -28,7 +28,7 @@ Widget whoIConnectedCard({
           children: [
             Expanded(
               child: Container(
-                height: 145.98,
+                height: 164,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
@@ -47,7 +47,7 @@ Widget whoIConnectedCard({
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                            height: 96,
+                            height: 104,
                             width: 84,
                             decoration: BoxDecoration(
                                 color: Colors.white,
@@ -63,7 +63,7 @@ Widget whoIConnectedCard({
                           width: 22,
                         ),
                         Container(
-                            height: 96,
+                            height: 104,
                             width: 84,
                             decoration: BoxDecoration(
                                 color: Colors.white,
@@ -79,7 +79,7 @@ Widget whoIConnectedCard({
                     )),
                     Container(
                       height: 24.h,
-                      margin: EdgeInsets.symmetric(horizontal: 12.0),
+                      margin: EdgeInsets.symmetric(horizontal: 12.0,vertical: 4.0),
                       decoration: BoxDecoration(
                           color: data["isRequesterAccepted"] &&
                                   data["isContactAccepted"]

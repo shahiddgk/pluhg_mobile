@@ -13,8 +13,8 @@ Widget card(BuildContext context, var data) {
   return Column(
     children: [
       Container(
-        width: 53.6,
-        height: 51.2,
+        width: 64,
+        height: 64,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: !data.containsKey("profileImage") || data["profileImage"] == null
             ? Container(
@@ -34,6 +34,7 @@ Widget card(BuildContext context, var data) {
       data.containsKey("userName") && data["userName"] != null
           ? Expanded(
               child: Text("@${data["userName"]}",
+                  maxLines: 2,
                   style: TextStyle(
                       color: Color(0xff8D8D8D),
                       fontSize: 12,
@@ -42,6 +43,7 @@ Widget card(BuildContext context, var data) {
             )
           : Expanded(
               child: Text("@${data["name"]}",
+                  maxLines: 2,
                   style: TextStyle(
                       color: Color(0xff8D8D8D),
                       fontSize: 12,

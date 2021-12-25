@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/screens/chat_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
+import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/text_style.dart';
 
 class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
@@ -40,7 +41,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                   child: Padding(
                       padding: EdgeInsets.only(bottom: 20.w),
                       child: Text(
-                        "${data['userId']["userName"]} Pluhgged".toUpperCase(),
+                        "${data['userId']["userName"]} Pluhgged",
                         style: TextStyle(
                           fontSize: 28.sp,
                           color: pluhgColour,
@@ -63,9 +64,11 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                               height: 16,
                             ),
                             Row(
-                             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Container(width: 20.w,),
+                                Container(
+                                  width: 20.w,
+                                ),
                                 Column(
                                   children: [
                                     Row(
@@ -111,7 +114,9 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                     ),
                                   ],
                                 ),
-                                Container(width: 20.w,),
+                                Container(
+                                  width: 20.w,
+                                ),
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -155,7 +160,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                               ],
                             ),
                             SizedBox(
-                              height: 14.79,
+                              height: 24.0,
                             ),
                             Row(
                               children: [
@@ -171,8 +176,9 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                 ),
                               ],
                             ),
-                            Container(height: 12.h),
+                            //Container(height: 12.h),
                             Container(
+                              height: Get.height / 5,
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.all(12.w),
                               padding: EdgeInsets.all(8),
@@ -184,6 +190,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                     ? ""
                                     : "${data["message"]}",
                                 textAlign: TextAlign.justify,
+                                maxLines: 25,
                                 style: TextStyle(
                                     fontSize: 12, fontWeight: FontWeight.w400),
                               ),
@@ -205,27 +212,29 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                         children: [
                           GestureDetector(
                             child: button3("Close Connection", pluhgRedColour),
-                            onTap: ()  {
-
+                            onTap: () {
+                              //show dialog with rating
+                              showDialogWithRating(context);
                             },
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          outline_button("Conversation",onPressed:(){
+                          outline_button("Conversation", onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ChatScreen(
-                                      senderId: isRequester
-                                          ? data["requester"]["refId"]["_id"]
-                                          : data["contact"]["refId"]["_id"],
-                                      recevierId: !isRequester
-                                          ? data["requester"]["refId"]["_id"]
-                                          : data["contact"]["refId"]["_id"],
-                                    )));
+                                          senderId: isRequester
+                                              ? data["requester"]["refId"]
+                                                  ["_id"]
+                                              : data["contact"]["refId"]["_id"],
+                                          recevierId: !isRequester
+                                              ? data["requester"]["refId"]
+                                                  ["_id"]
+                                              : data["contact"]["refId"]["_id"],
+                                        )));
                           }),
-
                         ],
                       )
                     ],
@@ -233,5 +242,13 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                 ),
               ],
             )));
+  }
+
+  void showDialogWithRating(BuildContext context) {
+    showPluhgRatingDailog(context, "Close connection",
+        "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
+        onCLosed: (value) {
+      print("Rating value $value");
+    });
   }
 }

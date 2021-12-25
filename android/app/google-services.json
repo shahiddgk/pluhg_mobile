@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:900205357588:android:ad8f4a2c5c5cb045215501",
+        "mobilesdk_app_id": "1:900205357588:android:cd9e74262a016d05215501",
         "android_client_info": {
-          "package_name": "com.example.plug"
+          "package_name": "com.ximzee.pluhg"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "900205357588-orofc8imq9qp2km4kc4o3js82tldecar.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.plug",
-            "certificate_hash": "35400430bd6fc1f2e29fb86c2e88bc08037d1aef"
-          }
-        },
         {
           "client_id": "900205357588-frorj5qp1bq2jojaq8ggf3jj81l6h9a4.apps.googleusercontent.com",
           "client_type": 3
@@ -40,10 +32,11 @@
               "client_type": 3
             },
             {
-              "client_id": "900205357588-asc7lb0106a298kv1o2oanaiqikhp928.apps.googleusercontent.com",
+              "client_id": "900205357588-2h2ntm16gq4r9kms57vk9hlr9ric0122.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.pluhg.Pluhg"
+                "bundle_id": "com.ximzee.pluhg",
+                "app_store_id": "1592416211"
               }
             }
           ]
