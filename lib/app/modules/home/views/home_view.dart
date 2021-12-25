@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -42,6 +43,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     super.initState();
     controller.retrieveDynamicLink();
     WidgetsBinding.instance!.addObserver(this);
+
   }
 
   @override
