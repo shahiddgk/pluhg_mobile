@@ -48,15 +48,22 @@ class _ChatScreenState extends State<ChatScreen> {
     connect();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    socket.close();
+    print("yess");
+  }
+
   void connect() {
-    socket = IO.io(APICALLS.url, <String, dynamic>{
+    socket = IO.io("ws://3.18.123.250", <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
 
     socket.connect();
-    socket.onconnect((data1) {
-      print(data1.toString());
+    socket.onConnect((data1) {
       print('Connected.');
       getMessages(widget.senderId, widget.recevierId);
       socket.on('sendMessageResponse', (msg) {
@@ -70,6 +77,8 @@ class _ChatScreenState extends State<ChatScreen> {
             var message = data['data'];
             setState(() {
               element = Message(
+                image: "${APICALLS.url}/uploads/" +
+                    message["senderId"]["profileImage"],
                 id: message['_id'].toString(),
                 messageType: message['messageType'],
                 message: message['message'],
@@ -91,7 +100,6 @@ class _ChatScreenState extends State<ChatScreen> {
       });
     });
     socket.onConnectError((data) {
-
       print("error");
       print(data);
     });
@@ -120,6 +128,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void setMessage(String type, dynamic message, String messageType) {
     Message messageModel = Message(
+      image: "",
       type: type,
       message: message,
       time: DateFormat('hh:mm a').format(DateTime.now()).toString(),
@@ -134,17 +143,22 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void setMessageResponse(dynamic message) {
+    if (!this.mounted) return;
     messages.add(
       Message(
+        image: "${APICALLS.url}/uploads/" + message["senderId"]["profileImage"],
         id: message['_id'].toString(),
         messageType: message['messageType'],
         message: message['message'],
         // time: message['createdAt'].toString(),
         // date: message['createdAt'].toString(),
 
-        time: DateFormat('hh:mm a').format(message['createdAt']).toString(),
-        date:
-            DateFormat('dd MMMM, yyyy').format(message['createdAt']).toString(),
+        time: DateFormat('hh:mm a')
+            .format(DateTime.parse(message['createdAt']))
+            .toString(),
+        date: DateFormat('dd MMMM, yyyy')
+            .format(DateTime.parse(message['createdAt']))
+            .toString(),
         type: message['senderId'] == widget.senderId ? 'source' : 'destination',
         isRead:
             message['receiverId'] == widget.senderId ? true : message['isRead'],
@@ -189,7 +203,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   send_document() {
-   /* if (Platform.isIOS) {
+    /* if (Platform.isIOS) {
       final action = CupertinoActionSheet(
         title: Text(
           "Flutter Agency",
@@ -225,37 +239,36 @@ class _ChatScreenState extends State<ChatScreen> {
       showCupertinoModalPopup(context: context, builder: (context) => action);
     } else {*/
 
-      showDialog<void>(
-          barrierDismissible: true,
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-                insetPadding: EdgeInsets.all(12.w),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                child: Container(
-                    padding: EdgeInsets.all(4),
-                    height: 200.h,
-                    child: DialogOptionsAndroid(
-                        send_camera_image: () {},
-                        send_document: upload_document,
-                        send_gallery_images: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MultiImagePicker(
-                                        title: "Choose Image",
-                                        callback: upload_document,
-                                        writeMessage:
-                                            (String? url, int time) async {
-                                          if (url != null) {
-                                            ///send message
-                                          }
-                                        },
-                                      )));
-                        })));
-          });
-
+    showDialog<void>(
+        barrierDismissible: true,
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              insetPadding: EdgeInsets.all(12.w),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)),
+              child: Container(
+                  padding: EdgeInsets.all(4),
+                  height: 200.h,
+                  child: DialogOptionsAndroid(
+                      send_camera_image: () {},
+                      send_document: upload_document,
+                      send_gallery_images: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MultiImagePicker(
+                                      title: "Choose Image",
+                                      callback: upload_document,
+                                      writeMessage:
+                                          (String? url, int time) async {
+                                        if (url != null) {
+                                          ///send message
+                                        }
+                                      },
+                                    )));
+                      })));
+        });
   }
 
   upload_document() async {
@@ -434,7 +447,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             context: context,
                             message: messages[i].message,
                             time: messages[i].time,
-                            img: "person2"),
+                            img: ""
+
+                            ///jijiji
+                            ),
                       );
                     return Container();
                   },

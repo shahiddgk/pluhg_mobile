@@ -561,7 +561,7 @@ class APICALLS with ValidationMixin {
             "Content-Type": "application/json"
           },
        );
-      print('response ${response.body}');
+
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -572,8 +572,7 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
+
       return parsedResponse;
       //All okay
     } else {
@@ -603,8 +602,7 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
+
       return parsedResponse;
       //All okay
     } else {

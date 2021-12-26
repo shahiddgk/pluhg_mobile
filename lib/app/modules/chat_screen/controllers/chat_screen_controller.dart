@@ -28,7 +28,7 @@ class ChatScreenController extends GetxController {
   void connect() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userID = prefs.getString("userID");
-    socket = IO.io(APICALLS.url, <String, dynamic>{
+    socket = IO.io("ws://3.18.123.250", <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
@@ -67,7 +67,7 @@ class ChatScreenController extends GetxController {
         // time: message['createdAt'].toString(),
         // date: message['createdAt'].toString(),
 
-        time: DateFormat('hh:mm a').format(message['createdAt']).toString(),
+        time: DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
         // date:
         //     DateFormat('dd MMMM, yyyy').format(message['createdAt']).toString(),
         // type: message['senderId'] == userID ? 'source' : 'destination',

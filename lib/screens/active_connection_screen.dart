@@ -178,7 +178,7 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                                                         radius: 50,
                                                         backgroundImage:
                                                             NetworkImage(
-                                                                "APICALLS.url/uploads/${data["requester"]["refId"]['profileImage'].toString()}"),
+                                                                "${APICALLS.url}/uploads/${data["requester"]["refId"]['profileImage'].toString()}"),
                                                       ))),
                                               SizedBox(
                                                 height: 8,
