@@ -178,7 +178,7 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                                                         radius: 50,
                                                         backgroundImage:
                                                             NetworkImage(
-                                                                "http://143.198.187.200:3001/uploads/${data["requester"]["refId"]['profileImage'].toString()}"),
+                                                                "APICALLS.url/uploads/${data["requester"]["refId"]['profileImage'].toString()}"),
                                                       ))),
                                               SizedBox(
                                                 height: 8,
@@ -290,7 +290,7 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                                                         radius: 50,
                                                         backgroundImage:
                                                             NetworkImage(
-                                                                "http://143.198.187.200:3001/uploads/${data["contact"]["refId"]['profileImage'].toString()}"),
+                                                                "APICALLS.url/uploads/${data["contact"]["refId"]['profileImage'].toString()}"),
                                                       ))),
                                               SizedBox(
                                                 height: 8,
@@ -414,7 +414,7 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                                   ),
                                   child: Center(
                                     child: Image.network(
-                                        "http://143.198.187.200:3001/uploads/${data['userId']['profileImage'].toString()}"),
+                                        "APICALLS.url/uploads/${data['userId']['profileImage'].toString()}"),
                                   )),
                               SizedBox(
                                 width: size.width * 0.026,
@@ -546,7 +546,7 @@ class ChatBubble extends StatelessWidget {
                   )
                 : CircleAvatar(
                     backgroundImage: NetworkImage(
-                        "http://143.198.187.200:3001/uploads/$image"),
+                        "APICALLS.url/uploads/$image"),
                     radius: size.width * 0.06,
                   ),
         SizedBox(

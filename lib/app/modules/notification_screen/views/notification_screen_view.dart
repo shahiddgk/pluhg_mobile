@@ -76,7 +76,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                             "resources/svg/profile.svg")
                                         as ImageProvider
                                     : NetworkImage(
-                                        'http://143.198.187.200:3001/uploads/${controller.data[0]["userId"]["profileImage"]}'),
+                                        'APICALLS.url/uploads/${controller.data[0]["userId"]["profileImage"]}'),
                               ),
                               SizedBox(width: 10),
                               Expanded(

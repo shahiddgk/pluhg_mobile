@@ -67,7 +67,6 @@ class APICALLS with ValidationMixin {
 
     var parsedResponse = jsonDecode(response.body);
 
-    print(parsedResponse);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Successfully logged in');
@@ -126,10 +125,8 @@ class APICALLS with ValidationMixin {
         body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
-    print(parsedResponse);
 
     if (response.statusCode == 200) {
-      print(parsedResponse);
       pluhgSnackBar('Great', 'Your profile Has been set');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       // prefs.setString('profileImage',
@@ -248,7 +245,6 @@ class APICALLS with ValidationMixin {
     bool bothphone =
         !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       pluhgSnackBar("Great", "You have connected them, about to send message");
 
       Get.off(StatusScreen(
@@ -312,7 +308,6 @@ class APICALLS with ValidationMixin {
 
     if (parsedResponse["status"]) {
       pd.close();
-      print(parsedResponse);
       return true;
       //all good
     } else {
@@ -445,11 +440,9 @@ class APICALLS with ValidationMixin {
     //contentType: new MediaType('image', 'png'));
 
     var response = await request.send();
-    print(response.statusCode);
 
     response.stream.transform(utf8.decoder).listen((var value) async {
-      print(value);
-      print(response);
+
       var jar = response.stream.transform(utf8.decoder);
     });
     if (response.statusCode == 200) {
@@ -478,7 +471,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -513,7 +505,6 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       pluhgSnackBar("Great", "${parsedResponse['message']}");
-      print(parsedResponse);
       return false;
       //All okay
     } else {

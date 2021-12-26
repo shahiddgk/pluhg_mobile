@@ -49,12 +49,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void connect() {
-    socket = IO.io("http://143.198.187.200:3001", <String, dynamic>{
+    socket = IO.io(APICALLS.url, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
+
     socket.connect();
-    socket.onConnect((data) {
+    socket.onconnect((data1) {
+      print(data1.toString());
       print('Connected.');
       getMessages(widget.senderId, widget.recevierId);
       socket.on('sendMessageResponse', (msg) {
@@ -88,7 +90,12 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       });
     });
-    socket.onConnectError((data) {});
+    socket.onConnectError((data) {
+
+      print("error");
+      print(data);
+    });
+    print("--------------------------------------");
     print(socket.connected);
   }
 
@@ -362,7 +369,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: messages.length,
                   itemBuilder: (ctx, i) {
                     if (messages[i].type == 'source') {
-                      // USE url = http://143.198.187.200:3001/uploads/messages[i].message to preview files
+                      // USE url = APICALLS.url/uploads/messages[i].message to preview files
                       if (messages[i].messageType == 'image')
                         return Container(
                           height: 50,
@@ -411,7 +418,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         );
                     }
-                    // USE url = http://143.198.187.200:3001/uploads/messages[i].message to preview files
+                    // USE url = APICALLS.url/uploads/messages[i].message to preview files
                     if (messages[i].messageType == 'image') return Container();
                     if (messages[i].messageType == 'video') return Container();
                     if (messages[i].messageType == 'gif') return Container();
