@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -442,7 +443,6 @@ class APICALLS with ValidationMixin {
     var response = await request.send();
 
     response.stream.transform(utf8.decoder).listen((var value) async {
-
       var jar = response.stream.transform(utf8.decoder);
     });
     if (response.statusCode == 200) {
@@ -521,8 +521,6 @@ class APICALLS with ValidationMixin {
     required String token,
     required String userID,
   }) async {
-
-
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
@@ -538,7 +536,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-
       return parsedResponse;
       //All okay
     } else {
@@ -555,13 +552,13 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/activeConnections");
     var response;
     try {
-      response = await http.get(uri,
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "application/json"
-          },
-       );
-
+      response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -572,7 +569,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-
       return parsedResponse;
       //All okay
     } else {
@@ -602,7 +598,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-
       return parsedResponse;
       //All okay
     } else {
@@ -638,7 +633,7 @@ class APICALLS with ValidationMixin {
     // if (contact.contains("@")) {
     var body = {
       "connectionId": connectionID,
-      "action": isAccepting?"accept":"reject",
+      "action": isAccepting ? "accept" : "reject",
     };
     print(body);
     var response = await http.post(uri,
@@ -667,7 +662,7 @@ class APICALLS with ValidationMixin {
     //       body: jsonEncode(body));
     //   parsedResponse = jsonDecode(response.body);
     // }
-    print("ACCEPT_REJECT"+parsedResponse.toString());
+    print("ACCEPT_REJECT" + parsedResponse.toString());
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -818,30 +813,58 @@ class APICALLS with ValidationMixin {
   }
 
   Future<dynamic> uploadFile(String senderId, List<String> files) async {
-    String token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGY3OWY5NGUxYWI2YzMwZmM5MTJkODEiLCJwaG9uZSI6IjcyMjY4MjYyNjQiLCJpYXQiOjE2MjY4NDEwMTcsImV4cCI6MTYyNzAxMzgxN30.nRIF6kLCXC7YZZZkSAItXJgabDLJacc0fBQXcHqs_uI';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var request = http.MultipartRequest(
+    String? token = prefs.getString("token");
+    /*var request = http.MultipartRequest(
       'POST',
-      Uri.parse("$url/api/upload/uploadFile/$senderId"),
+      Uri.parse("http://3.18.123.250/api/upload/upload-files"),
     );
+
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
-      iterable.add(await http.MultipartFile.fromPath('file', files[i]));
+      request.files.add(new http.MultipartFile.fromBytes(
+          'files', await File(files[i]).readAsBytes(),
+          contentType: new MediaType('image', 'jpeg')));
+    //   request.files.add(new http.MultipartFile.fromBytes('file', await File(files[i]).readAsBytes(), contentType: new MediaType('image', 'jpeg')));
+
     }
 
-    request.files.addAll(iterable);
+    print(1);
+
+    print(iterable);
+
+   // request.files.addAll(iterable);
     request.headers.addAll({
       "Authorization": "Bearer $token",
       'Content-type': 'multipart/form-data',
     });
     http.StreamedResponse response = await request.send();
     var httpResponse = await http.Response.fromStream(response);
+    print(httpResponse.body);
     var data = json.decode(httpResponse.body);
 
     if (data["hasError"] == false)
       return data['data']['fileName'];
     else
-      return null;
+      return null;*/
+
+    Map<String, String> headers = {"Authorization": "Bearer $token"};
+    var request = http.MultipartRequest("POST",  Uri.parse("http://3.18.123.250/api/upload/upload-files"))
+      ..files.add(new http.MultipartFile.fromBytes(
+          'files', await File(files[0]).readAsBytes(),filename: basename(files[0]),
+          contentType: MediaType('image', 'png'))/*http.MultipartFile('profileImage', stream, length,
+          filename: basename(imageFile.path),
+          contentType: MediaType('image', 'png'))*/)
+      ..headers.addAll(headers);
+
+    //contentType: new MediaType('image', 'png'));
+
+    var response = await request.send();
+
+    var httpResponse = await http.Response.fromStream(response);
+    print(httpResponse.body);
+
+
   }
 }
