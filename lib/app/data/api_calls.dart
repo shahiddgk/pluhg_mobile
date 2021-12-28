@@ -48,18 +48,19 @@ class APICALLS with ValidationMixin {
   }
 
   //Verify OTP
-  Future<bool> verifyOTP({
-    required String contact,
-    required BuildContext context,
-    required String code,
-  }) async {
+  Future<bool> verifyOTP(
+      {required String contact,
+      required BuildContext context,
+      required String code,
+      required String fcmToken}) async {
     var uri = Uri.parse("$url/api/verifyOTP");
     bool success;
     var body = {
       "emailAddress": contact.contains("@") ? contact : "",
       "phoneNumber": !contact.contains("@") ? contact : "",
       "code": code,
-      "type": contact.contains("@") ? "email" : 'phone'
+      "type": contact.contains("@") ? "email" : 'phone',
+      "deviceToken": fcmToken
     };
 
     var response = await http.post(uri,
@@ -290,6 +291,7 @@ class APICALLS with ValidationMixin {
     pd.show(
       max: 100,
       msg: 'Please wait...',
+      progressType: ProgressType.normal,
       progressBgColor: Colors.transparent,
     );
 
@@ -530,8 +532,6 @@ class APICALLS with ValidationMixin {
     required String token,
     required String userID,
   }) async {
-
-
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
@@ -547,7 +547,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-
       return parsedResponse;
       //All okay
     } else {
@@ -564,12 +563,13 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/activeConnections");
     var response;
     try {
-      response = await http.get(uri,
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "application/json"
-          },
-       );
+      response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
       print('response ${response.body}');
     } catch (e) {
       print("API has Error");
@@ -644,12 +644,13 @@ class APICALLS with ValidationMixin {
     pd.show(
       max: 100,
       msg: 'Please wait...',
+      progressType: ProgressType.normal,
       progressBgColor: Colors.transparent,
     );
     // if (contact.contains("@")) {
     var body = {
       "connectionId": connectionID,
-      "action": isAccepting?"accept":"reject",
+      "action": isAccepting ? "accept" : "reject",
     };
     print(body);
     var response = await http.post(uri,
@@ -678,7 +679,7 @@ class APICALLS with ValidationMixin {
     //       body: jsonEncode(body));
     //   parsedResponse = jsonDecode(response.body);
     // }
-    print("ACCEPT_REJECT"+parsedResponse.toString());
+    print("ACCEPT_REJECT" + parsedResponse.toString());
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -718,6 +719,7 @@ class APICALLS with ValidationMixin {
     pd.show(
       max: 100,
       msg: 'Please wait...',
+      progressType: ProgressType.normal,
       progressBgColor: Colors.transparent,
     );
     var response = await http.post(

@@ -119,6 +119,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                     initialSelection:
                                         controller.countryISOCode.value,
                                     padding: EdgeInsets.zero,
+                                    backgroundColor: Colors.white,
                                     showFlag: false,
                                     onChanged: (val) {
                                       controller.currentCountryCode.value =

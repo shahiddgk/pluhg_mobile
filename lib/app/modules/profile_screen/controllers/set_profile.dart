@@ -1,3 +1,4 @@
+import 'package:flutter_sim_country_code/flutter_sim_country_code.dart';
 import 'package:get/get.dart';
 
 class SetProfileScreenController extends GetxController {
@@ -9,6 +10,7 @@ class SetProfileScreenController extends GetxController {
   final size = Get.size;
   @override
   void onInit() {
+    fetchCountryCode();
     super.onInit();
   }
 
@@ -19,4 +21,11 @@ class SetProfileScreenController extends GetxController {
 
   @override
   void onClose() {}
+
+//fetch country code without location using FlutterSimCountryCode
+  Future<String> fetchCountryCode() async {
+    final countryCode = await FlutterSimCountryCode.simCountryCode;
+    currentCountryCode.value = countryCode!;
+    return currentCountryCode.value;
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class OTPScreenController extends GetxController {
@@ -7,6 +8,7 @@ class OTPScreenController extends GetxController {
 
   var str = "Didn't Receive OTP?\n ".obs;
   var otp=''.obs;
+  var fcmToken = "";
 
   RxBool loading = false.obs;
   Timer? _timer;
@@ -28,10 +30,23 @@ class OTPScreenController extends GetxController {
     );
   }
 
+  fetchFCMToken(){
+    try{
+      FirebaseMessaging.instance.getToken().then((value){
+        print("FCM TOKEN $value");
+        fcmToken = value ?? "";
+      });
+    }catch(e){
+      print(e.toString());
+    }
+
+  }
+
   @override
   void onInit() {
     super.onInit();
     startTimer();
+    fetchFCMToken();
   }
 
   @override

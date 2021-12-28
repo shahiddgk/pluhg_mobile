@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -183,7 +184,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
     if (_otp.text.length == 4) {
       controller.loading.value = true;
       bool data = await apicalls.verifyOTP(
-          context: context, contact: contact, code: _otp.text);
+          context: context, contact: contact, code: _otp.text,fcmToken: controller.fcmToken);
       if (data == false) {
         controller.loading.value = false;
       }

@@ -32,18 +32,18 @@ Widget activeConnectionCard({
     child: Container(
         margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
         width: Get.width,
-        height: 146,
+        height: 164,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
             boxShadow: [
-              BoxShadow(blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
+              BoxShadow(blurRadius: 40, color: Colors.black12)
             ]),
         child: Row(
           children: [
             Expanded(
               child: Container(
-                height: 146,
+                height: 164,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),

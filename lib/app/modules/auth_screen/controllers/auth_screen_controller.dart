@@ -22,7 +22,7 @@ class AuthScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    determinePosition();
+    fetchCountryCode();
     getDeviceToken();
   }
 
@@ -45,7 +45,7 @@ class AuthScreenController extends GetxController {
   }
 
 //fetch country code without location using FlutterSimCountryCode
-  Future<String> determinePosition() async {
+  Future<String> fetchCountryCode() async {
     final countryCode = await FlutterSimCountryCode.simCountryCode;
     isoCountryCode.value = countryCode!;
     return isoCountryCode.value;

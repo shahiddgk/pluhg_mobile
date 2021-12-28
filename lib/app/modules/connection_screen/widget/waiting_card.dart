@@ -30,7 +30,7 @@ Widget waitingConnectionCard({
       },
       child: Container(
           margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
-          height: 145.98,
+          //height: 164,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
@@ -39,55 +39,55 @@ Widget waitingConnectionCard({
             children: [
               Expanded(
                 child: Container(
-                  height: 145.98,
+                 // height: 164,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
-                            blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
+                            blurRadius: 40, color: Colors.black12)
                       ]),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Center(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              height: 84,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color.fromARGB(5, 0, 0, 0),
-                                        blurRadius: 20)
-                                  ]),
-                              child: card(
-                                  Get.context!, data["requester"]["refId"])),
-                          SizedBox(
-                            width: 22,
-                          ),
-                          Container(
-                              height: 85.54,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color.fromARGB(5, 0, 0, 0),
-                                        blurRadius: 20)
-                                  ]),
-                              child:
-                                  card(Get.context!, data["contact"]["refId"])),
-                        ],
-                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                                width: 84,
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black12, blurRadius: 20)
+                                    ]),
+                                child:
+                                card(Get.context!, data["requester"]["refId"])),
+                            Container(
+                                width: 84.0,
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black12, blurRadius: 20)
+                                    ]),
+                                child:
+                                card(Get.context!, data["contact"]["refId"])),
+                          ],
+                        ),
+                      ),
                       responded.value
                           ? SizedBox()
                           : Container(
                               margin: EdgeInsets.only(
-                                top: Get.size.width * 0.05,
+                                top: 12.0,
+                                bottom: 12.0
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -161,7 +161,7 @@ Widget waitingConnectionCard({
                 Text(
                   "@${data['userId']["userName"]}",
                   style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w800,
                       fontSize: 12,
                       color: Color(0xff575858)),
                 ),
@@ -176,7 +176,7 @@ Widget waitingConnectionCard({
                 Text(
                   formattedDate.toString().substring(0, 11),
                   style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w800,
                       fontSize: 12,
                       color: Color(0xff575858)),
                 ),
@@ -191,7 +191,7 @@ Widget waitingConnectionCard({
                 Text(
                   formattedDate.toString().substring(12),
                   style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w800,
                       fontSize: 12,
                       color: Color(0xff575858)),
                 ),
