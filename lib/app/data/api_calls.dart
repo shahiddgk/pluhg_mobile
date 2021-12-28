@@ -68,7 +68,6 @@ class APICALLS with ValidationMixin {
 
     var parsedResponse = jsonDecode(response.body);
 
-    print(parsedResponse);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Successfully logged in');
@@ -127,10 +126,8 @@ class APICALLS with ValidationMixin {
         body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
-    print(parsedResponse);
 
     if (response.statusCode == 200) {
-      print(parsedResponse);
       pluhgSnackBar('Great', 'Your profile Has been set');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       // prefs.setString('profileImage',
@@ -447,11 +444,9 @@ class APICALLS with ValidationMixin {
     //contentType: new MediaType('image', 'png'));
 
     var response = await request.send();
-    print(response.statusCode);
 
     response.stream.transform(utf8.decoder).listen((var value) async {
-      print(value);
-      print(response);
+
       var jar = response.stream.transform(utf8.decoder);
     });
     if (response.statusCode == 200) {
@@ -515,7 +510,6 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       pluhgSnackBar("Great", "${parsedResponse['message']}");
-      print(parsedResponse);
       return false;
       //All okay
     } else {
@@ -532,6 +526,8 @@ class APICALLS with ValidationMixin {
     required String token,
     required String userID,
   }) async {
+
+
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
@@ -563,14 +559,13 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/activeConnections");
     var response;
     try {
-      response = await http.get(
-        uri,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json"
-        },
-      );
-      print('response ${response.body}');
+      response = await http.get(uri,
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json"
+          },
+       );
+
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -612,8 +607,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -679,7 +672,7 @@ class APICALLS with ValidationMixin {
     //       body: jsonEncode(body));
     //   parsedResponse = jsonDecode(response.body);
     // }
-    print("ACCEPT_REJECT" + parsedResponse.toString());
+    print("ACCEPT_REJECT"+parsedResponse.toString());
 
     if (parsedResponse["status"] == true) {
       pd.close();

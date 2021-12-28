@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -338,9 +339,10 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
                     ? _buildMultiImageLoading()
                     : Container(
                         child: Center(
-                          child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.activeIconColour)),
+                          child: CupertinoActivityIndicator(
+                              /*valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.activeIconColour)*/
+                              ),
                         ),
                         color: AppColors.pluhgWhite.withOpacity(0.8),
                       )

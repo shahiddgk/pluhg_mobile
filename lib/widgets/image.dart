@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,7 +20,7 @@ networkImage(double height, double width, String imageUrl) {
       fit: BoxFit.fill,
       placeholder: (context, url) => Padding(
         padding: const EdgeInsets.all(12.0),
-        child: CircularProgressIndicator(),
+        child: CupertinoActivityIndicator(),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     ),
