@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // Widget contactItem(PluhgContact contact, Function()? onTap) {
 Widget contactItem(PluhgContact contact, Function()? onTap) {
-  return GestureDetector(
+  return InkWell(
     onTap: onTap,
     child: Column(
       children: [

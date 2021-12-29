@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/screens/waiting_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 
@@ -216,16 +217,16 @@ void _callApi(var data, dynamic prefs, responded, bool activeDecline) async {
   APICALLS apicalls = APICALLS();
   responded.value = await apicalls.respondToConnectionRequest(
       connectionID: data["_id"],
-      contact: prefs.getString("emailAddress"),
+      contact: prefs.getString(prefuseremail),
       context: Get.context!,
       isContact: data["contact"]["refId"]["_id"].toString() ==
-              prefs.getString("userID")
+              prefs.getString(prefuserid)
           ? true
           : false,
       plugID: data["userId"]["_id"],
       isAccepting: activeDecline,
       isRequester: data["requester"]["refId"]["_id"].toString() ==
-              prefs.getString("userID")
+              prefs.getString(prefuserid)
           ? true
           : false);
 }

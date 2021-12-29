@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -94,9 +95,7 @@ class ContactView extends GetView<ContactController> {
               ),
             ),
           ),
-          actions: [
-            NotifIcon()
-          ],
+          actions: [NotifIcon()],
         ),
         bottomSheet: Container(
           height: 70.h,
@@ -142,13 +141,16 @@ class ContactView extends GetView<ContactController> {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                "${controller.person.value}",
+                "${controller.title.value}",
                 style: TextStyle(
                   fontSize: 28,
                   color: pluhgColour,
                   fontWeight: FontWeight.w600,
                 ),
               ),
+            ),
+            SizedBox(
+              height: 36,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -158,6 +160,7 @@ class ContactView extends GetView<ContactController> {
                   controller.requesterContact.value,
                   controller.requesterImage,
                   'Requester',
+                  controller.isRequesterPluhg.value,
                   () async {
                     final fullContact = await FlutterContacts.getContact(
                         controller.requesterId.value);
@@ -180,6 +183,7 @@ class ContactView extends GetView<ContactController> {
                   controller.contactContact.value,
                   controller.contactImage,
                   'Contact',
+                  controller.isContactPluhg.value,
                   () async {
                     final fullContact = await FlutterContacts.getContact(
                         controller.contactId.value);
@@ -188,8 +192,6 @@ class ContactView extends GetView<ContactController> {
                       controller.contactImage = null;
                       controller.contactContact.value = "";
                       controller.contactName.value = "";
-                      // controller.contacts_
-                      //     .add(PluhgContact.fromContact(fullContact));
                       controller.getContactList();
                     }
                   },
@@ -237,78 +239,42 @@ class ContactView extends GetView<ContactController> {
                                 itemCount: contacts.length,
                                 itemBuilder: (context, index) {
                                   if (contacts[index].phoneNumber.isNotEmpty) {
-                                    return contactItem(
-                                      contacts[index],
-                                      () async {
-                                        if (controller
-                                                .requesterName.value.isEmpty ||
-                                            controller
-                                                .contactName.value.isEmpty) {
-                                          Contact? contact =
-                                              await FlutterContacts.getContact(
-                                                  contacts[index].id!);
+                                    return contactItem(contacts[index],
+                                        () async {
+                                      if (controller
+                                              .requesterName.value.isEmpty ||
+                                          controller
+                                              .contactName.value.isEmpty) {
+                                        Contact? contact =
+                                            await FlutterContacts.getContact(
+                                                contacts[index].id!);
 
-                                          if (contact != null) {
-                                            PluhgContact pluhgContact =
-                                                PluhgContact.fromContact(
-                                                    contact);
-
-                                            if (controller
-                                                .requesterName.value.isEmpty) {
-                                              controller.requesterId.value =
-                                                  controller
-                                                      .contacts_[index].id!;
-                                              controller.requesterImage =
-                                                  pluhgContact.photo;
-                                              controller
-                                                      .requesterContact.value =
-                                                  pluhgContact.phoneNumber;
-                                              controller.requesterName.value =
-                                                  pluhgContact.name;
-                                              controller.person.value =
-                                                  "Select Contact";
-                                              contacts.remove(pluhgContact);
-
-                                              if (controller
-                                                  .contactName.value.isEmpty) {
-                                                showPluhgDailog(context, "Info",
-                                                    "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
-                                              }
-                                            } else if (controller.contactName
-                                                    .value.isEmpty &&
-                                                controller.requesterName.value
-                                                    .isNotEmpty) {
-                                              if (pluhgContact.phoneNumber !=
-                                                  controller
-                                                      .requesterContact.value) {
-                                                controller.contactId.value =
-                                                    controller
-                                                        .contacts_[index].id!;
-                                                controller.contactImage =
-                                                    pluhgContact.photo;
-                                                controller
-                                                        .contactContact.value =
-                                                    pluhgContact.phoneNumber;
-                                                controller.contactName.value =
-                                                    pluhgContact.name;
-                                                controller.person.value =
-                                                    "Click Next";
-                                                contacts.remove(pluhgContact);
-                                              } else {
-                                                showPluhgDailog(context, "Info",
-                                                    "So Sorry !  You can select the same person");
-                                              }
-                                            }
-                                          } else if (controller.contactName
-                                                  .value.isNotEmpty &&
+                                        if (contact != null) {
+                                          PluhgContact pluhgContact =
+                                              PluhgContact.fromContact(contact);
+                                          if (controller
+                                              .requesterName.value.isEmpty) {
+                                            onRequesterSelect(pluhgContact,
+                                                index, context, contacts);
+                                          } else if (controller
+                                                  .contactName.value.isEmpty &&
                                               controller.requesterName.value
                                                   .isNotEmpty) {
+                                            onContactSelect(pluhgContact, index,
+                                                context, contacts);
+                                          } else {
                                             showPluhgDailog(context, "Info",
-                                                "You can't have more than two contacts selected");
+                                                "So Sorry !  You can select the same person");
                                           }
                                         }
-                                      },
-                                    );
+                                      } else if (controller
+                                              .contactName.value.isNotEmpty &&
+                                          controller
+                                              .requesterName.value.isNotEmpty) {
+                                        showPluhgDailog(context, "Info",
+                                            "You can't have more than two contacts selected");
+                                      }
+                                    });
                                   } else {
                                     return SizedBox.shrink();
                                   }
@@ -397,91 +363,153 @@ class ContactView extends GetView<ContactController> {
     }
   }
 
+  void onRequesterSelect(PluhgContact pluhgContact, int index,
+      BuildContext context, List<PluhgContact> contacts) {
+    print("Pluhg user ${pluhgContact.isPlughedUser}");
+    controller.requesterId.value = controller.contacts_[index].id!;
+    controller.requesterImage = pluhgContact.photo;
+    controller.requesterContact.value = pluhgContact.phoneNumber;
+    controller.requesterName.value = pluhgContact.name;
+    controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
+    controller.title.value = "Select Contact";
+    contacts.remove(pluhgContact);
+
+    if (controller.contactName.value.isEmpty) {
+      showPluhgDailog(context, "Info",
+          "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
+    }
+  }
+
+  void onContactSelect(PluhgContact pluhgContact, int index,
+      BuildContext context, List<PluhgContact> contacts) {
+    print("Pluhg user ${pluhgContact.isPlughedUser}");
+    if (pluhgContact.phoneNumber != controller.requesterContact.value) {
+      controller.contactId.value = controller.contacts_[index].id!;
+      controller.contactImage = pluhgContact.photo;
+      controller.contactContact.value = pluhgContact.phoneNumber;
+      controller.contactName.value = pluhgContact.name;
+      controller.isContactPluhg.value = contacts[index].isPlughedUser;
+
+      controller.title.value = "Click Next";
+      contacts.remove(pluhgContact);
+    }
+  }
+
   Widget _addContactItem(String requesterName, String requesterContact,
-      Uint8List? requesterImage, String buttonText, Function onTap) {
-    return Container(
-      height: 188.22,
-      width: 88.66,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 40,
-            color: Color.fromARGB(5, 0, 0, 0),
-          )
-        ],
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 35,
+      Uint8List? image, String buttonText, bool isPluhgUser, Function onTap) {
+    return Stack(
+      //alignment: Alignment.topRight,
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: 84,
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 40,
+                color: Colors.black12,
+              )
+            ],
+            borderRadius: BorderRadius.circular(15),
           ),
-          requesterName.isEmpty
-              ? Text("")
-              : GestureDetector(
-                  onTap: () => onTap(),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(
-                      Icons.cancel,
-                      color: Color(0xffF90D46),
-                    ),
-                  ),
-                ),
-          requesterImage == null
-              ? SvgPicture.asset("resources/svg/avatar.svg")
-              : Container(
-                  width: 67.37,
-                  height: 69.35,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: MemoryImage(requesterImage),
-                    ),
-                    borderRadius: BorderRadius.circular(13),
-                  ),
-                ),
-          Text(
-            requesterName.isNotEmpty ? requesterName : 'Add Contact',
-            style: TextStyle(
-                color: Color(0xff121212),
-                letterSpacing: -0.3,
-                fontSize: 10,
-                fontWeight: FontWeight.w400),
-          ),
-          requesterContact.isEmpty
-              ? Text("")
-              : Text(
-                  requesterContact,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: Color(
-                        0xff898B8B,
-                      ),
-                      letterSpacing: -0.3,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w400),
-                ),
-          Container(
-            width: 74.62,
-            height: 20.86,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              color: pluhgColour,
-            ),
-            child: Center(
-              child: Text(
-                buttonText,
+          child: Column(
+            children: [
+              contactImage(image,isPluhgUser),
+              Text(
+                requesterName.isNotEmpty ? requesterName : 'Add Contact',
                 style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+                    color: Color(0xff121212),
+                    letterSpacing: -0.3,
+                    fontSize: 10,
                     fontWeight: FontWeight.w400),
               ),
-            ),
-          )
-        ],
-      ),
+              SizedBox(
+                height: 4.0,
+              ),
+              requesterContact.isEmpty
+                  ? Text("")
+                  : Text(
+                      requesterContact,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Color(
+                            0xff898B8B,
+                          ),
+                          letterSpacing: -0.3,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w400),
+                    ),
+              SizedBox(
+                height: 4.0,
+              ),
+              Container(
+                height: 24,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: pluhgColour,
+                ),
+                child: Center(
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        requesterName.isEmpty
+            ? Text("")
+            : Positioned(
+                top: -10.0,
+                right: -10.0,
+                child: GestureDetector(
+                  onTap: () => onTap(),
+                  child: Icon(
+                    Icons.cancel,
+                    color: Color(0xffF90D46),
+                  ),
+                ),
+              ),
+      ],
+    );
+  }
+
+  Widget contactImage(Uint8List? image, bool isPluhgUser) {
+    print("contact image ${isPluhgUser.toString()}");
+    return Stack(
+      children: [
+        image == null
+            ? Container(
+                width: 70,
+                height: 70,
+                child: SvgPicture.asset("resources/svg/avatar.svg"))
+            : Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: MemoryImage(image),
+                  ),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+              ),
+        Visibility(
+          visible: isPluhgUser,
+          child: Positioned(
+            bottom: 0,
+            right: 0,
+            child: SvgPicture.asset("assets/svg/exists.svg"),
+          ),
+        )
+      ],
     );
   }
 }

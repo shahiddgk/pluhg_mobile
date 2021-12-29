@@ -7,9 +7,11 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
+import 'package:plug/app/values/strings.dart';
+import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ContactController extends GetxController {
+class ContactController extends GetxController with ValidationMixin{
   //TODO: Implement ContactController
 
   final count = 0.obs;
@@ -18,6 +20,8 @@ class ContactController extends GetxController {
 
   // List<PluhgContact> contacts_ = [];
   RxBool permissionDenied = false.obs;
+  RxBool isContactPluhg = false.obs;
+  RxBool isRequesterPluhg = false.obs;
 
   Uint8List? contactImage;
   Uint8List? requesterImage;
@@ -30,7 +34,7 @@ class ContactController extends GetxController {
 
   RxString requesterContact = "".obs;
 
-  RxString person = "Select Requester".obs;
+  RxString title = "Select Requester".obs;
   RxString status = "".obs;
   SharedPreferences? prefs;
 
@@ -38,7 +42,6 @@ class ContactController extends GetxController {
   void onInit() {
     super.onInit();
     init();
-    // pluhgSnackBar('Loading', 'Please wait, loading contacts takes few minutes');
   }
 
   Future init() async {
@@ -76,31 +79,6 @@ class ContactController extends GetxController {
     } else {
       final contacts = await FlutterContacts.getContacts(
           withProperties: true, withPhoto: true, withThumbnail: true);
-      //to check for a pluhg user
-      // for (var i in contacts) {
-      //   if (i.phones.isNotEmpty) {
-      // var value = await checkPluhgUsers(
-      //     contact: i.phones.first.normalizedNumber, name: i.displayName);
-      //     if (value == "true") {
-      //       _statusSelected.add("Pluhg user");
-      //     } else {
-      //       _statusSelected.add("not a Pluhg user");
-      //     }
-      //     print(value);
-      //     setState(() {});
-      //   }
-      //   if (i.emails.isNotEmpty) {
-      //     var value = await checkPluhgUsers(
-      //         contact: i.emails.first.address, name: i.displayName);
-      //     if (value == "true") {
-      //       _statusSelected.add("Pluhg user");
-      //     } else {
-      //       _statusSelected.add("not a Pluhg user");
-      //     }
-      //     print(value);
-      //     setState(() {});
-      //   }
-      // }
 
       // check for registered users
       List<PluhgContact> pluhgContacts = [];
@@ -109,16 +87,29 @@ class ContactController extends GetxController {
             .map<PluhgContact>((contact) => PluhgContact.fromContact(contact))
             .toList();
       } catch (ex) {
-        print('xxxsxsss');
         print(ex);
       }
 
       _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
+      //remove users phone number
+      String userPhoneNumber = prefs!.getString(prefuserphone) ?? "";
+      String userEmail = prefs!.getString(prefuseremail) ?? "";
+      PluhgContact? contactToRemove;
+      _allContacts.forEach((element) {
+        if (comparePhoneNumber(element.phoneNumber,(userPhoneNumber)) ||
+            comparePhoneNumber(element.emailAddress,userEmail)) {
+          contactToRemove = element;
+        }
+        ;
+      });
+      if (contactToRemove != null) {
+        _allContacts.remove(contactToRemove);
+      }
       contactsFuture.complete(_allContacts);
     }
   }
 
-  List<PluhgContact> get contacts_ =>  _allContacts.where((contact) {
+  List<PluhgContact> get contacts_ => _allContacts.where((contact) {
         final regexp = RegExp(search.value, caseSensitive: false);
         return regexp.hasMatch(contact.name);
       }).toList();

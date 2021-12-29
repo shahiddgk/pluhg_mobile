@@ -8,6 +8,7 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/connection_screen/controllers/connect_two.dart';
 import 'package:plug/app/modules/contact/views/contact_view.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/image.dart';
 import 'package:plug/widgets/notif_icon.dart';
@@ -61,9 +62,9 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                   await SharedPreferences.getInstance();
                               Get.to(() => ContactView(
                                     who: "Requester",
-                                    token: prefs.getString("token").toString(),
+                                    token: prefs.getString(preftoken).toString(),
                                     userID:
-                                        prefs.getString("userID").toString(),
+                                        prefs.getString(prefuserid).toString(),
                                   ));
                             },
                             child: SizedBox(
@@ -86,9 +87,9 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                   await SharedPreferences.getInstance();
                               Get.to(() => ContactView(
                                     who: "Requester",
-                                    token: prefs.getString("token").toString(),
+                                    token: prefs.getString(preftoken).toString(),
                                     userID:
-                                        prefs.getString("userID").toString(),
+                                        prefs.getString(prefuserid).toString(),
                                   ));
                             },
                             child: SizedBox(

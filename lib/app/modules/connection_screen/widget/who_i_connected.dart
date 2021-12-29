@@ -84,7 +84,7 @@ Widget whoIConnectedCard({
                               : Color(0xffBFA124),
                           borderRadius: BorderRadius.circular(28)),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: Center(
                             child: Text(
                                 data["isRequesterAccepted"] &&

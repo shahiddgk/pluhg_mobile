@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/widgets/models/user_chat.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -27,7 +28,7 @@ class ChatScreenController extends GetxController {
   void onClose() {}
   void connect() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userID = prefs.getString("userID");
+    userID = prefs.getString(prefuserid);
     socket = IO.io("ws://3.18.123.250", <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,

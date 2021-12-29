@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,9 +30,9 @@ class DynamicLinkService {
           String? token;
           bool? loggedOut;
 
-          token = prefs.getString('token');
+          token = prefs.getString(preftoken);
 
-          loggedOut = prefs.getBool("logged_out");
+          loggedOut = prefs.getBool(prefloggedout);
           prefs.setString("dynamicLink", id!);
           // state;
           print("This is the token---splashs screen");
@@ -83,9 +84,9 @@ class DynamicLinkService {
           String? token;
           bool? loggedOut;
 
-          token = prefs.getString('token');
+          token = prefs.getString(preftoken);
 
-          loggedOut = prefs.getBool("logged_out");
+          loggedOut = prefs.getBool(prefloggedout);
           // state;
           //stop progress bar
           Get.back();

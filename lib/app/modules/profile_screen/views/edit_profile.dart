@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/profile_screen/controllers/edit_profile.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/widgets/dialog_box.dart';
@@ -34,9 +35,7 @@ class EditProfileView extends GetView<EditProfileController> {
   final controller = Get.put(EditProfileController());
   APICALLS apicalls = APICALLS();
   Future<Object?>? getdata() async {
-    controller.data2 = await apicalls.getProfile(
-      token: token,
-    );
+    controller.data2 = await apicalls.getProfile();
 
     _address = new TextEditingController(
         text: address.isEmpty || address == "null" ? "" : address);
@@ -213,8 +212,8 @@ class EditProfileView extends GetView<EditProfileController> {
                                       controller.image.value != null) {
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
-                                    String? token = prefs.getString("token");
-                                    String? userID = prefs.getString("userID");
+                                    String? token = prefs.getString(preftoken);
+                                    String? userID = prefs.getString(prefuserid);
 
                                     if (controller.image.value != null) {
                                       controller.isloading.value = true;

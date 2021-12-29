@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,21 +24,18 @@ class ConnecTwoScreenController extends GetxController {
   @override
   void onClose() {}
   void increment() => count.value++;
+
   Future getInfo() async {
     isLoading.value = true;
     SharedPreferences pref = await SharedPreferences.getInstance();
     APICALLS apicalls = APICALLS();
-    profileDetails = await apicalls.getProfile(
-      token: pref.get("token").toString(),
-    );
-    print(pref.get("token").toString());
-    print(pref.get("userID").toString());
+    profileDetails = await apicalls.getProfile();
     if (profileDetails == null) {
       return Get.offAll(AuthScreenView());
     }
     else if (profileDetails["status"] == true) {
-      pref.setString("emailAddress", profileDetails["data"]["emailAddress"]);
-      pref.setString("phoneNumber", profileDetails["data"]["phoneNumber"]);
+      pref.setString(prefuseremail, profileDetails["data"]["emailAddress"]);
+      pref.setString(prefuserphone, profileDetails["data"]["phoneNumber"]);
       isLoading.value = false;
     } else {
       isLoading.value = false;

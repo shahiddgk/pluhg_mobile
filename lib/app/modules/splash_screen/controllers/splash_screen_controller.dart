@@ -5,6 +5,7 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreenController extends GetxController {
@@ -25,8 +26,8 @@ class SplashScreenController extends GetxController {
       String token = '';
       bool? loggedOut;
 
-      loggedOut = prefs.getBool("logged_out");
-      token = prefs.getString('token') ?? "";
+      loggedOut = prefs.getBool(prefloggedout);
+      token = prefs.getString(preftoken) ?? "";
       //if logged_out is false and token is false user is new so will be directed to
       // boarding screen else if token is empty just then AuthScreen or both are true
       // then homepage

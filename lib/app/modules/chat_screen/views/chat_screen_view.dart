@@ -32,9 +32,9 @@ class ChatScreenView extends GetView<ChatScreenController> {
                 ),
               ),
             ),
-            getMainChatList()
-       /*     SizedBox(height: controller.size.height * 0.02),
-            if (controller.users.length == 0) getMainChatList(),
+            //getMainChatList()
+            SizedBox(height: controller.size.height * 0.02),
+            if (controller.users.length == 0)  Center(child: Text('No message yet!')),
             if (controller.users.length != 0)
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -51,7 +51,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                   },
                   child: getMainChatList(),
                 ),
-              ),*/
+              ),
           ],
         ),
       ),

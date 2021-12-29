@@ -10,6 +10,7 @@ import 'package:plug/app/modules/auth_screen/views/otp_screen.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
 import 'package:plug/models/recommendation_response.dart';
@@ -82,10 +83,17 @@ class APICALLS with ValidationMixin {
                   .toString(),
         ));
       } else {
-        prefs.setBool("logged_out", false);
-        prefs.setString('token', parsedResponse['data']['token'].toString());
+        prefs.setBool(prefloggedout, false);
+        print(parsedResponse['data']['token'].toString());
+        prefs.setString(preftoken, parsedResponse['data']['token'].toString());
         prefs.setString(
-            'userID', parsedResponse['data']['user']['data']['_id'].toString());
+            prefuserid, parsedResponse['data']['user']['data']['_id'].toString());
+        prefs.setString(
+            prefusername, parsedResponse['data']['user']['data']['userName'].toString());
+        prefs.setString(
+            prefuseremail, parsedResponse['data']['user']['data']['emailAddress'].toString());
+        prefs.setString(
+            prefuserphone, parsedResponse['data']['user']['data']['phoneNumber'].toString());
         Get.offAll(() => HomeView(
               index: 1.obs,
             ));
@@ -211,7 +219,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/connect/people");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
 
     var body = {
       "requester": {
@@ -219,14 +227,14 @@ class APICALLS with ValidationMixin {
         "contact": requesterContact,
         "contactType": requesterContact.contains("@") ? 'email' : 'phone',
         "message":
-            "${prefs.getString("userName")} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
+            "${prefs.getString(prefusername)} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
       },
       "contact": {
         "name": contactName,
         "contact": contactContact,
         "contactType": contactContact.contains("@") ? 'email' : 'phone',
         "message":
-            "${prefs.getString("userName")} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
+            "${prefs.getString(prefusername)} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
       },
       'generalMessage': bothMessage
     };
@@ -283,7 +291,7 @@ class APICALLS with ValidationMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
     var parsedResponse;
     pd.show(
       max: 100,
@@ -321,9 +329,10 @@ class APICALLS with ValidationMixin {
     }
   }
 
-  Future getProfile({required String token}) async {
+  Future getProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString(preftoken).toString();
     var uri = Uri.parse("$url/api/profileDetails");
-
     var response =
         await http.get(uri, headers: {"Authorization": "Bearer $token"});
 
@@ -632,7 +641,7 @@ class APICALLS with ValidationMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
     var parsedResponse;
     pd.show(
       max: 100,
@@ -705,9 +714,8 @@ class APICALLS with ValidationMixin {
     print("connection ID: $connectionID");
     var uri = Uri.parse("$url/api/connect/closeConnection");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userID = prefs.getString("userID");
     ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
     var parsedResponse;
     pd.show(
       max: 100,
@@ -755,7 +763,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
 
     Map body = {
       "contacts": contacts.map((item) => item.toCleanedJson()).toList()
@@ -772,10 +780,7 @@ class APICALLS with ValidationMixin {
     Map parsedResponse = jsonDecode(response.body);
 
     print(parsedResponse);
-    print("ASDDSX");
-
     List data = parsedResponse['data'];
-
     for (int i = 0; i < data.length; i++) {
       final user = data[i] as Map<String, dynamic>;
       final userPhoneNumber = formatPhoneNumber(user['phoneNumber'] as String);
@@ -795,7 +800,7 @@ class APICALLS with ValidationMixin {
   Future<dynamic> getNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString('token');
+    String? token = prefs.getString(preftoken);
 
     var uri = Uri.parse("$url/api/getNotificationList");
 
@@ -811,7 +816,7 @@ class APICALLS with ValidationMixin {
   Future<RecommendationResponse> getConnectionDetails(
       {required String connectionID}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    String? token = prefs.getString(preftoken);
     print('connectionID is $connectionID');
     print('connection id $token');
     var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");

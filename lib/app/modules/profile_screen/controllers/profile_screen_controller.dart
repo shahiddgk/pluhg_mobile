@@ -25,10 +25,7 @@ class ProfileScreenController extends GetxController {
   Future fetchProfileDetails() async {
     isLoading.value = true;
     APICALLS apicalls = APICALLS();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    profileDetails = await apicalls.getProfile(
-      token: prefs.get("token").toString(),
-    );
+    profileDetails = await apicalls.getProfile();
     if (profileDetails == null) {
       return Get.offAll(AuthScreenView());
     }

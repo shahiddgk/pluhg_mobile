@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConnectionScreenController extends GetxController
@@ -39,9 +40,9 @@ class ConnectionScreenController extends GetxController
     prefs = await SharedPreferences.getInstance();
 
     var data = await apicalls.getActiveConnections(
-      token: prefs!.getString("token").toString(),
+      token: prefs!.getString(preftoken).toString(),
       // contact: prefs.get("phoneNumber").toString(),
-      contact: prefs!.getString("emailAddress").toString(),
+      contact: prefs!.getString(prefuseremail).toString(),
     );
 /*    if (data == null) {
       return Get.offAll
@@ -59,9 +60,9 @@ class ConnectionScreenController extends GetxController
   waitingData() async {
     prefs = await SharedPreferences.getInstance();
     var data = await apicalls.getWaitingConnections(
-      token: prefs!.getString("token").toString(),
+      token: prefs!.getString(preftoken).toString(),
       // contact: prefs.get("phoneNumber").toString(),
-      contact: prefs!.getString("emailAddress").toString(),
+      contact: prefs!.getString(prefuseremail).toString(),
     );
     if (data["data"] != null) {
       waitingList.value = data["data"].length;
@@ -76,9 +77,9 @@ class ConnectionScreenController extends GetxController
     prefs = await SharedPreferences.getInstance();
 
     var data = await apicalls.getRecommendedConnections(
-      token: prefs!.getString("token").toString(),
+      token: prefs!.getString(preftoken).toString(),
       // contact: prefs.get("phoneNumber").toString(),
-      userID: prefs!.getString("userID").toString(),
+      userID: prefs!.getString(prefuserid).toString(),
     );
     if (data["data"] != null) {
       connectedList.value = data["data"].length;
