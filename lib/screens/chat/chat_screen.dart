@@ -9,6 +9,7 @@ import 'package:plug/screens/chat/chat_appbar.dart';
 import 'package:plug/screens/chat/dialog_options_android.dart';
 import 'package:plug/screens/chat/input_chat_widget.dart';
 import 'package:plug/screens/chat/media_options/multi_image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../widgets/chat_widgets.dart';
@@ -59,8 +60,14 @@ class _ChatScreenState extends State<ChatScreen> {
   void connect() {
     socket = IO.io("ws://3.18.123.250", <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': false,
+      'autoConnect': true,
     });
+
+    print("--------------------------------------");
+    print(socket.connected);
+    if (socket.connected == true) {
+      socket.disconnect();
+    }
 
     socket.connect();
     socket.onConnect((data1) {
@@ -103,8 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
       print("error");
       print(data);
     });
-    print("--------------------------------------");
-    print(socket.connected);
   }
 
   void sendMessage(
@@ -112,14 +117,17 @@ class _ChatScreenState extends State<ChatScreen> {
     String senderId,
     String recevierId,
     String messageType,
-  ) {
+  ) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String myid = prefs.getString("userID").toString();
+
       setMessage('source', message, messageType);
       socket.emit('sendMessage', {
         'message': message,
         'messageType': messageType,
-        'senderId': senderId,
-        'recevierId': recevierId,
+        'senderId': myid,
+        'recevierId': myid == recevierId ? senderId : recevierId,
       });
     } catch (e) {
       print(e);
@@ -144,9 +152,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void setMessageResponse(dynamic message) {
     if (!this.mounted) return;
+
+    //"${APICALLS.url}/uploads/" + message["senderId"]["profileImage"]
     messages.add(
       Message(
-        image: "${APICALLS.url}/uploads/" + message["senderId"]["profileImage"],
+        image: "",
         id: message['_id'].toString(),
         messageType: message['messageType'],
         message: message['message'],
@@ -175,6 +185,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print('getting message');
     socket.on('getUserMessageResponse', (data) {
       print(data);
+      if (!this.mounted) return;
       setState(() {
 // get the list of messages
         var messagesArr = data['data'];
@@ -276,7 +287,9 @@ class _ChatScreenState extends State<ChatScreen> {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
+      print(result);
       List<String> files = result.paths.map((path) => path!).toList();
+      print(files);
       // files.forEach((element) {
       //   print(element.absolute);
       // });
