@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 
-import '../widgets/text_style.dart';
+/*
 
 Widget recieverMessage(
     {required BuildContext context,
@@ -11,8 +10,7 @@ Widget recieverMessage(
   return Row(
     children: [
       Container(
-        height: 54,
-        width: 54,
+
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(50),
@@ -20,12 +18,12 @@ Widget recieverMessage(
           border: Border.all(color: Colors.white, width: 3),
         ),
         child: CircleAvatar(
-          radius: 50,
-          backgroundImage: AssetImage("resources/$img.png"),
+          radius: 40.w,
+          backgroundImage: NetworkImage(img),
         ),
       ),
       SizedBox(
-        width: 10,
+        width: 10.w,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +44,7 @@ Widget recieverMessage(
             ),
           ),
           SizedBox(
-            height: 10,
+            height: 10.h,
           ),
           Text(
             time,
@@ -97,3 +95,4 @@ Widget myMessage({
     ],
   );
 }
+*/

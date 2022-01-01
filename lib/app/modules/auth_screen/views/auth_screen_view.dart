@@ -76,7 +76,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                       if (controller.isNumber.value)
                         Container(
                           width: 60.w,
-                          //library to fetch country codes without location
+                          //library to fetch country codes
                           child: CountryCodePicker(
                             // favorite: ['+1', 'US'],
                             onInit: (val) async {
@@ -84,6 +84,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                               val!.dialCode!;
                               print(val.dialCode!);
                             },
+                            backgroundColor: Colors.white,
                             initialSelection: controller.isoCountryCode.value,
                             padding: EdgeInsets.zero,
                             showFlag: false,

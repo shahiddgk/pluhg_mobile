@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
@@ -178,11 +179,77 @@ showPluhgDailog4(BuildContext context, String connectionID, String party) {
                 Navigator.of(context).pop();
                 pluhgSnackBar('Great', '$party has been notified');
               } else {
-                pluhgSnackBar('Sorry', 'An unexpected error occurred. Please try again.');
+                pluhgSnackBar(
+                    'Sorry', 'An unexpected error occurred. Please try again.');
               }
             } else {
               pluhgSnackBar('Sorry', '$party must be up to five text');
             }
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+showPluhgRatingDailog(
+  BuildContext context,
+  String title,
+  String subTitle, {
+  required Function onCLosed,
+}) {
+  //initial value
+  double rating = 0.0;
+  return showPlatformDialog(
+    context: context,
+    builder: (_) => BasicDialogAlert(
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 20, color: pluhgColour),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(subTitle, style: TextStyle(fontSize: 12, color: Colors.black)),
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: RatingBar.builder(
+              initialRating: 0,
+              minRating: 0,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: pluhgColour,
+              ),
+              onRatingUpdate: (ratingValue) {
+                print(rating);
+                rating = ratingValue;
+              },
+            ),
+          )
+        ],
+      ),
+      actions: <Widget>[
+        BasicDialogAction(
+          title: Container(
+              width: 47.67,
+              height: 31,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(59),
+                  border: Border.all(
+                    color: pluhgColour,
+                  )),
+              child: Center(
+                child: Text("OK",
+                    style: TextStyle(fontSize: 12, color: pluhgColour)),
+              )),
+          onPressed: () {
+            Navigator.pop(context);
+            onCLosed(rating);
           },
         ),
       ],

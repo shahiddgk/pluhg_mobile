@@ -80,44 +80,9 @@ class EditProfileView extends GetView<EditProfileController> {
                     SizedBox(height: controller.size.height * 0.027),
                     Row(
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext bc) {
-                                  return SafeArea(
-                                      child: Container(
-                                          child: new Wrap(children: <Widget>[
-                                    new ListTile(
-                                        leading: new Icon(
-                                          Icons.photo_library,
-                                          color: pluhgColour,
-                                        ),
-                                        title: new Text('Photo Library'),
-                                        onTap: () async {
-                                          controller.image.value =
-                                              (await _picker.pickImage(
-                                                  source:
-                                                      ImageSource.gallery))!;
-                                          Get.back();
-                                          showPluhgDailog(context, "Info!",
-                                              "Make sure you save");
-                                        }),
-                                    new ListTile(
-                                      leading: new Icon(Icons.photo_camera,
-                                          color: pluhgColour),
-                                      title: new Text('Camera'),
-                                      onTap: () async {
-                                        controller.image.value =
-                                            (await _picker.pickImage(
-                                                source: ImageSource.camera))!;
-                                        Get.back();
-                                        showPluhgDailog(context, "Info!",
-                                            "Make sure you save");
-                                      },
-                                    )
-                                  ])));
-                                });
+                            showPictureSelectionSheet(context);
                           },
                           child: Stack(
                             children: [
@@ -149,7 +114,9 @@ class EditProfileView extends GetView<EditProfileController> {
                                 bottom: 0,
                                 right: 0,
                                 child: InkWell(
-                                  onTap: () async {},
+                                  onTap: () {
+                                    showPictureSelectionSheet(context);
+                                  },
                                   child: CircleAvatar(
                                     backgroundColor: Colors.white,
                                     radius: 31.65 / 2,
@@ -350,6 +317,39 @@ class EditProfileView extends GetView<EditProfileController> {
         controller.isloading.value = false;
       }
     }
+  }
+  //to show selection of gallery and camera
+  showPictureSelectionSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+              child: Container(
+                  child: new Wrap(children: <Widget>[
+            new ListTile(
+                leading: new Icon(
+                  Icons.photo_library,
+                  color: pluhgColour,
+                ),
+                title: new Text('Photo Library'),
+                onTap: () async {
+                  controller.image.value =
+                      (await _picker.pickImage(source: ImageSource.gallery))!;
+                  Get.back();
+                  showPluhgDailog(context, "Info!", "Make sure you save");
+                }),
+            new ListTile(
+              leading: new Icon(Icons.photo_camera, color: pluhgColour),
+              title: new Text('Camera'),
+              onTap: () async {
+                controller.image.value =
+                    (await _picker.pickImage(source: ImageSource.camera))!;
+                Get.back();
+                showPluhgDailog(context, "Info!", "Make sure you save");
+              },
+            )
+          ])));
+        });
   }
 }
 

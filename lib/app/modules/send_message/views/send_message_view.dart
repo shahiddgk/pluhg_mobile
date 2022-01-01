@@ -10,6 +10,7 @@ import 'package:plug/app/widgets/button.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/text_style.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,6 +21,7 @@ class SendMessageView extends GetView<SendMessageController> {
   final Uint8List? contactImage, requesterImage;
   final APICALLS apicalls = APICALLS();
   final controller = Get.put(SendMessageController());
+
   SendMessageView(
       {required this.contactName,
       required this.contactContact,
@@ -27,6 +29,7 @@ class SendMessageView extends GetView<SendMessageController> {
       required this.requesterContact,
       required this.requesterImage,
       required this.requesterName});
+
   final TextEditingController _bothMessage = TextEditingController();
   final TextEditingController _recieverMessage = TextEditingController();
   final TextEditingController _contactMessage = TextEditingController();
@@ -36,20 +39,7 @@ class SendMessageView extends GetView<SendMessageController> {
     return Obx(
       () => Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Colors.grey,
-            ),
-          ),
-          actions: [
-            Icon(Icons.notifications_outlined, color: Color(0xff080F18)),
-          ],
-        ),
+        appBar: SimpleAppBar(backButton: true,),
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(

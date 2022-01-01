@@ -9,12 +9,12 @@ import 'colours.dart';
 
 Widget card(BuildContext context, var data) {
   Size size = MediaQuery.of(context).size;
-  if(data==null)return SizedBox();
+  if (data == null) return SizedBox();
   return Column(
     children: [
       Container(
-        width: 53.6,
-        height: 51.2,
+        width: 64,
+        height: 64,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
         child: !data.containsKey("profileImage") || data["profileImage"] == null
             ? Container(
@@ -32,22 +32,22 @@ Widget card(BuildContext context, var data) {
                     APICALLS.imageBaseUrl + data['profileImage'].toString())),
       ),
       data.containsKey("userName") && data["userName"] != null
-          ? Expanded(
-              child: Text("@${data["userName"]}",
-                  style: TextStyle(
-                      color: Color(0xff8D8D8D),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center),
-            )
-          : Expanded(
-              child: Text("@${data["name"]}",
-                  style: TextStyle(
-                      color: Color(0xff8D8D8D),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center),
-            ),
+          ? Text("@${data["userName"]}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Color(0xff8D8D8D),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+              textAlign: TextAlign.center)
+          : Text("@${data["name"]}",
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  color: Color(0xff8D8D8D),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+              textAlign: TextAlign.center),
     ],
   );
 }
@@ -57,7 +57,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
   return Column(
     children: [
       SizedBox(
-        height: 10,
+        height: 10.h,
       ),
       !data.containsKey("profileImage") || data["profileImage"] == null
           ? Container(
@@ -72,17 +72,23 @@ Widget cardProfile2(BuildContext context, var data, String text) {
           : Container(
               width: 68.73,
               height: 65.65,
-              padding: EdgeInsets.all(10),
+              // padding: EdgeInsets.all(10),
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(15)),
               child: Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(Get.size.width * 0.042),
+                  child: Image.network(
                     APICALLS.imageBaseUrl + data['profileImage'].toString(),
+                    width: 68.73.w,
+                    height: 65.65.w,
+                    fit: BoxFit.cover,
                   ),
                 ),
               )),
+      Container(
+        height: 6.h,
+      ),
       data.containsKey("userName") && data["userName"] != null
           ? Expanded(
               child: Text("@${data["userName"]}",
@@ -100,14 +106,14 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                       fontWeight: FontWeight.w400),
                   textAlign: TextAlign.center),
             ),
-      SizedBox(
-        height: 3,
-      ),
       Text(
         text,
         style: TextStyle(
             fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black),
-      )
+      ),
+      SizedBox(
+        height: 8.h,
+      ),
     ],
   );
 }

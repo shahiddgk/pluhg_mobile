@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -36,12 +37,13 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller = Get.put(HomeController());
 
   //Timer for retrieving dynamic in IOS
-  late Timer _timerLink;
+  Timer? _timerLink;
   @override
   void initState() {
     super.initState();
     controller.retrieveDynamicLink();
     WidgetsBinding.instance!.addObserver(this);
+
   }
 
   @override
@@ -146,7 +148,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     if (_timerLink != null) {
-      _timerLink.cancel();
+      _timerLink!.cancel();
     }
     super.dispose();
   }

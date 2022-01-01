@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
+import 'package:plug/models/file_model.dart';
 import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:plug/widgets/dialog_box.dart';
@@ -67,7 +69,6 @@ class APICALLS with ValidationMixin {
 
     var parsedResponse = jsonDecode(response.body);
 
-    print(parsedResponse);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Successfully logged in');
@@ -126,10 +127,8 @@ class APICALLS with ValidationMixin {
         body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
-    print(parsedResponse);
 
     if (response.statusCode == 200) {
-      print(parsedResponse);
       pluhgSnackBar('Great', 'Your profile Has been set');
       SharedPreferences prefs = await SharedPreferences.getInstance();
       // prefs.setString('profileImage',
@@ -248,7 +247,6 @@ class APICALLS with ValidationMixin {
     bool bothphone =
         !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       pluhgSnackBar("Great", "You have connected them, about to send message");
 
       Get.off(StatusScreen(
@@ -312,7 +310,6 @@ class APICALLS with ValidationMixin {
 
     if (parsedResponse["status"]) {
       pd.close();
-      print(parsedResponse);
       return true;
       //all good
     } else {
@@ -445,11 +442,8 @@ class APICALLS with ValidationMixin {
     //contentType: new MediaType('image', 'png'));
 
     var response = await request.send();
-    print(response.statusCode);
 
     response.stream.transform(utf8.decoder).listen((var value) async {
-      print(value);
-      print(response);
       var jar = response.stream.transform(utf8.decoder);
     });
     if (response.statusCode == 200) {
@@ -478,7 +472,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -513,7 +506,6 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       pluhgSnackBar("Great", "${parsedResponse['message']}");
-      print(parsedResponse);
       return false;
       //All okay
     } else {
@@ -545,8 +537,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -563,16 +553,13 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/activeConnections");
     var response;
     try {
-      response = await http.post(uri,
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "application/json"
-          },
-          body: jsonEncode({
-            "${!contact.contains("@") ? "phoneNumber" : "emailAddress"}":
-                "${contact.toString()}",
-          }));
-      print('response ${response.body}');
+      response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -583,15 +570,13 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
       print("Ran into Error");
       print(parsedResponse);
+      pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
       return null;
-      // pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
     }
   }
 
@@ -601,6 +586,8 @@ class APICALLS with ValidationMixin {
   }) async {
     print(token);
     Uri uri = Uri.parse("$url/api/connect/waitingConnections");
+    print("$url/api/connect/waitingConnections");
+
     http.Response response;
 
     response = await http.get(uri, headers: {
@@ -612,8 +599,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -649,11 +634,7 @@ class APICALLS with ValidationMixin {
     // if (contact.contains("@")) {
     var body = {
       "connectionId": connectionID,
-      "pluhggedBy": plugID,
-      "acceptRequest": isAccepting,
-      "isRequester": isRequester,
-      "isContact": isContact,
-      "emailAddress": contact
+      "action": isAccepting ? "accept" : "reject",
     };
     print(body);
     var response = await http.post(uri,
@@ -682,7 +663,7 @@ class APICALLS with ValidationMixin {
     //       body: jsonEncode(body));
     //   parsedResponse = jsonDecode(response.body);
     // }
-    print(parsedResponse);
+    print("ACCEPT_REJECT" + parsedResponse.toString());
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -832,31 +813,45 @@ class APICALLS with ValidationMixin {
     return RecommendationResponse.fromJson(map);
   }
 
-  Future<dynamic> uploadFile(String senderId, List<String> files) async {
-    String token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGY3OWY5NGUxYWI2YzMwZmM5MTJkODEiLCJwaG9uZSI6IjcyMjY4MjYyNjQiLCJpYXQiOjE2MjY4NDEwMTcsImV4cCI6MTYyNzAxMzgxN30.nRIF6kLCXC7YZZZkSAItXJgabDLJacc0fBQXcHqs_uI';
+  Future<dynamic> uploadFile(
+      String senderId, List<String> files, String type, String subType) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse("$url/api/upload/uploadFile/$senderId"),
-    );
+    print("------------------------------------------");
+    print(files);
+    print(type);
+    print(subType);
+    print("------------------------------------------");
+
+    String? token = prefs.getString("token");
+    Map<String, String> headers = {"Authorization": "Bearer $token"};
+
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
-      iterable.add(await http.MultipartFile.fromPath('file', files[i]));
+      iterable.add(new http.MultipartFile.fromBytes(
+          'files', await File(files[i]).readAsBytes(),
+          filename: basename(files[i].split("/").last),
+          contentType: MediaType(type,
+              subType)));
     }
 
-    request.files.addAll(iterable);
-    request.headers.addAll({
-      "Authorization": "Bearer $token",
-      'Content-type': 'multipart/form-data',
-    });
-    http.StreamedResponse response = await request.send();
-    var httpResponse = await http.Response.fromStream(response);
-    var data = json.decode(httpResponse.body);
 
-    if (data["hasError"] == false)
-      return data['data']['fileName'];
-    else
-      return null;
+    var request = http.MultipartRequest(
+        "POST", Uri.parse("http://3.18.123.250/api/upload/upload-files"))
+      ..files.addAll(iterable)
+      ..headers.addAll(headers);
+
+    //contentType: new MediaType('image', 'png'));
+
+    var response = await request.send();
+
+    var httpResponse = await http.Response.fromStream(response);
+
+    var data = json.decode(httpResponse.body)["data"];
+
+    List<FileModel> files_res =
+        List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
+
+    return files_res;
   }
 }

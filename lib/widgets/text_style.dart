@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 TextStyle body1TextStyle = TextStyle(
   color: const Color(0xFF707070),
@@ -27,6 +28,14 @@ TextStyle body4TextStyle = TextStyle(
   color: const Color(0xFF707070),
   fontFamily: "Muli",
   fontSize: 12,
+);
+
+
+TextStyle subtitleTextStyle = TextStyle(
+  fontFamily: "Muli",
+  fontSize: 14.sp,
+    fontWeight: FontWeight.w800,
+    color: Color(0xff575858)
 );
 
 TextStyle body3TextStyle = TextStyle(
