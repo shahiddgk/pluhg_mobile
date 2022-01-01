@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
+import 'package:plug/models/file_model.dart';
 import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:plug/widgets/dialog_box.dart';
@@ -219,7 +221,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/connect/people");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString(preftoken);
+    String? token = prefs.getString("token");
 
     var body = {
       "requester": {
@@ -455,7 +457,6 @@ class APICALLS with ValidationMixin {
     var response = await request.send();
 
     response.stream.transform(utf8.decoder).listen((var value) async {
-
       var jar = response.stream.transform(utf8.decoder);
     });
     if (response.statusCode == 200) {
@@ -484,7 +485,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -535,8 +535,6 @@ class APICALLS with ValidationMixin {
     required String token,
     required String userID,
   }) async {
-
-
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
@@ -552,6 +550,8 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
+      print("All Good Here");
+      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -585,8 +585,6 @@ class APICALLS with ValidationMixin {
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print("All Good Here");
-      print(parsedResponse);
       return parsedResponse;
       //All okay
     } else {
@@ -594,6 +592,7 @@ class APICALLS with ValidationMixin {
       print(parsedResponse);
       pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
       return null;
+      // pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
     }
   }
 
@@ -681,7 +680,6 @@ class APICALLS with ValidationMixin {
     //       body: jsonEncode(body));
     //   parsedResponse = jsonDecode(response.body);
     // }
-    print("ACCEPT_REJECT"+parsedResponse.toString());
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -714,8 +712,9 @@ class APICALLS with ValidationMixin {
     print("connection ID: $connectionID");
     var uri = Uri.parse("$url/api/connect/closeConnection");
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userID = prefs.getString("userID");
     ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString(preftoken);
+    String? token = prefs.getString("token");
     var parsedResponse;
     pd.show(
       max: 100,
@@ -763,7 +762,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString(preftoken);
+    String? token = prefs.getString("token");
 
     Map body = {
       "contacts": contacts.map((item) => item.toCleanedJson()).toList()
@@ -778,8 +777,6 @@ class APICALLS with ValidationMixin {
       body: jsonEncode(body),
     );
     Map parsedResponse = jsonDecode(response.body);
-
-    print(parsedResponse);
     List data = parsedResponse['data'];
     for (int i = 0; i < data.length; i++) {
       final user = data[i] as Map<String, dynamic>;
@@ -828,31 +825,45 @@ class APICALLS with ValidationMixin {
     return RecommendationResponse.fromJson(map);
   }
 
-  Future<dynamic> uploadFile(String senderId, List<String> files) async {
-    String token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGY3OWY5NGUxYWI2YzMwZmM5MTJkODEiLCJwaG9uZSI6IjcyMjY4MjYyNjQiLCJpYXQiOjE2MjY4NDEwMTcsImV4cCI6MTYyNzAxMzgxN30.nRIF6kLCXC7YZZZkSAItXJgabDLJacc0fBQXcHqs_uI';
+  Future<dynamic> uploadFile(
+      String senderId, List<String> files, String type, String subType) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse("$url/api/upload/uploadFile/$senderId"),
-    );
+    print("------------------------------------------");
+    print(files);
+    print(type);
+    print(subType);
+    print("------------------------------------------");
+
+    String? token = prefs.getString("token");
+    Map<String, String> headers = {"Authorization": "Bearer $token"};
+
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
-      iterable.add(await http.MultipartFile.fromPath('file', files[i]));
+      iterable.add(new http.MultipartFile.fromBytes(
+          'files', await File(files[i]).readAsBytes(),
+          filename: basename(files[i].split("/").last),
+          contentType: MediaType(type,
+              subType)));
     }
 
-    request.files.addAll(iterable);
-    request.headers.addAll({
-      "Authorization": "Bearer $token",
-      'Content-type': 'multipart/form-data',
-    });
-    http.StreamedResponse response = await request.send();
-    var httpResponse = await http.Response.fromStream(response);
-    var data = json.decode(httpResponse.body);
 
-    if (data["hasError"] == false)
-      return data['data']['fileName'];
-    else
-      return null;
+    var request = http.MultipartRequest(
+        "POST", Uri.parse("http://3.18.123.250/api/upload/upload-files"))
+      ..files.addAll(iterable)
+      ..headers.addAll(headers);
+
+    //contentType: new MediaType('image', 'png'));
+
+    var response = await request.send();
+
+    var httpResponse = await http.Response.fromStream(response);
+
+    var data = json.decode(httpResponse.body)["data"];
+
+    List<FileModel> files_res =
+        List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
+
+    return files_res;
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -141,7 +140,7 @@ class ContactView extends GetView<ContactController> {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                "${controller.title.value}",
+                "${controller.person.value}",
                 style: TextStyle(
                   fontSize: 28,
                   color: pluhgColour,
@@ -192,6 +191,8 @@ class ContactView extends GetView<ContactController> {
                       controller.contactImage = null;
                       controller.contactContact.value = "";
                       controller.contactName.value = "";
+                      // controller.contacts_
+                      //     .add(PluhgContact.fromContact(fullContact));
                       controller.getContactList();
                     }
                   },
@@ -360,38 +361,6 @@ class ContactView extends GetView<ContactController> {
       );
     } else {
       showPluhgDailog(context, "So sorry", "You can not connect yourself");
-    }
-  }
-
-  void onRequesterSelect(PluhgContact pluhgContact, int index,
-      BuildContext context, List<PluhgContact> contacts) {
-    print("Pluhg user ${pluhgContact.isPlughedUser}");
-    controller.requesterId.value = controller.contacts_[index].id!;
-    controller.requesterImage = pluhgContact.photo;
-    controller.requesterContact.value = pluhgContact.phoneNumber;
-    controller.requesterName.value = pluhgContact.name;
-    controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
-    controller.title.value = "Select Contact";
-    contacts.remove(pluhgContact);
-
-    if (controller.contactName.value.isEmpty) {
-      showPluhgDailog(context, "Info",
-          "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
-    }
-  }
-
-  void onContactSelect(PluhgContact pluhgContact, int index,
-      BuildContext context, List<PluhgContact> contacts) {
-    print("Pluhg user ${pluhgContact.isPlughedUser}");
-    if (pluhgContact.phoneNumber != controller.requesterContact.value) {
-      controller.contactId.value = controller.contacts_[index].id!;
-      controller.contactImage = pluhgContact.photo;
-      controller.contactContact.value = pluhgContact.phoneNumber;
-      controller.contactName.value = pluhgContact.name;
-      controller.isContactPluhg.value = contacts[index].isPlughedUser;
-
-      controller.title.value = "Click Next";
-      contacts.remove(pluhgContact);
     }
   }
 

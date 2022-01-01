@@ -32,7 +32,6 @@ class ChatScreenView extends GetView<ChatScreenController> {
                 ),
               ),
             ),
-            //getMainChatList()
             SizedBox(height: controller.size.height * 0.02),
             if (controller.users.length == 0)  Center(child: Text('No message yet!')),
             if (controller.users.length != 0)
@@ -43,7 +42,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                 itemBuilder: (ctx, i) => InkWell(
                   onTap: () {
                     Get.to(() => ChatScreen(
-                      username_receiver: "",
+                        username_receiver: "",
                         name_receiver: controller.users[i].name,
                         profile_receiver:  controller.users[i].profileImage! ,
                         senderId: controller.users[i].senderId,

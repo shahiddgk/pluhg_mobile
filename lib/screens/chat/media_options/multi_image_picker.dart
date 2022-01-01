@@ -267,6 +267,8 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
     return WillPopScope(
       child: Scaffold(
         appBar: new AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
             leading: IconButton(
               onPressed: () {
                 if (!isLoading) {
@@ -288,7 +290,6 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
                 color: AppColors.pluhgMenuBlackColour,
               ),
             ),
-            backgroundColor: AppColors.pluhgWhite,
             actions: selectedImages.length != 0 && !isLoading
                 ? <Widget>[
                     IconButton(
@@ -362,17 +363,14 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
       setState(() {
         currentUploadingIndex = index;
       });
-      await widget
-          .callback(File(selectedImages[index].path),
-              timestamp: messagetime, totalFiles: selectedImages.length)
-          .then((imageUrl) async {
-        await widget.writeMessage!(imageUrl, messagetime).then((value) {
-          if (selectedImages.last == selectedImages[index]) {
-            Navigator.of(context).pop();
-          } else {
-            uploadEach(currentUploadingIndex + 1);
-          }
-        });
+
+      List<String> files = [];
+      for (XFile i in selectedImages) {
+        files.add(i.path);
+      }
+      widget.callback("image", 'png', files).then((value) {
+          Navigator.of(context).pop();
+
       });
     }
   }

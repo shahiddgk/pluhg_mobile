@@ -21,7 +21,7 @@ Widget whoIConnectedCard({
     },
     child: Container(
         margin: EdgeInsets.symmetric(vertical: 4.0),
-        //height: 164,
+        height: 164,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15)),
           color: Color(0xffEBEBEB),
@@ -30,72 +30,68 @@ Widget whoIConnectedCard({
           children: [
             Expanded(
               child: Container(
-                //height: 164,
+                height: 164,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                          blurRadius: 40, color: Colors.black12)
+                          blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
                     ]),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                      Container(
-                          width: 84,
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12, blurRadius: 20)
-                              ]),
-                          child:
-                              card(Get.context!, data["requester"]["refId"])),
-                      Container(
-                          width: 84.0,
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12, blurRadius: 20)
-                              ]),
-                          child:
-                              card(Get.context!, data["contact"]["refId"])),
-                        ],
-                      ),
-                    ),
+                    Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                            width: 84,
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black12, blurRadius: 20)
+                                ]),
+                            child:
+                                card(Get.context!, data["requester"]["refId"])),
+                        Container(
+                            width: 84.0,
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black12, blurRadius: 20)
+                                ]),
+                            child:
+                                card(Get.context!, data["contact"]["refId"])),
+                      ],
+                    )),
                     Container(
+                      height: 24.h,
                       margin:
-                          EdgeInsets.only(top: 12.0,left: 12.0, right: 12.0,bottom: 12.0),
+                          EdgeInsets.only(top: 12.0,left: 12.0, right: 12.0),
                       decoration: BoxDecoration(
                           color: data["isRequesterAccepted"] &&
                                   data["isContactAccepted"]
                               ? Color(0xff18C424)
                               : Color(0xffBFA124),
                           borderRadius: BorderRadius.circular(28)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Center(
-                            child: Text(
-                                data["isRequesterAccepted"] &&
-                                        data["isContactAccepted"]
-                                    ? "Accepted"
-                                    : "Pending",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400))),
-                      ),
+                      child: Center(
+                          child: Text(
+                              data["isRequesterAccepted"] &&
+                                      data["isContactAccepted"]
+                                  ? "Accepted"
+                                  : "Pending",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400))),
                     )
                   ],
                 ),
