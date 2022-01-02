@@ -4,9 +4,6 @@ class AppColors {
   static const Color pluhgColour = Color(0xff000BFF);
   static const Color pluhgWhite = Colors.white;
   static const Color chatColour = Color(0xFF2255C8);
-
-  static const Color pluhgWhite = Colors.white;
-  static const Color chatColour = Color(0xFF2255C8);
   static const Color purpleIconColour = Color(0xFF747393);
   static const Color pluhgGrayColour3 = Color(0xff858483);
 

@@ -209,12 +209,12 @@ Widget activeConnectionCard({
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
                           color: Color(0xff898B8B),
-                          fontSize: 12.sp)),
+                          fontSize: 10)),
                   Text(
                     data == null ? "Pluhg" : "@${data['userId']["userName"]}",
                     style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 14.sp,
+                        fontSize: 12,
                         color: Color(0xff575858)),
                   ),
                   SizedBox(height: 4.71),
@@ -229,7 +229,7 @@ Widget activeConnectionCard({
                     formattedDate.toString().substring(0, 11),
                     style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 14.sp,
+                        fontSize: 12,
                         color: Color(0xff575858)),
                   ),
                   SizedBox(height: 4.71),
@@ -244,7 +244,7 @@ Widget activeConnectionCard({
                     formattedDate.toString().substring(12),
                     style: TextStyle(
                         fontWeight: FontWeight.w800,
-                        fontSize: 14.sp,
+                        fontSize: 12,
                         color: Color(0xff575858)),
                   ),
                 ]),

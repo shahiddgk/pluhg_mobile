@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
+import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/notif_icon.dart';
 

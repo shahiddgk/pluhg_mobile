@@ -108,14 +108,15 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                             : controller.profileDetails['data'] == null
                                 ? defaultImage()
                                 : Container(
-                                    width: 51.69,
-                                    height: 48.88,
+                                    width: 54,
+                                    height: 54,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
+                                      borderRadius: BorderRadius.circular(24),
                                     ),
-                                    child: networkImage(50, 52,
+                                    child: networkImage(54, 54,
                                         "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"),
                                   )),
+                    SizedBox(height: 8,),
                     Center(child: Text("The Pluhg")),
                     SizedBox(
                       height: 73,

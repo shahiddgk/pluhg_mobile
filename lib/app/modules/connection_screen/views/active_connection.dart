@@ -250,10 +250,13 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
   }
 
   void showDialogWithRating(BuildContext context) {
-    showPluhgRatingDailog(context, "Close connection",
-        "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
-        onCLosed: (value) {
-      print("Rating value $value");
+    showDialog(context: context,builder: (BuildContext context){
+    return  showPluhgRatingDialog(context, "Close connection",
+          "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
+          onCLosed: (value) {
+            print("Rating value $value");
+          });
     });
+
   }
 }

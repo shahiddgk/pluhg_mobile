@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -5,9 +7,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/screens/chat/chat_appbar.dart';
-import 'package:plug/screens/chat/dialog_options_android.dart';
-import 'package:plug/screens/chat/input_chat_widget.dart';
+import 'package:plug/models/file_model.dart';
+import 'package:plug/screens/chat/chat_widgets/chat_appbar.dart';
+import 'package:plug/screens/chat/chat_widgets/chat_bubble.dart';
+import 'package:plug/screens/chat/media_options/dialog_options_android.dart';
+import 'package:plug/screens/chat/chat_widgets/input_chat_widget.dart';
+import 'package:plug/screens/chat/media_options/multi_document_picker.dart';
 import 'package:plug/screens/chat/media_options/multi_image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -42,19 +47,26 @@ class _ChatScreenState extends State<ChatScreen> {
   late IO.Socket socket;
   List<Message> messages = [];
   TextEditingController _controller = TextEditingController();
+  late String myid = "";
+  late bool loading = true;
+  final ScrollController _controller_s = ScrollController();
+
+  getMyId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    myid = prefs.getString("userID").toString();
+  }
 
   @override
   void initState() {
     super.initState();
     connect();
+    getMyId();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    socket.close();
-    print("yess");
+    // socket.close();
   }
 
   void connect() {
@@ -63,27 +75,28 @@ class _ChatScreenState extends State<ChatScreen> {
       'autoConnect': true,
     });
 
-    print("--------------------------------------");
-    print(socket.connected);
     if (socket.connected == true) {
       socket.disconnect();
     }
 
     socket.connect();
     socket.onConnect((data1) {
-      print('Connected.');
       getMessages(widget.senderId, widget.recevierId);
       socket.on('sendMessageResponse', (msg) {
         print('**************');
-        print(msg);
+        print(msg['data']);
         setMessageResponse(msg['data']);
       });
       socket.on('readMessageResponse', (data) {
-        messages.forEach((element) {
+        /* messages.forEach((element) {
+
+          print("---------------------------------------------------------------");
+          print(data["data"]["senderId"] );
           if (element.id == data['data']['_id']) {
             var message = data['data'];
             setState(() {
               element = Message(
+                senderId:message["senderId"] ,
                 image: "${APICALLS.url}/uploads/" +
                     message["senderId"]["profileImage"],
                 id: message['_id'].toString(),
@@ -95,15 +108,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 date: DateFormat('dd MMMM, yyyy')
                     .format(message['createdAt'])
                     .toString(),
-                type: message['senderId'] == widget.senderId
-                    ? 'source'
-                    : 'destination',
+                type: message['senderId'] == myid ? 'source' : 'destination',
                 isRead: message['isRead'],
                 isDeleted: message['isDeleted'],
               );
             });
           }
-        });
+        });*/
       });
     });
     socket.onConnectError((data) {
@@ -112,31 +123,41 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void sendMessage(
-    String message,
-    String senderId,
-    String recevierId,
-    String messageType,
-  ) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String myid = prefs.getString("userID").toString();
+  void sendMessage_type(String text, String senderId, String recevierId,
+      String messageType, List<FileModel> files) async {
+    List<String> res_files_name = [];
 
-      setMessage('source', message, messageType);
-      socket.emit('sendMessage', {
-        'message': message,
-        'messageType': messageType,
-        'senderId': myid,
-        'recevierId': myid == recevierId ? senderId : recevierId,
-      });
-    } catch (e) {
-      print(e);
+    if (messageType == 'text')
+      messageType = 'text';
+    else if (messageType == "png")
+      messageType = "image";
+    else
+      messageType = "file";
+
+    for (FileModel f in files) {
+      res_files_name.add(f.fileName);
     }
+
+    // try {
+    setMessage('source',
+        messageType == "text" ? text : json.encode(res_files_name), messageType,
+        files: res_files_name);
+
+    socket.emit('sendMessage', {
+      'message': messageType == "text" ? text : json.encode(res_files_name),
+      'messageType': messageType,
+      'senderId': myid,
+      'recevierId': myid == recevierId ? senderId : recevierId,
+    });
+
+    _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);
+    FocusScope.of(context).unfocus();
   }
 
-  void setMessage(String type, dynamic message, String messageType) {
+  void setMessage(String type, dynamic message, String messageType,
+      {List<String>? files}) {
     Message messageModel = Message(
-      image: "",
+      senderId: myid,
       type: type,
       message: message,
       time: DateFormat('hh:mm a').format(DateTime.now()).toString(),
@@ -153,13 +174,18 @@ class _ChatScreenState extends State<ChatScreen> {
   void setMessageResponse(dynamic message) {
     if (!this.mounted) return;
 
+    setState(() {
+      //message.add(Message.fromJson(message, myid));
+    });
+
     //"${APICALLS.url}/uploads/" + message["senderId"]["profileImage"]
-    messages.add(
+    /*messages.add(
       Message(
         image: "",
         id: message['_id'].toString(),
-        messageType: message['messageType'],
-        message: message['message'],
+        messageType:
+            message['messageType'] == null ? "text" : message['messageType'],
+        message: message['messageType'] == null ? "" : message['message'],
         // time: message['createdAt'].toString(),
         // date: message['createdAt'].toString(),
 
@@ -169,12 +195,11 @@ class _ChatScreenState extends State<ChatScreen> {
         date: DateFormat('dd MMMM, yyyy')
             .format(DateTime.parse(message['createdAt']))
             .toString(),
-        type: message['senderId'] == widget.senderId ? 'source' : 'destination',
-        isRead:
-            message['receiverId'] == widget.senderId ? true : message['isRead'],
+        type: message['senderId'] == myid ? 'source' : 'destination',
+        isRead: message['receiverId'] == myid ? true : message['isRead'],
         isDeleted: message['isDeleted'],
       ),
-    );
+    );*/
   }
 
   void getMessages(String userId, String oppUserId) {
@@ -182,34 +207,32 @@ class _ChatScreenState extends State<ChatScreen> {
       'userId': userId,
       'oppUserId': oppUserId,
     });
-    print('getting message');
     socket.on('getUserMessageResponse', (data) {
-      print(data);
       if (!this.mounted) return;
-      setState(() {
-// get the list of messages
-        var messagesArr = data['data'];
-        // messages = [];
-        for (int i = 0; i < messagesArr.length; i++) {
-          if (messagesArr[i]['recevierId'] == widget.senderId) {
-            socket.emit('/readMessage', {
-              'userId': widget.senderId,
-              'messageId': messagesArr[i]['_id'],
-            });
-          }
-          setMessageResponse(messagesArr[i]);
+      var messagesArr = data['data'];
+
+      for (int i = 0; i < messagesArr.length; i++) {
+        if (messagesArr[i]['recevierId'] == myid) {
+          socket.emit('/readMessage', {
+            'userId': myid,
+            'messageId': messagesArr[i]['_id'],
+          });
         }
+      }
+
+      setState(() {
+        messages = List<Message>.from(
+            messagesArr.map((e) => Message.fromJson(e, myid)).toList());
+        loading = false;
+        new Timer(const Duration(milliseconds: 1000), () {
+          _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);
+        });
       });
     });
   }
 
-  send_message(String text) {
-    sendMessage(
-      text,
-      widget.senderId,
-      widget.recevierId,
-      'text',
-    );
+  send_message(String text, type) {
+    sendMessage_type(text, widget.senderId, widget.recevierId, type, []);
     _controller.clear();
   }
 
@@ -261,9 +284,24 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Container(
                   padding: EdgeInsets.all(4),
                   height: 200.h,
+                  width: 240.w,
                   child: DialogOptionsAndroid(
                       send_camera_image: () {},
-                      send_document: upload_document,
+                      send_document: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MultiDocumentPicker(
+                                      title: "Select File",
+                                      callback: upload_document,
+                                      writeMessage:
+                                          (String? url, int time) async {
+                                        if (url != null) {
+                                          ///send message
+                                        }
+                                      },
+                                    )));
+                      },
                       send_gallery_images: () {
                         Navigator.push(
                             context,
@@ -282,33 +320,17 @@ class _ChatScreenState extends State<ChatScreen> {
         });
   }
 
-  upload_document() async {
-    print("thiiiiiiss");
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result != null) {
-      print(result);
-      List<String> files = result.paths.map((path) => path!).toList();
-      print(files);
-      // files.forEach((element) {
-      //   print(element.absolute);
-      // });
-      APICALLS apicalls = APICALLS();
-      var response = await apicalls.uploadFile(widget.senderId, files);
-      print(
-          "------------------------------------------------------------------------");
-      print(response);
-      response.forEach((files) {
-        sendMessage(
-          files['filename'],
-          widget.senderId,
-          widget.recevierId,
-          files['mimetype'].split('/')[0],
-        );
-      });
-    } else {
-      // User canceled the picker
-    }
+  upload_document(type, subType, files) async {
+    APICALLS apicalls = APICALLS();
+    var response =
+        await apicalls.uploadFile(widget.senderId, files, type, subType);
+
+    sendMessage_type(
+        "",
+        myid,
+        myid == widget.recevierId ? widget.senderId : widget.recevierId,
+        subType,
+        response);
   }
 
   @override
@@ -317,65 +339,8 @@ class _ChatScreenState extends State<ChatScreen> {
       backgroundColor: Colors.white,
       appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver,
           widget.username_receiver),
-      bottomSheet: InputChatWidget(
-          send_function: send_message,
-          send_doc:
-              send_document) /*Container(
-        height: 58,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          color: Color(0xff000BFF),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-        ),
-        child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              width: 10,
-            ),
-            Icon(
-              Icons.emoji_emotions_outlined,
-              color: Colors.white.withAlpha(190),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: TextFormField(
-                controller: _controller,
-                style: body2TextStyleWhite,
-                maxLines: 200,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Yeah, I'm there.",
-                    hintStyle: body2TextStyleWhite),
-              ),
-            ),
-            Spacer(),
-            GestureDetector(
-              onTap: () async {
-
-              },
-              child: Image.asset("resources/attachment.png"),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-
-              },
-              child: Image.asset("resources/send_icon.png"),
-            ),
-            SizedBox(
-              width: 2,
-            ),
-          ],
-        ),
-      )*/
-      ,
+      bottomSheet:
+          InputChatWidget(send_function: send_message, send_doc: send_document),
       body: Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -385,16 +350,19 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 20,
+              height: 20.h,
             ),
-            Expanded(
-              child: Container(
-                // height: MediaQuery.of(context).size.height * 0.7,
-                padding: EdgeInsets.all(15),
-                child: ListView.builder(
-                  itemCount: messages.length,
-                  itemBuilder: (ctx, i) {
-                    if (messages[i].type == 'source') {
+            loading
+                ? Center(child: CupertinoActivityIndicator())
+                : Expanded(
+                    child: Container(
+                      // height: MediaQuery.of(context).size.height * 0.7,
+                      padding: EdgeInsets.all(15),
+                      child: ListView.builder(
+                        controller: _controller_s,
+                        itemCount: messages.length,
+                        itemBuilder: (ctx, i) {
+                          /* if (messages[i].type == 'source') {
                       // USE url = APICALLS.url/uploads/messages[i].message to preview files
                       if (messages[i].messageType == 'image')
                         return Container(
@@ -464,64 +432,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
                             ///jijiji
                             ),
-                      );
-                    return Container();
-                  },
-                ),
-                // Container(
-                //   // height: MediaQuery.of(context).size.height * 0.7,
-                //   padding: EdgeInsets.all(15),
-                // child: SingleChildScrollView(
-                //   child: Column(
-                //     children: [
-                //       recieverMessage(
-                //           context: context,
-                //           message: "What's Up, How are you?",
-                //           time: "12:13 AM",
-                //           img: "person2"),
-                //       SizedBox(
-                //         height: 20,
-                //       ),
-                //       myMessage(
-                //           context: context,
-                //           message: "Fine How about you",
-                //           time: "12:45 AM"),
-                //       SizedBox(
-                //         height: 20,
-                //       ),
-                //       recieverMessage(
-                //           context: context,
-                //           message:
-                //               "unc eros accumsan nisi, quis euismod erat est id orci. bibendum accumsan ",
-                //           time: "12:43 AM",
-                //           img: "person2"),
-                //       SizedBox(
-                //         height: 20,
-                //       ),
-                //       myMessage(
-                //           context: context,
-                //           message:
-                //               " habitasse platea dictumst. condimentum risus diam, ",
-                //           time: "12:45 AM"),
-                //       SizedBox(
-                //         height: 20,
-                //       ),
-                //       Text(
-                //         "Today",
-                //         style: body3TextStyleBlue,
-                //       ),
-                //       SizedBox(
-                //         height: 15,
-                //       ),
-                //       recieverMessage(
-                //           context: context,
-                //           message: "???????",
-                //           time: "12:54 AM",
-                //           img: "person2"),
-                //     ],
-                //   ),
-                // ),
-              ),
+                      );*/
+
+                          return BubbleChat(messages[i],
+                              isMe:
+                                  myid == messages[i].senderId ? true : false);
+                        },
+                      ),
+                    ),
+                  ),
+            Container(
+              height: 56.h,
             )
           ],
         ),

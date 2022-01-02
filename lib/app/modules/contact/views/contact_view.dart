@@ -140,7 +140,7 @@ class ContactView extends GetView<ContactController> {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                "${controller.person.value}",
+                "${controller.title.value}",
                 style: TextStyle(
                   fontSize: 28,
                   color: pluhgColour,
@@ -450,6 +450,39 @@ class ContactView extends GetView<ContactController> {
       ],
     );
   }
+
+  void onRequesterSelect(PluhgContact pluhgContact, int index,
+      BuildContext context, List<PluhgContact> contacts) {
+    print("Pluhg user ${pluhgContact.isPlughedUser}");
+    controller.requesterId.value = controller.contacts_[index].id!;
+    controller.requesterImage = pluhgContact.photo;
+    controller.requesterContact.value = pluhgContact.phoneNumber;
+    controller.requesterName.value = pluhgContact.name;
+    controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
+    controller.title.value = "Select Contact";
+    contacts.remove(pluhgContact);
+
+    if (controller.contactName.value.isEmpty) {
+      showPluhgDailog(context, "Info",
+          "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
+    }
+  }
+
+  void onContactSelect(PluhgContact pluhgContact, int index,
+      BuildContext context, List<PluhgContact> contacts) {
+    print("Pluhg user ${pluhgContact.isPlughedUser}");
+    if (pluhgContact.phoneNumber != controller.requesterContact.value) {
+      controller.contactId.value = controller.contacts_[index].id!;
+      controller.contactImage = pluhgContact.photo;
+      controller.contactContact.value = pluhgContact.phoneNumber;
+      controller.contactName.value = pluhgContact.name;
+      controller.isContactPluhg.value = contacts[index].isPlughedUser;
+
+      controller.title.value = "Click Next";
+      contacts.remove(pluhgContact);
+    }
+  }
+
 
   Widget contactImage(Uint8List? image, bool isPluhgUser) {
     print("contact image ${isPluhgUser.toString()}");

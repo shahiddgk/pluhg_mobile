@@ -5,7 +5,6 @@ class Message {
   String type;
   dynamic message;
   String time;
-  String image;
   bool isRead;
   bool isDeleted;
   String messageType;
@@ -17,7 +16,6 @@ class Message {
     required this.message,
     required this.type,
     required this.time,
-    required this.image,
     required this.isDeleted,
     required this.isRead,
     required this.senderId,
