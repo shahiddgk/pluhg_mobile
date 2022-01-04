@@ -42,7 +42,7 @@ class BubbleChat extends StatelessWidget {
                       }
                     },
                   )));
-        case 'file':
+        case 'doc':
           return ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 240.w),
               child: Container(

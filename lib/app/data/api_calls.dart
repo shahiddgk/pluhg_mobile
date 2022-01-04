@@ -835,8 +835,9 @@ class APICALLS with ValidationMixin {
     print(subType);
     print("------------------------------------------");
 
-    String? token = prefs.getString("token");
+    String token = prefs.getString(preftoken).toString();
     Map<String, String> headers = {"Authorization": "Bearer $token"};
+    print(token);
 
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
@@ -859,6 +860,7 @@ class APICALLS with ValidationMixin {
 
     var httpResponse = await http.Response.fromStream(response);
 
+    print(httpResponse.body);
     var data = json.decode(httpResponse.body)["data"];
 
     List<FileModel> files_res =

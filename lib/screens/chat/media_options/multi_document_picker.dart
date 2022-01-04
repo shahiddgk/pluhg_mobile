@@ -103,6 +103,7 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
       FilePickerResult? files = await FilePicker.platform.pickFiles(
           type: FileType.custom,
           allowMultiple: false,
+          allowCompression: true,
           allowedExtensions: [
             'pdf',
             'docx',
@@ -319,7 +320,7 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
             onPressed: () {
@@ -331,7 +332,6 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
               Icons.keyboard_arrow_left,
               size: 30,
               color: AppColors.activeIconColour,
-
             ),
           ),
           title: new Text(
@@ -347,7 +347,6 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
               ? <Widget>[
                   IconButton(
                       icon: Icon(
-
                         Icons.check,
                         color: AppColors.activeIconColour,
                       ),
