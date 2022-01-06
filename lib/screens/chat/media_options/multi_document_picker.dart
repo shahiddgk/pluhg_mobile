@@ -101,10 +101,10 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
 
     try {
       FilePickerResult? files = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
+          type: FileType.any,
           allowMultiple: false,
           allowCompression: true,
-          allowedExtensions: [
+         /* allowedExtensions: [
             'pdf',
             'docx',
             'doc',
@@ -112,7 +112,7 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
             'xslx',
             'ppt',
             'pptx'
-          ]);
+          ]*/);
 
       if (files != null) {
         if (files.files.length > 1) {
@@ -447,19 +447,25 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
                   Icons.add,
                   checkTotalNoOfFilesIfExceeded() == false
                       ? () {
-                          PermissionsUtil.checkAndRequestPermission(
-                                  Permission.photos)
-                              .then((res) {
-                            if (res == true) {
-                              captureMultiPageDoc(false);
-                            } else if (res == false) {
-                              Navigator.pushReplacement(
-                                  this.context,
-                                  new MaterialPageRoute(
-                                      builder: (context) => OpenSettings()));
-                            } else {}
-                          });
-                        }
+                    if (Platform.isAndroid) {
+                      PermissionsUtil.checkAndRequestPermission(
+                          Permission.photos)
+                          .then((res) {
+                        if (res == true) {
+                          captureMultiPageDoc(false);
+                        } else if (res == false) {
+                          Navigator.pushReplacement(
+                              this.context,
+                              new MaterialPageRoute(
+                                  builder: (context) => OpenSettings()));
+                        } else {}
+                      });
+                    }
+                    else {
+                      captureMultiPageDoc(false);
+
+                    }
+                  }
                       : () {
                           ShowWidgets.toast(
                               'Maximum number of files can be selected: ${maxNoOfFilesInMultiSharing}');

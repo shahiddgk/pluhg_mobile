@@ -48,7 +48,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                         senderId: controller.users[i].senderId,
                         recevierId: controller.users[i].recevierId));
                   },
-                  child: getMainChatList(),
+                  child: getMainChatItem(controller.users[i]),
                 ),
               ),
           ],

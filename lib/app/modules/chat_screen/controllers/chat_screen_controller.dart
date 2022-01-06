@@ -43,10 +43,13 @@ class ChatScreenController extends GetxController {
   }
 
   void getMessages(String userId) {
+    print(userId);
     socket.emit('getMessages', {'userId': userId});
-    print('getting chats');
     socket.on('getMessagesResponse', (data) {
       print(data);
+
+
+
 
 // get the list of messages
       var chatsArr = data['data'];

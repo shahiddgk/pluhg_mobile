@@ -50,6 +50,7 @@ void main() async {
 //Too recieve FCM notification
 void _configureFirebase() async {
   await Firebase.initializeApp();
+  
   await FirebaseMessaging.instance.requestPermission();
   await FirebaseMessaging.instance.getToken();
   final controller = Get.put(NotificationController());

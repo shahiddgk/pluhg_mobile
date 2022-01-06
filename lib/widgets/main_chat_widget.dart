@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/image.dart';
+import 'package:plug/widgets/models/user_chat.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget getMainChatList() {
+Widget getMainChatItem(UserChat user_chat) {
   return new Container(
-    height: 84.0,
+    height: 84.0.h,
     width: Get.width,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,7 +22,7 @@ Widget getMainChatList() {
             borderRadius: BorderRadius.circular(26.0),
             child: Container(
                 child: networkImage(52, 52,
-                    "https://file-examples-com.github.io/uploads/2017/10/file_example_JPG_100kB.jpg")),
+                    APICALLS.imageBaseUrl /*+ user_chat.*/)),
           ),
         ),
         SizedBox(
@@ -35,7 +38,7 @@ Widget getMainChatList() {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: Text("Username",
+                        child: Text(user_chat.name,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
