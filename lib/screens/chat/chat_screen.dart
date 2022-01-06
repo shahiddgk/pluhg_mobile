@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/models/file_model.dart';
 import 'package:plug/screens/chat/chat_widgets/chat_appbar.dart';
 import 'package:plug/screens/chat/chat_widgets/chat_bubble.dart';
@@ -53,7 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   getMyId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    myid = prefs.getString("userID").toString();
+    myid = prefs.getString(prefuserid).toString();
   }
 
   @override
@@ -132,7 +133,7 @@ class _ChatScreenState extends State<ChatScreen> {
     else if (messageType == "png")
       messageType = "image";
     else
-      messageType = "file";
+      messageType = "doc";
 
     for (FileModel f in files) {
       res_files_name.add(f.fileName);

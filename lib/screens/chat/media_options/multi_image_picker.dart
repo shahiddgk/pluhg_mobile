@@ -369,8 +369,7 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
         files.add(i.path);
       }
       widget.callback("image", 'png', files).then((value) {
-          Navigator.of(context).pop();
-
+        Navigator.of(context).pop();
       });
     }
   }
@@ -387,20 +386,24 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
                   Icons.photo_library,
                   checkTotalNoOfFilesIfExceeded() == false
                       ? () {
-                          PermissionsUtil.checkAndRequestPermission(
-                                  Permission.photos)
-                              .then((res) {
-                            if (res == true) {
-                              captureMultiPageImage(false);
-                            } else if (res == false) {
-                              ShowWidgets.toast(
-                                  "Permission to access Gallery need to select Photos");
-                              Navigator.pushReplacement(
-                                  context,
-                                  new MaterialPageRoute(
-                                      builder: (context) => OpenSettings()));
-                            } else {}
-                          });
+                          if (Platform.isAndroid) {
+                            PermissionsUtil.checkAndRequestPermission(
+                                    Permission.photos)
+                                .then((res) {
+                              if (res == true) {
+                                captureMultiPageImage(false);
+                              } else if (res == false) {
+                                ShowWidgets.toast(
+                                    "Permission to access Gallery need to select Photos");
+                                Navigator.pushReplacement(
+                                    context,
+                                    new MaterialPageRoute(
+                                        builder: (context) => OpenSettings()));
+                              } else {}
+                            });
+                          } else {
+                            captureMultiPageImage(false);
+                          }
                         }
                       : () {
                           ShowWidgets.toast(
@@ -413,22 +416,26 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
                       Icons.add,
                       checkTotalNoOfFilesIfExceeded() == false
                           ? () {
-                              PermissionsUtil.checkAndRequestPermission(
-                                      Permission.photos)
-                                  .then((res) {
-                                if (res == true) {
-                                  captureMultiPageImage(true);
-                                } else if (res == false) {
-                                  ShowWidgets.toast(
-                                      "Permission to access Gallery need to select Photos");
+                              if (Platform.isAndroid) {
+                                PermissionsUtil.checkAndRequestPermission(
+                                        Permission.photos)
+                                    .then((res) {
+                                  if (res == true) {
+                                    captureMultiPageImage(true);
+                                  } else if (res == false) {
+                                    ShowWidgets.toast(
+                                        "Permission to access Gallery need to select Photos");
 
-                                  Navigator.pushReplacement(
-                                      context,
-                                      new MaterialPageRoute(
-                                          builder: (context) =>
-                                              OpenSettings()));
-                                } else {}
-                              });
+                                    Navigator.pushReplacement(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                OpenSettings()));
+                                  } else {}
+                                });
+                              } else {
+                                captureMultiPageImage(true);
+                              }
                             }
                           : () {
                               ShowWidgets.toast(
