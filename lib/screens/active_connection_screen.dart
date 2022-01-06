@@ -471,11 +471,7 @@ class _ActiveConnectionScreenState extends State<ActiveConnectionScreen>
                         : GestureDetector(
                             child: button3("Close Connection", pluhgRedColour),
                             onTap: () async {
-                              APICALLS apicall = APICALLS();
-                              bool _isSuccessfull =
-                                  await apicall.closeConnection(
-                                      context: context,
-                                      connectionID: data["_id"]);
+
                             },
                           ),
                     SizedBox(

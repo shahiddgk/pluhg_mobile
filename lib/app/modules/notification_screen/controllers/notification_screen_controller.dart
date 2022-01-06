@@ -22,6 +22,7 @@ class NotificationScreenController extends GetxController {
 
   @override
   void onClose() {}
+
   getNotificationList() async {
     notificationController.fcmNotificationReset();
     return await apicalls.getNotifications();

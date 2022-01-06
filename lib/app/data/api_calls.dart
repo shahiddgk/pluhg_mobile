@@ -15,6 +15,7 @@ import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
 import 'package:plug/models/file_model.dart';
+import 'package:plug/models/notification_response.dart';
 import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:plug/widgets/dialog_box.dart';
@@ -88,14 +89,14 @@ class APICALLS with ValidationMixin {
         prefs.setBool(prefloggedout, false);
         print(parsedResponse['data']['token'].toString());
         prefs.setString(preftoken, parsedResponse['data']['token'].toString());
-        prefs.setString(
-            prefuserid, parsedResponse['data']['user']['data']['_id'].toString());
-        prefs.setString(
-            prefusername, parsedResponse['data']['user']['data']['userName'].toString());
-        prefs.setString(
-            prefuseremail, parsedResponse['data']['user']['data']['emailAddress'].toString());
-        prefs.setString(
-            prefuserphone, parsedResponse['data']['user']['data']['phoneNumber'].toString());
+        prefs.setString(prefuserid,
+            parsedResponse['data']['user']['data']['_id'].toString());
+        prefs.setString(prefusername,
+            parsedResponse['data']['user']['data']['userName'].toString());
+        prefs.setString(prefuseremail,
+            parsedResponse['data']['user']['data']['emailAddress'].toString());
+        prefs.setString(prefuserphone,
+            parsedResponse['data']['user']['data']['phoneNumber'].toString());
         Get.offAll(() => HomeView(
               index: 1.obs,
             ));
@@ -568,13 +569,13 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/activeConnections");
     var response;
     try {
-      response = await http.get(uri,
-          headers: {
-            "Authorization": "Bearer $token",
-            "Content-Type": "application/json"
-          },
-       );
-
+      response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      );
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -705,23 +706,16 @@ class APICALLS with ValidationMixin {
     }
   }
 
-  Future<bool> closeConnection({
-    required String connectionID,
-    required BuildContext context,
-  }) async {
+  Future<bool> closeConnection(
+      {required String connectionID,
+      required BuildContext context,
+      required String rating}) async {
     print("connection ID: $connectionID");
     var uri = Uri.parse("$url/api/connect/closeConnection");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userID = prefs.getString("userID");
-    ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString("token");
+
+    String? token = prefs.getString(preftoken);
     var parsedResponse;
-    pd.show(
-      max: 100,
-      msg: 'Please wait...',
-      progressType: ProgressType.normal,
-      progressBgColor: Colors.transparent,
-    );
     var response = await http.post(
       uri,
       headers: {
@@ -729,30 +723,15 @@ class APICALLS with ValidationMixin {
         "Authorization": "Bearer $token"
       },
       body: jsonEncode(
-        {"connectionId": connectionID},
+        {"connectionId": connectionID, "feedbackRating": rating},
       ),
     );
     parsedResponse = jsonDecode(response.body);
-
-    print(parsedResponse);
-
-    if (parsedResponse["hasError"] == false) {
-      pd.close();
-      print(parsedResponse);
-      showPluhgDailog2(context, "Great!!!",
-          "You have successfully cancelled this  connection", onCLosed: () {
-        Navigator.pop(context);
-      });
-      return true;
-
-      //all good
+    print("Close Response $parsedResponse");
+    if (parsedResponse["status"] == true) {
+      return true;//all good
     } else {
       // error
-      pd.close();
-      showPluhgDailog(
-          context, "So sorry", "Couldn't complete your request, try again");
-
-      print("Error");
       return false;
     }
   }
@@ -805,8 +784,7 @@ class APICALLS with ValidationMixin {
         await http.get(uri, headers: {"Authorization": "Bearer $token"});
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse);
-    return parsedResponse["data"];
-    //TODO Work on this
+    return NotificationResponse.fromJson(parsedResponse);
   }
 
   ///to get connection details used in dynamic for milestone one
@@ -843,10 +821,8 @@ class APICALLS with ValidationMixin {
       iterable.add(new http.MultipartFile.fromBytes(
           'files', await File(files[i]).readAsBytes(),
           filename: basename(files[i].split("/").last),
-          contentType: MediaType(type,
-              subType)));
+          contentType: MediaType(type, subType)));
     }
-
 
     var request = http.MultipartRequest(
         "POST", Uri.parse("http://3.18.123.250/api/upload/upload-files"))

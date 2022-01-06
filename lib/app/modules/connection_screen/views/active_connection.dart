@@ -12,12 +12,14 @@ import 'package:plug/screens/chat/chat_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/text_style.dart';
+import 'package:sn_progress_dialog/progress_dialog.dart';
 
 class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
   final dynamic data;
   final bool isRequester;
+  final Function refreshActiveConnection;
 
-  ActiveConnectionScreenView({this.data, required this.isRequester});
+  ActiveConnectionScreenView({this.data, required this.isRequester,required this.refreshActiveConnection});
 
   @override
   Widget build(BuildContext context) {
@@ -249,12 +251,33 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
             )));
   }
 
-  void showDialogWithRating(BuildContext context) {
-    showDialog(context: context,builder: (BuildContext context){
+  void showDialogWithRating(BuildContext buildContext) {
+    showDialog(context: buildContext,builder: (BuildContext context){
     return  showPluhgRatingDialog(context, "Close connection",
           "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
           onCLosed: (value) {
-            print("Rating value $value");
+            ProgressDialog pd = ProgressDialog(context: buildContext);
+            pd.show(
+              max: 100,
+              msg: 'Please wait...',
+              progressType: ProgressType.normal,
+              progressBgColor: Colors.transparent,
+            );
+            APICALLS().closeConnection(connectionID: data["_id"], context: buildContext, rating: value.toString()).then((value){
+              if(value){
+                //call active connection API again
+                pd.close();
+                showPluhgDailog2(buildContext, "Great!!!",
+                    "You have successfully cancelled this  connection", onCLosed: () {
+                      Navigator.pop(buildContext);
+                      refreshActiveConnection();
+                    });
+              }else{
+                pd.close();
+                showPluhgDailog(
+                    buildContext , "So sorry", "Couldn't complete your request, try again");
+              }
+            });
           });
     });
 

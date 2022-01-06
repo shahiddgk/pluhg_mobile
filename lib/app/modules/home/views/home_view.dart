@@ -10,6 +10,7 @@ import 'package:plug/app/modules/chat_screen/views/chat_screen_view.dart';
 import 'package:plug/app/modules/connection_screen/views/connect_two_people.dart';
 import 'package:plug/app/modules/connection_screen/views/connection_screen_view.dart';
 import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 
 import '../controllers/home_controller.dart';
@@ -43,7 +44,6 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     super.initState();
     controller.retrieveDynamicLink();
     WidgetsBinding.instance!.addObserver(this);
-
   }
 
   @override
@@ -120,9 +120,32 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                   label: 'Connect',
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset('assets/svg/inactive_messages.svg'),
-                  activeIcon:
-                      SvgPicture.asset('assets/svg/active_messages.svg'),
+                  icon: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      SvgPicture.asset('assets/svg/inactive_messages.svg'),
+                      Positioned(
+                        top: -8,
+                        right: -8,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: AppColors.pluhgColour,
+                              shape: BoxShape.circle),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text("12",
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400),
+                                textAlign: TextAlign.center),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  activeIcon: SvgPicture.asset('assets/svg/active_messages.svg'),
                   label: 'Messages',
                 ),
                 BottomNavigationBarItem(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -50,7 +52,9 @@ void main() async {
 //Too recieve FCM notification
 void _configureFirebase() async {
   await Firebase.initializeApp();
-  await FirebaseMessaging.instance.requestPermission();
+  if(Platform.isIOS){
+    await FirebaseMessaging.instance.requestPermission();
+  }
   await FirebaseMessaging.instance.getToken();
   final controller = Get.put(NotificationController());
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/models/notification_response.dart';
 
 import '../controllers/notification_screen_controller.dart';
 
@@ -32,6 +33,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                 child: Text("Error Encountered, Sorry"),
               );
             } else {
+              NotificationResponse notificationResponse = snapshot.data;
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -60,7 +62,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: controller.data.length,
+                        itemCount: notificationResponse.data.length,
                         itemBuilder: (ctx, i) => Container(
                           color: Color(0xFFF9F9F9),
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -68,15 +70,13 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               CircleAvatar(
-                                radius: 35 / 2,
-                                backgroundImage: controller.data['userId']
-                                            ['profileImage'] ==
-                                        null
+                                radius: 50 / 2,
+                                backgroundImage: notificationResponse.data[i].userId.profileImage.isEmpty
                                     ? SvgPicture.asset(
                                             "resources/svg/profile.svg")
                                         as ImageProvider
                                     : NetworkImage(
-                                        'APICALLS.url/uploads/${controller.data[0]["userId"]["profileImage"]}'),
+                                        'APICALLS.url/uploads/${notificationResponse.data[i].userId.profileImage}'),
                               ),
                               SizedBox(width: 10),
                               Expanded(
@@ -88,11 +88,12 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                       Container(
                                         width: size.width - 36 - 45,
                                         child: Text(
-                                          controller.data[i]["notificationMsg"]
+                                          notificationResponse.data[i].notificationMsg.body
                                               .toString(),
+                                          maxLines: 2,
                                           style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 12,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
@@ -106,11 +107,11 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                             'Just now',
                                             style: TextStyle(
                                               color: Color(0xFF8E8E93),
-                                              fontSize: 11,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
-                                          GestureDetector(
+                                         /* GestureDetector(
                                             onTap: () {
                                               controller.read.value = true;
                                             },
@@ -124,7 +125,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                                 fontWeight: FontWeight.w400,
                                               ),
                                             ),
-                                          ),
+                                          ),*/
                                         ],
                                       ),
                                     ],

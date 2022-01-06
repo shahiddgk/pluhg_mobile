@@ -61,8 +61,8 @@ class DialogOptionsAndroid extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        row_item("Document", "assets/images/Document.svg", send_document),
-        row_item("Camera", "assets/images/Camera.svg", send_camera_image),
+        row_item("Document", "assets/images/document.svg", send_document),
+        row_item("Camera", "assets/images/camera_svg.svg", send_camera_image),
         row_item("Gellery", "assets/images/photo.svg", send_gallery_images),
       ],
     );

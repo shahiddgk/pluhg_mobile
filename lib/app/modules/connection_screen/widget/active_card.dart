@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/connection_screen/controllers/connection_screen_controller.dart';
 import 'package:plug/app/modules/connection_screen/views/active_connection.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/image.dart';
@@ -21,13 +22,18 @@ Widget activeConnectionCard({
   return GestureDetector(
     onTap: () {
       Get.to(() => ActiveConnectionScreenView(
-          data: data,
-          isRequester: prefs.getString("emailAddress").toString() ==
-                      data["requester"]["emailAddress"] ||
-                  prefs.getString("phoneNumber").toString() ==
-                      data["requester"]["phoneNumber"]
-              ? true
-              : false));
+            data: data,
+            isRequester: prefs.getString("emailAddress").toString() ==
+                        data["requester"]["emailAddress"] ||
+                    prefs.getString("phoneNumber").toString() ==
+                        data["requester"]["phoneNumber"]
+                ? true
+                : false,
+            refreshActiveConnection: () {
+              final controller = Get.put(ConnectionScreenController());
+              controller.activeData();
+            },
+          ));
     },
     child: Container(
         margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
@@ -36,9 +42,7 @@ Widget activeConnectionCard({
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
-            boxShadow: [
-              BoxShadow(blurRadius: 40, color: Colors.black12)
-            ]),
+            boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)]),
         child: Row(
           children: [
             Expanded(

@@ -17,7 +17,7 @@ class NotifIcon extends StatelessWidget {
             Navigator.push(context,
                 MaterialPageRoute(builder: (contex) => NotificationScreenView()));
           },
-          icon: SvgPicture.asset(controller.receivedNotification.value?"assets/images/emoji.svg":"assets/images/notification.svg",
+          icon: SvgPicture.asset(controller.receivedNotification.value?"assets/images/ic_red_notification.svg":"assets/images/notification.svg",
               color: Color(0xff080F18))),
     );
   }

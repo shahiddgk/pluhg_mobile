@@ -31,7 +31,7 @@ class DocumentWidget extends StatelessWidget {
                     color: AppColors.pluhgYellowColour,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: SvgPicture.asset("assets/images/Document.svg",
+                  child: SvgPicture.asset("assets/images/document.svg",
                       color: AppColors.pluhgWhite)),
               Container(
                 width: 8.w,
