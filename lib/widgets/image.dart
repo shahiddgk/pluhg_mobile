@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:plug/app/widgets/progressbar.dart';
 
 defaultImage() {
   return Container(
@@ -20,7 +21,7 @@ networkImage(double height, double width, String imageUrl) {
       fit: BoxFit.fill,
       placeholder: (context, url) => Padding(
         padding: const EdgeInsets.all(12.0),
-        child: CupertinoActivityIndicator(),
+        child: pluhgProgress(),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     ),

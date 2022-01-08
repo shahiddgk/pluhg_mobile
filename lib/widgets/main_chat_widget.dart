@@ -21,8 +21,13 @@ Widget getMainChatItem(UserChat user_chat) {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(26.0),
             child: Container(
-                child: networkImage(52, 52,
-                    APICALLS.imageBaseUrl /*+ user_chat.*/)),
+                width: 46.w,
+                height: 46.w,
+                child: Image.network(
+                    APICALLS.imageBaseUrl + user_chat.profileImage!,
+                    width: 46.w,
+                    height: 46.w,
+                    fit: BoxFit.cover)),
           ),
         ),
         SizedBox(
@@ -49,7 +54,7 @@ Widget getMainChatItem(UserChat user_chat) {
                             textAlign: TextAlign.start),
                       ),
                     ),
-                    Text("just now",
+                    Text(user_chat.time,
                         maxLines: 1,
                         style: TextStyle(
                             color: Color(0xff8D8D8D),
@@ -64,7 +69,7 @@ Widget getMainChatItem(UserChat user_chat) {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Text(
-                            "This is This is a messages/2017/10/f This is This is a messages/2017/10/f",
+                            user_chat.message,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
@@ -80,7 +85,7 @@ Widget getMainChatItem(UserChat user_chat) {
                           color: AppColors.pluhgColour, shape: BoxShape.circle),
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Text("12",
+                        child: Text("",
                             maxLines: 1,
                             style: TextStyle(
                                 color: Colors.white,

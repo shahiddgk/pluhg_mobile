@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:plug/app/values/colors.dart';
+import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/utils/permissions.dart';
 import 'package:plug/widgets/widgets_show.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -340,7 +341,7 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
                     ? _buildMultiImageLoading()
                     : Container(
                         child: Center(
-                          child: CupertinoActivityIndicator(
+                          child: pluhgProgress(
                               /*valueColor: AlwaysStoppedAnimation<Color>(
                                   AppColors.activeIconColour)*/
                               ),

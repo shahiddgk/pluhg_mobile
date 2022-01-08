@@ -13,6 +13,7 @@ class ChatScreenController extends GetxController {
   final size = Get.size;
   String? userID;
   final count = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -26,6 +27,7 @@ class ChatScreenController extends GetxController {
 
   @override
   void onClose() {}
+
   void connect() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userID = prefs.getString(prefuserid).toString();
@@ -46,40 +48,39 @@ class ChatScreenController extends GetxController {
     print(userId);
     socket.emit('getMessages', {'userId': userId});
     socket.on('getMessagesResponse', (data) {
-      print(data);
-
-
-
-
-// get the list of messages
       var chatsArr = data['data'];
-      // messages = [];
-      for (int i = 0; i < chatsArr.length; i++) {
+      users = List<UserChat>.from(chatsArr
+          .map((dynamic message) => UserChat.fromJson(message))
+          .toList());
+      /*for (int i = 0; i < chatsArr.length; i++) {
         setMessageResponse(chatsArr[i]);
-      }
+      }*/
     });
   }
 
   void setMessageResponse(dynamic message) {
-    users.add(
+    print("--------------------");
+    print(message['createdAt'].toString());
+
+    /*users.add(
       UserChat(
-        name: message['recevierId']['name'],
-        profileImage: message['recevierId']['profileImage'],
-        senderId: message['senderId']['_id'],
-        recevierId: message['recevierId']['_id'],
-        id: message['_id'],
-        messageType: message['messageType'],
+        name: message['receiverDetails']['name'],
+        profileImage: message['receiverDetails']['profileImage'],
+        senderId: message['senderDetails']['_id'],
+        recevierId: message['receiverDetails']['_id'],
+        id: ""/*message['_id']*/,
+        messageType: "",
         message: message['message'],
         // time: message['createdAt'].toString(),
         // date: message['createdAt'].toString(),
 
-        time: DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
+        time: "",//DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
         // date:
         //     DateFormat('dd MMMM, yyyy').format(message['createdAt']).toString(),
         // type: message['senderId'] == userID ? 'source' : 'destination',
         isRead: message['isRead'],
-        isDeleted: message['isDeleted'],
+        isDeleted: false/*message['isDeleted']*/,
       ),
-    );
+    );*/
   }
 }

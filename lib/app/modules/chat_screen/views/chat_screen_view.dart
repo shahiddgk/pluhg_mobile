@@ -38,6 +38,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
+
                 itemCount: controller.users.length,
                 itemBuilder: (ctx, i) => InkWell(
                   onTap: () {

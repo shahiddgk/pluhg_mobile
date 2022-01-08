@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/models/file_model.dart';
 import 'package:plug/screens/chat/chat_widgets/chat_appbar.dart';
 import 'package:plug/screens/chat/chat_widgets/chat_bubble.dart';
@@ -151,7 +152,7 @@ class _ChatScreenState extends State<ChatScreen> {
       'recevierId': myid == recevierId ? senderId : recevierId,
     });
 
-    _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);
+   /* _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);*/
     FocusScope.of(context).unfocus();
   }
 
@@ -168,7 +169,7 @@ class _ChatScreenState extends State<ChatScreen> {
       messageType: messageType,
     );
     setState(() {
-      messages.add(messageModel);
+      messages.insert(0,messageModel);
     });
   }
 
@@ -223,11 +224,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
       setState(() {
         messages = List<Message>.from(
-            messagesArr.map((e) => Message.fromJson(e, myid)).toList());
+            messagesArr.map((e) => Message.fromJson(e, myid)).toList()).reversed.toList();
         loading = false;
-        new Timer(const Duration(milliseconds: 1000), () {
-          _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);
-        });
+        //new Timer(const Duration(milliseconds: 1000), () {
+        //  _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);
+        //});
       });
     });
   }
@@ -354,12 +355,13 @@ class _ChatScreenState extends State<ChatScreen> {
               height: 20.h,
             ),
             loading
-                ? Center(child: CupertinoActivityIndicator())
+                ? Center(child: pluhgProgress())
                 : Expanded(
                     child: Container(
                       // height: MediaQuery.of(context).size.height * 0.7,
                       padding: EdgeInsets.all(15),
                       child: ListView.builder(
+                        reverse: true,
                         controller: _controller_s,
                         itemCount: messages.length,
                         itemBuilder: (ctx, i) {

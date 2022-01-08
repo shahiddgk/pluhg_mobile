@@ -16,8 +16,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ConnectScreenView extends GetView<ConnecTwoScreenController> {
   final dynamic data, token, userId;
+
   ConnectScreenView({this.data, this.token, this.userId});
+
   final controller = Get.put(ConnecTwoScreenController());
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -62,7 +65,8 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                   await SharedPreferences.getInstance();
                               Get.to(() => ContactView(
                                     who: "Requester",
-                                    token: prefs.getString(preftoken).toString(),
+                                    token:
+                                        prefs.getString(preftoken).toString(),
                                     userID:
                                         prefs.getString(prefuserid).toString(),
                                   ));
@@ -87,7 +91,8 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                                   await SharedPreferences.getInstance();
                               Get.to(() => ContactView(
                                     who: "Requester",
-                                    token: prefs.getString(preftoken).toString(),
+                                    token:
+                                        prefs.getString(preftoken).toString(),
                                     userID:
                                         prefs.getString(prefuserid).toString(),
                                   ));
@@ -108,15 +113,16 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                             : controller.profileDetails['data'] == null
                                 ? defaultImage()
                                 : Container(
-                                    width: 54,
-                                    height: 54,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-                                    child: networkImage(54, 54,
-                                        "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"),
-                                  )),
-                    SizedBox(height: 8,),
+                                    width: 54.w,
+                                    height: 54.w,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      child: networkImage(54.w, 54.w,
+                                          "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"),
+                                    ))),
+                    SizedBox(
+                      height: 8,
+                    ),
                     Center(child: Text("The Pluhg")),
                     SizedBox(
                       height: 73,

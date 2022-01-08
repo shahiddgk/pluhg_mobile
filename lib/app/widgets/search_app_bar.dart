@@ -44,11 +44,14 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             onChanged(value);
           },
           decoration: InputDecoration(
-              hintText: "Search Contact",
-              prefixIcon: Icon(
-                Icons.search_outlined,
-                color: Color(0xff080F18),
-              ),
+              hintText: "Search connections",
+              prefixIcon: Padding(
+               padding: EdgeInsets.all(8.w),
+                  child: SvgPicture.asset(
+                    "assets/images/search.svg",
+
+                    color: Color(0xff080F18),
+                  )),
               suffixIcon: Visibility(
                   visible: searchController.text.isNotEmpty,
                   child: IconButton(
@@ -73,9 +76,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                   fontWeight: FontWeight.w300)),
         ),
       ),
-      actions: [
-        NotifIcon()
-      ],
+      actions: [NotifIcon()],
     );
   }
 

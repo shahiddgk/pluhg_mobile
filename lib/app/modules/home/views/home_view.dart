@@ -18,6 +18,7 @@ import '../controllers/home_controller.dart';
 class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
+
   // final dynamic data;
   HomeView({
     required this.index,
@@ -39,6 +40,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   //Timer for retrieving dynamic in IOS
   Timer? _timerLink;
+
   @override
   void initState() {
     super.initState();
@@ -101,55 +103,67 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               type: BottomNavigationBarType.fixed,
               showSelectedLabels: true,
               showUnselectedLabels: true,
+
               selectedItemColor: pluhgColour,
               unselectedItemColor: Colors.black,
               selectedFontSize: 12.sp,
               unselectedFontSize: 12.sp,
               items: [
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset('assets/svg/inactive_connections.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 6.h),
+                      child: SvgPicture.asset(
+                          'assets/svg/inactive_connections.svg')),
                   activeIcon:
                       SvgPicture.asset('assets/svg/active_connections.svg'),
                   label: 'Connections',
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                      'assets/svg/inactive_connect_people.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 6.h),
+                      child: SvgPicture.asset(
+                          'assets/svg/inactive_connect_people.svg')),
                   activeIcon:
                       SvgPicture.asset('assets/svg/active_connect_people.svg'),
-                  label: 'Connect',
+                  label: "Connect People",
                 ),
                 BottomNavigationBarItem(
-                  icon: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      SvgPicture.asset('assets/svg/inactive_messages.svg'),
-                      Positioned(
-                        top: -8,
-                        right: -8,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: AppColors.pluhgColour,
-                              shape: BoxShape.circle),
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text("12",
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400),
-                                textAlign: TextAlign.center),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  activeIcon: SvgPicture.asset('assets/svg/active_messages.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 6.h),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SvgPicture.asset('assets/svg/inactive_messages.svg'),
+                          Positioned(
+                            top: -8,
+                            right: -8,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: AppColors.pluhgColour,
+                                  shape: BoxShape.circle),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text("12",
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center),
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
+                  activeIcon:
+                      SvgPicture.asset('assets/svg/active_messages.svg'),
                   label: 'Messages',
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset('assets/svg/inactive_settings.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 6.h),
+                      child:
+                          SvgPicture.asset('assets/svg/inactive_settings.svg')),
                   activeIcon:
                       SvgPicture.asset('assets/svg/active_settings.svg'),
                   label: 'Settings',

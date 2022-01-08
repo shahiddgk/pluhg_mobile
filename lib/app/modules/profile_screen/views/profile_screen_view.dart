@@ -18,6 +18,7 @@ import '../controllers/profile_screen_controller.dart';
 
 class ProfileScreenView extends GetView<ProfileScreenController> {
   final controller = Get.put(ProfileScreenController());
+
   Future<bool> _logout() async {
     showDialog(
         context: Get.context!,
@@ -120,6 +121,9 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                       APICALLS.imageBaseUrl +
                                           snapshot.data['profileImage']
                                               .toString(),
+                                      height: controller.size.height * 0.42,
+                                      width: controller.size.width,
+                                      fit: BoxFit.cover,
                                     ),
                             ),
                           ),

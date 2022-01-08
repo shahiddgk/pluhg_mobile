@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class UserChat {
   String? id;
   String message;
@@ -22,4 +24,21 @@ class UserChat {
     required this.name,
     required this.time,
   });
+
+
+
+  factory UserChat.fromJson(Map message) => UserChat(
+    name: message['receiverDetails']['name'],
+    profileImage: message['receiverDetails']['profileImage'],
+    senderId: message['senderDetails']['_id'],
+    recevierId: message['receiverDetails']['_id'],
+    id: "" /*message['_id']*/,
+    messageType: "",
+    message: message['message'],
+    time: DateFormat('hh:mm a')
+        .format(DateTime.parse(message['timeStamp']))
+        .toString(),
+    isRead: message['isRead'],
+    isDeleted: false /*message['isDeleted']*/,
+  );
 }
