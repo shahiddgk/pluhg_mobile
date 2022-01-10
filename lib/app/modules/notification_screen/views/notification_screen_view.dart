@@ -76,7 +76,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                             "resources/svg/profile.svg")
                                         as ImageProvider
                                     : NetworkImage(
-                                        'APICALLS.url/uploads/${notificationResponse.data[i].userId.profileImage}'),
+                                        APICALLS.imageBaseUrl+'${notificationResponse.data[i].userId.profileImage}'),
                               ),
                               SizedBox(width: 10),
                               Expanded(
@@ -104,19 +104,19 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Just now',
+                                            controller.getTimeDifference(notificationResponse.data[i].createdAt),
                                             style: TextStyle(
                                               color: Color(0xFF8E8E93),
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
-                                         /* GestureDetector(
+                                          GestureDetector(
                                             onTap: () {
                                               controller.read.value = true;
                                             },
                                             child: Text(
-                                              controller.data["status"] == 1
+                                              notificationResponse.data[i].status == 1
                                                   ? "Seen"
                                                   : 'Mark as Read',
                                               style: TextStyle(
@@ -125,7 +125,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                                 fontWeight: FontWeight.w400,
                                               ),
                                             ),
-                                          ),*/
+                                          ),
                                         ],
                                       ),
                                     ],
