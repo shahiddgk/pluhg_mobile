@@ -741,7 +741,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
 
     Map body = {
       "contacts": contacts.map((item) => item.toCleanedJson()).toList()
@@ -756,6 +756,7 @@ class APICALLS with ValidationMixin {
       body: jsonEncode(body),
     );
     Map parsedResponse = jsonDecode(response.body);
+    print("Contact Response $parsedResponse");
     List data = parsedResponse['data'];
     for (int i = 0; i < data.length; i++) {
       final user = data[i] as Map<String, dynamic>;
