@@ -31,21 +31,23 @@ class ChatScreenController extends GetxController {
   void connect() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userID = prefs.getString(prefuserid).toString();
-    socket = IO.io("ws://3.18.123.250", <String, dynamic>{
+    socket = IO.io(APICALLS.ws_url, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
+    //Connect websocket
     socket.connect();
-    socket.onConnect((data) {
-      print('Connected.');
-      print(userID.toString());
 
+    // if the web socketis connected
+    socket.onConnect((data) {
+
+
+      //get last messages
       getMessages(userID.toString());
     });
   }
 
   void getMessages(String userId) {
-    print(userId);
     socket.emit('getMessages', {'userId': userId});
     socket.on('getMessagesResponse', (data) {
       var chatsArr = data['data'];
@@ -59,8 +61,7 @@ class ChatScreenController extends GetxController {
   }
 
   void setMessageResponse(dynamic message) {
-    print("--------------------");
-    print(message['createdAt'].toString());
+
 
     /*users.add(
       UserChat(

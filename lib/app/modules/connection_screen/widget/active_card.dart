@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/connection_screen/controllers/connection_screen_controller.dart';
 import 'package:plug/app/modules/connection_screen/views/active_connection.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,12 +22,15 @@ Widget activeConnectionCard({
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
   return GestureDetector(
     onTap: () {
+
+
+
       Get.to(() => ActiveConnectionScreenView(
             data: data,
-            isRequester: prefs.getString("emailAddress").toString() ==
-                        data["requester"]["emailAddress"] ||
-                    prefs.getString("phoneNumber").toString() ==
-                        data["requester"]["phoneNumber"]
+            isRequester: prefs.getString(prefuseremail).toString() ==
+                        data["requester"]["refId"]["emailAddress"] ||
+                    prefs.getString(prefuserphone).toString() ==
+                        data["requester"]["refId"]["phoneNumber"]
                 ? true
                 : false,
             refreshActiveConnection: () {
@@ -59,7 +63,7 @@ Widget activeConnectionCard({
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                        width: 84,
+                        width: 84.w,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -92,44 +96,45 @@ Widget activeConnectionCard({
                                       ),
                                     )
                                   : ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: networkImage(
-                                        64,
-                                        64,
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      child: Image.network(
                                         APICALLS.imageBaseUrl +
                                             "${data["requester"]["refId"]['profileImage'].toString()}",
+                                        height: 64.h,
+                                        width: 64.w,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                             ),
                             SizedBox(
-                              height: 4.0,
+                              height: 4.0.h,
                             ),
                             data != null &&
-                                    data["requester"].containsKey("userName") &&
-                                    data["requester"]["userName"] != null
-                                ? Text("@${data["requester"]["userName"]}",
+                                    data["requester"]["refId"].containsKey("userName") &&
+                                    data["requester"]["refId"]["userName"] != null
+                                ? Text("@${data["requester"]["refId"]["userName"]}",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center)
                                 : Text(
                                     data == null
                                         ? "Empty"
-                                        : "@${data["requester"]["name"]}",
+                                        : "@${data["requester"]['refId']["name"]}",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center),
                           ],
                         )),
                     Container(
-                        width: 84,
+                        width: 84.w,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -162,12 +167,13 @@ Widget activeConnectionCard({
                                       ),
                                     )
                                   : ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: networkImage(
-                                        64,
-                                        64,
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      child: Image.network(
                                         APICALLS.imageBaseUrl +
                                             "${data["contact"]["refId"]['profileImage'].toString()}",
+                                        height: 64.h,
+                                        width: 64.w,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                             ),
@@ -182,7 +188,7 @@ Widget activeConnectionCard({
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center)
                                 : Text(
@@ -193,7 +199,7 @@ Widget activeConnectionCard({
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Color(0xff8D8D8D),
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center),
                           ],

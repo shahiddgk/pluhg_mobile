@@ -70,6 +70,7 @@ class ContactController extends GetxController with ValidationMixin{
       return;
     }
 
+    //Request access contact permission
     final perm = await Permission.contacts.request();
 
     print(perm.isDenied);
@@ -77,12 +78,15 @@ class ContactController extends GetxController with ValidationMixin{
       permissionDenied.value = true;
       return;
     } else {
+
+      //get list contact from phone
       final contacts = await FlutterContacts.getContacts(
-          withProperties: true, withPhoto: true, withThumbnail: true);
+          withProperties: true, withPhoto: true, withThumbnail: true,withAccounts: true);
 
       // check for registered users
       List<PluhgContact> pluhgContacts = [];
       try {
+
         pluhgContacts = contacts
             .map<PluhgContact>((contact) => PluhgContact.fromContact(contact))
             .toList();
@@ -109,6 +113,7 @@ class ContactController extends GetxController with ValidationMixin{
     }
   }
 
+  //Get Pluhg Contacts
   List<PluhgContact> get contacts_ => _allContacts.where((contact) {
         final regexp = RegExp(search.value, caseSensitive: false);
         return regexp.hasMatch(contact.name);

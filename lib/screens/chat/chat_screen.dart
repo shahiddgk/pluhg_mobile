@@ -54,8 +54,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _controller_s = ScrollController();
 
   getMyId() async {
+    // get user(s id from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     myid = prefs.getString(prefuserid).toString();
+    print(myid);
   }
 
   @override
@@ -72,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void connect() {
-    socket = IO.io("ws://3.18.123.250", <String, dynamic>{
+    socket = IO.io(APICALLS.ws_url, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': true,
     });
@@ -81,6 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
       socket.disconnect();
     }
 
+    //connect websocket
     socket.connect();
     socket.onConnect((data1) {
       getMessages(widget.senderId, widget.recevierId);
@@ -152,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
       'recevierId': myid == recevierId ? senderId : recevierId,
     });
 
-   /* _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);*/
+    /* _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);*/
     FocusScope.of(context).unfocus();
   }
 
@@ -168,40 +171,17 @@ class _ChatScreenState extends State<ChatScreen> {
       isDeleted: false,
       messageType: messageType,
     );
-    setState(() {
-      messages.insert(0,messageModel);
-    });
+    /*setState(() {
+      messages.insert(0, messageModel);
+    });*/
   }
 
   void setMessageResponse(dynamic message) {
     if (!this.mounted) return;
 
     setState(() {
-      //message.add(Message.fromJson(message, myid));
+      messages.insert(0, Message.fromJson(message, myid));
     });
-
-    //"${APICALLS.url}/uploads/" + message["senderId"]["profileImage"]
-    /*messages.add(
-      Message(
-        image: "",
-        id: message['_id'].toString(),
-        messageType:
-            message['messageType'] == null ? "text" : message['messageType'],
-        message: message['messageType'] == null ? "" : message['message'],
-        // time: message['createdAt'].toString(),
-        // date: message['createdAt'].toString(),
-
-        time: DateFormat('hh:mm a')
-            .format(DateTime.parse(message['createdAt']))
-            .toString(),
-        date: DateFormat('dd MMMM, yyyy')
-            .format(DateTime.parse(message['createdAt']))
-            .toString(),
-        type: message['senderId'] == myid ? 'source' : 'destination',
-        isRead: message['receiverId'] == myid ? true : message['isRead'],
-        isDeleted: message['isDeleted'],
-      ),
-    );*/
   }
 
   void getMessages(String userId, String oppUserId) {
@@ -213,6 +193,8 @@ class _ChatScreenState extends State<ChatScreen> {
       if (!this.mounted) return;
       var messagesArr = data['data'];
 
+
+
       for (int i = 0; i < messagesArr.length; i++) {
         if (messagesArr[i]['recevierId'] == myid) {
           socket.emit('/readMessage', {
@@ -223,12 +205,13 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       setState(() {
+
+
         messages = List<Message>.from(
-            messagesArr.map((e) => Message.fromJson(e, myid)).toList()).reversed.toList();
+                messagesArr.map((e) => Message.fromJson(e, myid)).toList())
+            .reversed
+            .toList();
         loading = false;
-        //new Timer(const Duration(milliseconds: 1000), () {
-        //  _controller_s.jumpTo(_controller_s.position.maxScrollExtent + 100.h);
-        //});
       });
     });
   }
@@ -239,42 +222,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   send_document() {
-    /* if (Platform.isIOS) {
-      final action = CupertinoActionSheet(
-        title: Text(
-          "Flutter Agency",
-          style: TextStyle(fontSize: 30),
-        ),
-        message: Text(
-          "Select your action ",
-          style: TextStyle(fontSize: 15.0),
-        ),
-        actions: <Widget>[
-          CupertinoActionSheetAction(
-            child: Text("First Action"),
-            isDefaultAction: true,
-            onPressed: () {
-              print("First Action is clicked ");
-            },
-          ),
-          CupertinoActionSheetAction(
-            child: Text(" Second Action"),
-            isDestructiveAction: true,
-            onPressed: () {
-              print("Second Action clicked");
-            },
-          )
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          child: Text("Cancel"),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      );
-      showCupertinoModalPopup(context: context, builder: (context) => action);
-    } else {*/
-
     showDialog<void>(
         barrierDismissible: true,
         context: context,
@@ -330,7 +277,11 @@ class _ChatScreenState extends State<ChatScreen> {
     sendMessage_type(
         "",
         myid,
-        myid == widget.recevierId ? widget.senderId : widget.recevierId,
+        myid == widget.recevierId
+            ? widget.senderId
+            : widget.senderId == myid
+                ? widget.recevierId
+                : widget.senderId,
         subType,
         response);
   }
@@ -365,78 +316,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         controller: _controller_s,
                         itemCount: messages.length,
                         itemBuilder: (ctx, i) {
-                          /* if (messages[i].type == 'source') {
-                      // USE url = APICALLS.url/uploads/messages[i].message to preview files
-                      if (messages[i].messageType == 'image')
-                        return Container(
-                          height: 50,
-                          width: 100,
-                          child: Text(messages[i].message),
-                        );
-                      if (messages[i].messageType == 'video')
-                        return Container(
-                          height: 50,
-                          width: 100,
-                          child: Text(messages[i].message),
-                        );
-                      if (messages[i].messageType == 'gif')
-                        return Container(
-                          height: 50,
-                          width: 100,
-                          child: Text(messages[i].message),
-                        );
-                      if (messages[i].messageType == 'pdf')
-                        return Container(
-                          height: 50,
-                          width: 100,
-                          child: Text(messages[i].message),
-                        );
-                      if (messages[i].messageType == 'xls' ||
-                          messages[i].messageType == 'xlsx')
-                        return Container(
-                          height: 50,
-                          width: 100,
-                          child: Text(messages[i].message),
-                        );
-                      if (messages[i].messageType == 'doc' ||
-                          messages[i].messageType == 'docx')
-                        return Container(
-                          height: 50,
-                          width: 100,
-                          child: Text(messages[i].message),
-                        );
-                      if (messages[i].messageType == 'text')
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: myMessage(
-                            context: context,
-                            message: messages[i].message,
-                            time: messages[i].time,
-                          ),
-                        );
-                    }
-                    // USE url = APICALLS.url/uploads/messages[i].message to preview files
-                    if (messages[i].messageType == 'image') return Container();
-                    if (messages[i].messageType == 'video') return Container();
-                    if (messages[i].messageType == 'gif') return Container();
-                    if (messages[i].messageType == 'pdf') return Container();
-                    if (messages[i].messageType == 'xls' ||
-                        messages[i].messageType == 'xlsx') return Container();
-                    if (messages[i].messageType == 'doc' ||
-                        messages[i].messageType == 'doc') return Container();
-                    if (messages[i].messageType == 'text')
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: recieverMessage(
-                            context: context,
-                            message: messages[i].message,
-                            time: messages[i].time,
-                            img: ""
-
-                            ///jijiji
-                            ),
-                      );*/
-
                           return BubbleChat(messages[i],
                               isMe:
                                   myid == messages[i].senderId ? true : false);

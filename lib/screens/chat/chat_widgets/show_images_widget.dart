@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/screens/chat/chat_widgets/fullscreen_image.dart';
 import 'package:plug/screens/chat/chat_widgets/images_list.dart';
@@ -23,16 +24,15 @@ class ImagesChatWidget extends StatelessWidget {
                     width: width,
                     height: height,
                     placeholder: "assets/images/camera.png",
-                    image: "https://pluhg.s3.us-east-2.amazonaws.com/" + im,
+                    image: APICALLS.imageBaseUrl + im,
                     fit: BoxFit.cover))),
         onTap: () {
           Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => FullScreenWrapper(
-                  imageProvider: NetworkImage(
-                      "https://pluhg.s3.us-east-2.amazonaws.com/" +
-                          im.toString()),
+                  imageProvider:
+                      NetworkImage(APICALLS.imageBaseUrl + im.toString()),
                   backgroundColor: Colors.black,
                 ),
               ));
@@ -122,14 +122,14 @@ class ImagesChatWidget extends StatelessWidget {
                                         Align(
                                             alignment: Alignment.center,
                                             child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        18.0.r),
+                                                borderRadius: BorderRadius.circular(
+                                                    18.0.r),
                                                 child: Container(
                                                     width: 70.w,
                                                     height: 60.h,
-                                                    color: AppColors.pluhgWhite
-                                                        .withOpacity(0.15),
+                                                    color: AppColors
+                                                        .activeIconColour
+                                                        .withOpacity(0.65),
                                                     child: Center(
                                                         child: Text(
                                                             "+ " +
@@ -140,8 +140,7 @@ class ImagesChatWidget extends StatelessWidget {
                                                                     .white,
                                                                 fontSize: 22.sp,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold))))))
+                                                                    FontWeight.bold))))))
                                       ]),
                                       onTap: () {
                                         Navigator.push(

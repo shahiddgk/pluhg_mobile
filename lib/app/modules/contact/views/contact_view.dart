@@ -4,21 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
-import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/modules/send_message/views/send_message_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
-import 'package:plug/app/widgets/search_app_bar.dart';
 import 'package:plug/widgets/contact_item.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/notif_icon.dart';
-import 'package:plug/widgets/text_style.dart';
-
 import '../controllers/contact_controller.dart';
 
 class ContactView extends GetView<ContactController> {
@@ -87,7 +83,7 @@ class ContactView extends GetView<ContactController> {
                 // labelText: "Bill",
                 border: InputBorder.none,
                 hintStyle: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: pluhgMenuBlackColour,
                   fontWeight: FontWeight.w300,
                 ),
@@ -142,14 +138,14 @@ class ContactView extends GetView<ContactController> {
               child: Text(
                 "${controller.title.value}",
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 28.sp,
                   color: pluhgColour,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             SizedBox(
-              height: 36,
+              height: 36.h,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -163,6 +159,8 @@ class ContactView extends GetView<ContactController> {
                   () async {
                     final fullContact = await FlutterContacts.getContact(
                         controller.requesterId.value);
+
+
 
                     if (fullContact != null) {
                       controller.requesterImage = null;
@@ -213,6 +211,7 @@ class ContactView extends GetView<ContactController> {
                     builder: (context, snapshot) {
                       final contacts = controller.contacts_;
 
+
                       if (!snapshot.hasData) {
                         return Center(
                           child: Column(
@@ -232,6 +231,7 @@ class ContactView extends GetView<ContactController> {
                           ),
                         );
                       } else {
+
                         return Column(
                           children: [
                             SizedBox(height: 20.h),
@@ -239,6 +239,7 @@ class ContactView extends GetView<ContactController> {
                               child: ListView.builder(
                                 itemCount: contacts.length,
                                 itemBuilder: (context, index) {
+
                                   if (contacts[index].phoneNumber.isNotEmpty) {
                                     return contactItem(contacts[index],
                                         () async {
@@ -313,8 +314,8 @@ class ContactView extends GetView<ContactController> {
         .join("");
 
     String countryCode = controller.prefs!.getString("countryCode") ?? '';
-    String phoneNumber = controller.prefs!.getString("phoneNumber") ?? '';
-    String emailAddress = controller.prefs!.getString("emailAddress") ?? '';
+    String phoneNumber = controller.prefs!.getString(prefuserphone) ?? '';
+    String emailAddress = controller.prefs!.getString(prefuseremail) ?? '';
     String lastRequester =
         finalRequester.substring(0, countryCode.length).contains(countryCode)
             ? finalRequester
@@ -357,6 +358,7 @@ class ContactView extends GetView<ContactController> {
           requesterImage: controller.requesterImage,
           contactName: controller.contactName.value,
           requesterName: controller.requesterName.value,
+
         ),
       );
     } else {

@@ -265,7 +265,7 @@ class SendMessageView extends GetView<SendMessageController> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      textCapitalization: TextCapitalization.words,
+                      textCapitalization: TextCapitalization.sentences,
                       controller: controller.text.value == "Both"
                           ? _bothMessage
                           : controller.text.value == "Contact"

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationSettingsController extends GetxController {
@@ -27,12 +28,12 @@ class NotificationSettingsController extends GetxController {
   getData1() async {
     APICALLS apicalls = APICALLS();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(prefs.get("token"));
-    print(prefs.get("userID"));
+    print(prefs.get(preftoken));
+    print(prefs.get(prefuserid));
 
     // getData();
     var notificationDetails = await apicalls.getNotificationSettings(
-      token: prefs.get("token").toString(),
+      token: prefs.get(preftoken).toString(),
     );
     if (notificationDetails["data"] != null) {
       push.value = notificationDetails["data"]["pushNotification"];

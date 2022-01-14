@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/screens/chat/chat_widgets/document_viewer.dart';
@@ -15,8 +16,8 @@ class DocumentWidget extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (contex) => DocumentViewer(
-                      "https://pluhg.s3.us-east-2.amazonaws.com/" + file)));
+                  builder: (contex) =>
+                      DocumentViewer(APICALLS.imageBaseUrl + file)));
         },
         child: Container(
             padding: EdgeInsets.all(8.w),

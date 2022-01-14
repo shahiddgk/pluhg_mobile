@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/widgets/text_style.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -38,9 +39,19 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                         ? contact.emailAddress
                         : contact.phoneNumber,
                     style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: Colors.black),
+                  ),
+
+                  Text(
+                    contact.emailAddress.isEmpty
+                        ? ""
+                        : contact.emailAddress,
+                    style: TextStyle(
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.pluhgMenuGrayColour),
                   ),
                 ],
               ),

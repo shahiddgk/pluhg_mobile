@@ -11,7 +11,6 @@ import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/widgets/dialog_box.dart';
-import 'package:plug/widgets/progressBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileView extends GetView<EditProfileController> {

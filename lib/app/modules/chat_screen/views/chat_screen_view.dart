@@ -38,17 +38,17 @@ class ChatScreenView extends GetView<ChatScreenController> {
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-
                 itemCount: controller.users.length,
                 itemBuilder: (ctx, i) => InkWell(
                   onTap: () {
+                    //Gi to chat screen
                     Get.to(() => ChatScreen(
                         username_receiver: "",
                         name_receiver: controller.users[i].name,
                         profile_receiver:  controller.users[i].profileImage! ,
                         senderId: controller.users[i].senderId,
                         recevierId: controller.users[i].recevierId));
-                  },
+                  },// get last message item
                   child: getMainChatItem(controller.users[i]),
                 ),
               ),
