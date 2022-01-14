@@ -11,14 +11,19 @@ class NotifIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() =>
-       IconButton(
+    return Obx(
+      () => IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (contex) => NotificationScreenView()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (contex) => NotificationScreenView()));
           },
-          icon: SvgPicture.asset(controller.receivedNotification.value?"assets/images/ic_red_notification.svg":"assets/images/notification.svg",
-              color: Color(0xff080F18))),
+          icon: SvgPicture.asset(
+            controller.receivedNotification.value
+                ? "assets/images/ic_red_notification.svg"
+                : "assets/images/notification.svg",
+          )),
     );
   }
 }

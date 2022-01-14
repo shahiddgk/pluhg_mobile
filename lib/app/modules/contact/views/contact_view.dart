@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
+import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/modules/send_message/views/send_message_view.dart';
-import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/search_app_bar.dart';
 import 'package:plug/widgets/contact_item.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/notif_icon.dart';
+import 'package:plug/widgets/text_style.dart';
+
 import '../controllers/contact_controller.dart';
 
 class ContactView extends GetView<ContactController> {
@@ -83,7 +87,7 @@ class ContactView extends GetView<ContactController> {
                 // labelText: "Bill",
                 border: InputBorder.none,
                 hintStyle: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   color: pluhgMenuBlackColour,
                   fontWeight: FontWeight.w300,
                 ),
@@ -138,14 +142,14 @@ class ContactView extends GetView<ContactController> {
               child: Text(
                 "${controller.title.value}",
                 style: TextStyle(
-                  fontSize: 28.sp,
+                  fontSize: 28,
                   color: pluhgColour,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             SizedBox(
-              height: 36.h,
+              height: 36,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -159,8 +163,6 @@ class ContactView extends GetView<ContactController> {
                   () async {
                     final fullContact = await FlutterContacts.getContact(
                         controller.requesterId.value);
-
-
 
                     if (fullContact != null) {
                       controller.requesterImage = null;
@@ -211,7 +213,6 @@ class ContactView extends GetView<ContactController> {
                     builder: (context, snapshot) {
                       final contacts = controller.contacts_;
 
-
                       if (!snapshot.hasData) {
                         return Center(
                           child: Column(
@@ -231,7 +232,6 @@ class ContactView extends GetView<ContactController> {
                           ),
                         );
                       } else {
-
                         return Column(
                           children: [
                             SizedBox(height: 20.h),
@@ -239,8 +239,8 @@ class ContactView extends GetView<ContactController> {
                               child: ListView.builder(
                                 itemCount: contacts.length,
                                 itemBuilder: (context, index) {
-
-                                  if (contacts[index].phoneNumber.isNotEmpty) {
+                                  if (contacts[index].phoneNumber.isNotEmpty ||
+                                      contacts[index].emailAddress.isNotEmpty) {
                                     return contactItem(contacts[index],
                                         () async {
                                       if (controller
@@ -314,56 +314,38 @@ class ContactView extends GetView<ContactController> {
         .join("");
 
     String countryCode = controller.prefs!.getString("countryCode") ?? '';
-    String phoneNumber = controller.prefs!.getString(prefuserphone) ?? '';
-    String emailAddress = controller.prefs!.getString(prefuseremail) ?? '';
-    String lastRequester =
-        finalRequester.substring(0, countryCode.length).contains(countryCode)
-            ? finalRequester
-            : countryCode + finalRequester;
-    String lastContact =
-        finalcontact.substring(0, countryCode.length).contains(countryCode)
-            ? finalcontact
-            : countryCode + finalcontact;
-    print(lastRequester);
-    if (countryCode + finalcontact != phoneNumber &&
-        countryCode + finalRequester != phoneNumber &&
-        emailAddress != controller.requesterContact.value &&
-        emailAddress != controller.contactContact.value &&
-        finalRequester != phoneNumber &&
-        finalcontact != phoneNumber) {
-      if (controller.contactContact.value.contains("@")) {
-        finalcontact = controller.contactContact.value;
-      } else if (!finalcontact.contains("+")) {
-        finalcontact =
-            finalcontact.substring(0, countryCode.length).contains(countryCode)
-                ? finalcontact
-                : countryCode + finalcontact;
-      }
 
-      if (controller.requesterContact.value.contains("@")) {
-        finalRequester = controller.requesterContact.value;
-      } else if (!finalRequester.contains("+")) {
-        finalRequester = finalRequester
-                .substring(0, countryCode.length)
-                .contains(countryCode)
-            ? finalRequester
-            : countryCode + finalRequester;
-      }
-
-      Get.to(
-        () => SendMessageView(
-          contactContact: finalcontact,
-          requesterContact: finalRequester,
-          contactImage: controller.contactImage,
-          requesterImage: controller.requesterImage,
-          contactName: controller.contactName.value,
-          requesterName: controller.requesterName.value,
-
-        ),
-      );
-    } else {
-      showPluhgDailog(context, "So sorry", "You can not connect yourself");
+    if (controller.contactContact.value.contains("@")) {
+      finalcontact = controller.contactContact.value;
+    } else if (!finalcontact.contains("+")) {
+      finalcontact =
+          finalcontact.substring(0, countryCode.length).contains(countryCode)
+              ? finalcontact
+              : countryCode + finalcontact;
     }
+
+    if (controller.requesterContact.value.contains("@")) {
+      finalRequester = controller.requesterContact.value;
+    } else if (!finalRequester.contains("+")) {
+      finalRequester =
+          finalRequester.substring(0, countryCode.length).contains(countryCode)
+              ? finalRequester
+              : countryCode + finalRequester;
+    }
+
+    print(finalcontact);
+    print(finalRequester);
+
+    Get.to(
+      () => SendMessageView(
+        contactContact: finalcontact,
+        requesterContact: finalRequester,
+        contactImage: controller.contactImage,
+        requesterImage: controller.requesterImage,
+        contactName: controller.contactName.value,
+        requesterName: controller.requesterName.value,
+      ),
+    );
   }
 
   Widget _addContactItem(String requesterName, String requesterContact,
@@ -387,7 +369,7 @@ class ContactView extends GetView<ContactController> {
           ),
           child: Column(
             children: [
-              contactImage(image,isPluhgUser),
+              contactImage(image, isPluhgUser),
               Text(
                 requesterName.isNotEmpty ? requesterName : 'Add Contact',
                 style: TextStyle(
@@ -458,7 +440,9 @@ class ContactView extends GetView<ContactController> {
     print("Pluhg user ${pluhgContact.isPlughedUser}");
     controller.requesterId.value = controller.contacts_[index].id!;
     controller.requesterImage = pluhgContact.photo;
-    controller.requesterContact.value = pluhgContact.phoneNumber;
+    controller.requesterContact.value = pluhgContact.phoneNumber.isEmpty
+        ? pluhgContact.emailAddress
+        : pluhgContact.phoneNumber;
     controller.requesterName.value = pluhgContact.name;
     controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
     controller.title.value = "Select Contact";
@@ -476,7 +460,9 @@ class ContactView extends GetView<ContactController> {
     if (pluhgContact.phoneNumber != controller.requesterContact.value) {
       controller.contactId.value = controller.contacts_[index].id!;
       controller.contactImage = pluhgContact.photo;
-      controller.contactContact.value = pluhgContact.phoneNumber;
+      controller.contactContact.value = pluhgContact.phoneNumber.isEmpty
+          ? pluhgContact.emailAddress
+          : pluhgContact.phoneNumber;
       controller.contactName.value = pluhgContact.name;
       controller.isContactPluhg.value = contacts[index].isPlughedUser;
 
@@ -484,7 +470,6 @@ class ContactView extends GetView<ContactController> {
       contacts.remove(pluhgContact);
     }
   }
-
 
   Widget contactImage(Uint8List? image, bool isPluhgUser) {
     print("contact image ${isPluhgUser.toString()}");
