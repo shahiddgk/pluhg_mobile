@@ -40,6 +40,8 @@ Widget getMainChatItem(UserChat user_chat) {
               children: [
                 new Row(
                   children: [
+
+
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
@@ -54,6 +56,8 @@ Widget getMainChatItem(UserChat user_chat) {
                             textAlign: TextAlign.start),
                       ),
                     ),
+
+                    //get last time
                     Text(user_chat.time,
                         maxLines: 1,
                         style: TextStyle(
@@ -65,6 +69,7 @@ Widget getMainChatItem(UserChat user_chat) {
                 ),
                 new Row(
                   children: [
+                    //get last message
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),

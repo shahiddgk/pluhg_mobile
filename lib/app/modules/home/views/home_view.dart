@@ -134,7 +134,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                         clipBehavior: Clip.none,
                         children: [
                           SvgPicture.asset('assets/svg/inactive_messages.svg'),
-                          Positioned(
+                          //waiting for backend api changes
+                          /*Positioned(
                             top: -8,
                             right: -8,
                             child: Container(
@@ -143,16 +144,16 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                                   shape: BoxShape.circle),
                               child: Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child: Text("12",
+                                child: Text("",
                                     maxLines: 1,
                                     style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center),
                               ),
                             ),
-                          )
+                          )*/
                         ],
                       )),
                   activeIcon:

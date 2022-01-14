@@ -5,6 +5,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/notification_screen/controllers/notifcation_settings.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/app_bar.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
@@ -82,7 +83,7 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                                       await apicalls.updateNotificationSettings(
                                           context: context,
                                           token: prefs
-                                              .getString("token")
+                                              .getString(preftoken)
                                               .toString(),
                                          
                                           pushNotification: controller

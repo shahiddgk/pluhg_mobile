@@ -13,9 +13,9 @@ Widget card(BuildContext context, var data) {
   return Column(
     children: [
       Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+        width: 64.w,
+        height: 64.w,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r)),
         child: !data.containsKey("profileImage") || data["profileImage"] == null
             ? Container(
                 child: Center(
@@ -23,21 +23,26 @@ Widget card(BuildContext context, var data) {
                 ),
                 decoration: BoxDecoration(
                     color: pluhgColour,
-                    borderRadius: BorderRadius.circular(50)),
+                    borderRadius: BorderRadius.circular(12.r)),
               )
-            : CircleAvatar(
-                radius: size.width * 0.05,
-                backgroundColor: pluhgColour,
-                backgroundImage: NetworkImage(
-                    APICALLS.imageBaseUrl + data['profileImage'].toString())),
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(12.r),
+                child: Image.network(
+                  APICALLS.imageBaseUrl + data['profileImage'].toString(),
+                  height: 64.w,
+                  width: 64.w,
+                  fit: BoxFit.cover,
+                )),
       ),
+      Container(height: 2.h),
       data.containsKey("userName") && data["userName"] != null
           ? Text("@${data["userName"]}",
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: Color(0xff8D8D8D),
-                  fontSize: 12,
+                  fontSize: 11.sp,
+                  height: 0.9,
                   fontWeight: FontWeight.w400),
               textAlign: TextAlign.center)
           : Text("@${data["name"]}",
@@ -45,7 +50,7 @@ Widget card(BuildContext context, var data) {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: Color(0xff8D8D8D),
-                  fontSize: 12,
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.w400),
               textAlign: TextAlign.center),
     ],
@@ -100,10 +105,12 @@ Widget cardProfile2(BuildContext context, var data, String text) {
             )
           : Expanded(
               child: Text("@${data["name"]}",
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       color: Color(0xff8D8D8D),
                       fontSize: 12,
                       fontWeight: FontWeight.w400),
+                  maxLines: 2,
                   textAlign: TextAlign.center),
             ),
       Text(

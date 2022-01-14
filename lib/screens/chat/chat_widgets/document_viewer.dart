@@ -16,6 +16,7 @@ class _DocumentViewerState extends State<DocumentViewer> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: SimpleAppBar(backButton: true, notificationButton: false),
         body: Stack(
@@ -23,6 +24,7 @@ class _DocumentViewerState extends State<DocumentViewer> {
             Container(
               child: WebView(
                 initialUrl: widget.url,
+                javascriptMode: JavascriptMode.unrestricted,
                 onPageFinished: (finished) {
                   setState(() {
                     isLoading = false;

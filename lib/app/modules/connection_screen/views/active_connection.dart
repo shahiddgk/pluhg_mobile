@@ -28,6 +28,10 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
         .toLocal();
     String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
 
+
+    print("------------------------------");
+    print(data);
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: SimpleAppBar(
@@ -63,12 +67,12 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: 16,
+                              height: 16.h,
                             ),
                             Row(
                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Container(width: 20.w,),
+                                Container(width: 20.w),
                                 Column(
                                   children: [
                                     Row(
@@ -216,7 +220,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                             },
                           ),
                           SizedBox(
-                            width: 10,
+                            width: 10.w,
                           ),
                           outline_button("Conversation", onPressed: () {
                             Navigator.push(

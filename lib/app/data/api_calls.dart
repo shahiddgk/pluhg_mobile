@@ -24,6 +24,7 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS with ValidationMixin {
   static const url = "http://3.18.123.250";
+  static const ws_url = "ws://3.18.123.250";
 
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
@@ -64,7 +65,7 @@ class APICALLS with ValidationMixin {
       "phoneNumber": !contact.contains("@") ? contact : "",
       "code": code,
       "type": contact.contains("@") ? "email" : 'phone',
-      "deviceToken": fcmToken
+      "deviceToken": fcmToken.toString()
     };
 
     var response = await http.post(uri,
@@ -108,6 +109,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // save users informations / Create Profile
   Future<bool> createProfile(
       {required String token,
       required String contact,
@@ -165,6 +168,9 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // send email support
+
   Future<void> sendSupportEmail(
       {required String emailAddress,
       required String token,
@@ -208,6 +214,9 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+
+  // Connect two People API
   Future<bool> connectTwoPeople(
       {required String requesterName,
       required String contactName,
@@ -221,8 +230,7 @@ class APICALLS with ValidationMixin {
       required BuildContext context}) async {
     var uri = Uri.parse("$url/api/connect/people");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String? token = prefs.getString("token");
+    String? token = prefs.getString(preftoken);
 
     var body = {
       "requester": {
@@ -284,6 +292,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // send Message to remind user
   Future<bool> sendReminderMessage(
       {required String message,
       required String party,
@@ -332,6 +342,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // get user's informations
   Future getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString(preftoken).toString();
@@ -352,6 +364,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  //Update user's details API
   void setProfile(
       {required String token, String name = "", String address = ""}) async {
     var uri = Uri.parse("$url/api/updateProfileDetails");
@@ -379,6 +393,8 @@ class APICALLS with ValidationMixin {
       //ERROR
     }
   }
+
+
 
   Future<bool> setProfile2({
     required String? token,
@@ -431,6 +447,9 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+
+  // Update user's image
   Future<bool> updateProfile(
     var imageFile, {
     required String token,
@@ -475,6 +494,9 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+
+  // get notifications informations
   dynamic getNotificationSettings({
     required String token,
   }) async {
@@ -495,6 +517,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // update notification's settings
   Future<bool> updateNotificationSettings({
     required String token,
     required BuildContext context,
@@ -562,6 +586,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // Get active connections
   Future<dynamic> getActiveConnections({
     required String token,
     required String contact,
@@ -597,6 +623,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // Get waiting connections
   Future<dynamic> getWaitingConnections({
     required String token,
     required String contact,
@@ -627,6 +655,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  // Accept or reject connection
   Future<bool> respondToConnectionRequest({
     required String contact,
     required BuildContext context,
@@ -706,14 +736,15 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+
+  //Close connection
   Future<bool> closeConnection(
       {required String connectionID,
       required BuildContext context,
       required String rating}) async {
-    print("connection ID: $connectionID");
     var uri = Uri.parse("$url/api/connect/closeConnection");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String? token = prefs.getString(preftoken);
     var parsedResponse;
     var response = await http.post(
@@ -736,6 +767,8 @@ class APICALLS with ValidationMixin {
     }
   }
 
+
+  //Check if user is a Pluhg user or not
   Future<List<PluhgContact>> checkPluhgUsers(
       {required List<PluhgContact> contacts}) async {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
@@ -756,7 +789,8 @@ class APICALLS with ValidationMixin {
       body: jsonEncode(body),
     );
     Map parsedResponse = jsonDecode(response.body);
-    print("Contact Response $parsedResponse");
+    print(parsedResponse);
+
     List data = parsedResponse['data'];
     for (int i = 0; i < data.length; i++) {
       final user = data[i] as Map<String, dynamic>;
@@ -774,9 +808,11 @@ class APICALLS with ValidationMixin {
     return contacts;
   }
 
+
+
+  // get notification list
   Future<dynamic> getNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     String? token = prefs.getString(preftoken);
 
     var uri = Uri.parse("$url/api/getNotificationList");
@@ -788,13 +824,12 @@ class APICALLS with ValidationMixin {
     return NotificationResponse.fromJson(parsedResponse);
   }
 
+
   ///to get connection details used in dynamic for milestone one
   Future<RecommendationResponse> getConnectionDetails(
       {required String connectionID}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString(preftoken);
-    print('connectionID is $connectionID');
-    print('connection id $token');
     var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
     print('uri ${uri.toString()}');
     var response =
@@ -804,15 +839,11 @@ class APICALLS with ValidationMixin {
     return RecommendationResponse.fromJson(map);
   }
 
+
+  // Upload file (document / image(s))
   Future<dynamic> uploadFile(
       String senderId, List<String> files, String type, String subType) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    print("------------------------------------------");
-    print(files);
-    print(type);
-    print(subType);
-    print("------------------------------------------");
 
     String token = prefs.getString(preftoken).toString();
     Map<String, String> headers = {"Authorization": "Bearer $token"};
@@ -827,7 +858,7 @@ class APICALLS with ValidationMixin {
     }
 
     var request = http.MultipartRequest(
-        "POST", Uri.parse("http://3.18.123.250/api/upload/upload-files"))
+        "POST", Uri.parse("$url/api/upload/upload-files"))
       ..files.addAll(iterable)
       ..headers.addAll(headers);
 

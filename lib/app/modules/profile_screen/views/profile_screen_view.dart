@@ -7,6 +7,7 @@ import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_settings.dart';
 import 'package:plug/app/modules/profile_screen/views/edit_profile.dart';
 import 'package:plug/app/modules/support_screen/views/support_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
@@ -267,8 +268,8 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                           .toString(),
                                       email: snapshot.data['emailAddress']
                                           .toString(),
-                                      token: prefs.get("token").toString(),
-                                      userID: prefs.get("userID").toString(),
+                                      token: prefs.get(preftoken).toString(),
+                                      userID: prefs.get(prefuserid).toString(),
                                     ),
                                   );
                                 }
@@ -296,10 +297,10 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                     await SharedPreferences.getInstance();
 
                                 Get.to(() => SupportScreenView(
-                                      token: prefs.get("token").toString(),
-                                      userID: prefs.get("userID").toString(),
+                                      token: prefs.get(preftoken).toString(),
+                                      userID: prefs.get(prefuserid).toString(),
                                       email:
-                                          prefs.get("emailAddress").toString(),
+                                          prefs.get(prefuseremail).toString(),
                                     ));
                               },
                               child: Tile(

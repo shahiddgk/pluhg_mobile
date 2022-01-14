@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -16,14 +15,16 @@ class OTPScreenView extends GetView<OTPScreenController> {
   final String contact;
 
   OTPScreenView({required this.contact});
+
   final controller = Get.put(OTPScreenController());
   final _formKey = GlobalKey<FormState>();
   TextEditingController _otp = new TextEditingController();
   APICALLS apicalls = APICALLS();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PluhgAppBar(),
+        appBar: PluhgAppBar(),
         body: controller.loading.value
             ? Center(child: pluhgProgress())
             : Obx(
@@ -48,7 +49,8 @@ class OTPScreenView extends GetView<OTPScreenController> {
                               right: controller.size.width * 0.24),
                           child: RichText(
                             text: TextSpan(
-                              text: "We've sent a one time verification code to ",
+                              text:
+                                  "We've sent a one time verification code to ",
                               style: TextStyle(
                                   fontWeight: FontWeight.w300,
                                   color: Colors.black,
@@ -168,7 +170,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
                                 child: ConstrainedBox(
                                   constraints: BoxConstraints(maxWidth: 261.w),
                                   child: PluhgButton(
-                                    onPressed: ()=>_submit(context),
+                                    onPressed: () => _submit(context),
                                     text: 'Verify',
                                   ),
                                 ),
@@ -181,10 +183,15 @@ class OTPScreenView extends GetView<OTPScreenController> {
   }
 
   void _submit(context) async {
+
+    //If the user enter otp code
     if (_otp.text.length == 4) {
       controller.loading.value = true;
       bool data = await apicalls.verifyOTP(
-          context: context, contact: contact, code: _otp.text,fcmToken: controller.fcmToken);
+          context: context,
+          contact: contact,
+          code: _otp.text,
+          fcmToken: controller.fcmToken);
       if (data == false) {
         controller.loading.value = false;
       }

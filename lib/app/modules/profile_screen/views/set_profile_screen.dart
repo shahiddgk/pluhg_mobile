@@ -57,7 +57,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                       Container(
                         width: Get.width - 24,
                         child: TextFormField(
-                          textCapitalization: TextCapitalization.words,
+                          textCapitalization: TextCapitalization.sentences,
                           controller: _nameController,
                           validator: (val) {
                             if (val == null || val.isEmpty) {
@@ -88,7 +88,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 },
                                 controller: _contactController,
                                 keyboardType: TextInputType.emailAddress,
-                                textCapitalization: TextCapitalization.words,
+                                textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   labelText: "Set your email",
                                   prefixIcon: Icon(Icons.email_outlined),

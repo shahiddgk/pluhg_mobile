@@ -15,6 +15,8 @@ class OTPScreenController extends GetxController {
   RxInt start = 40.obs;
   final size = Get.size;
 
+
+  // Wait 1 second to add resend option
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
@@ -30,6 +32,8 @@ class OTPScreenController extends GetxController {
     );
   }
 
+
+  // Get token device
   fetchFCMToken(){
     try{
       FirebaseMessaging.instance.getToken().then((value){

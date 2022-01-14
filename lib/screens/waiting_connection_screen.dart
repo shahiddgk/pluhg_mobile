@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/search_app_bar.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/button.dart';
@@ -35,9 +36,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
   getUserID() async {
     SharedPreferences pres = await SharedPreferences.getInstance();
     setState(() {
-      userID = pres.getString("userID");
-      email = pres.getString("emailAddress");
-      phone = pres.getString("phoneNumber");
+      userID = pres.getString(prefuserid);
+      email = pres.getString(prefuseremail);
+      phone = pres.getString(prefuserphone);
     });
     isRequester = userID != null && data["requester"]["_id"] == userID;
   }

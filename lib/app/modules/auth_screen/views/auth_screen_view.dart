@@ -11,7 +11,6 @@ import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../controllers/auth_screen_controller.dart';
 
 class AuthScreenView extends GetView<AuthScreenController> {
@@ -81,7 +80,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             // favorite: ['+1', 'US'],
                             onInit: (val) async {
                               controller.currentCountryCode.value =
-                              val!.dialCode!;
+                                  val!.dialCode!;
                               print(val.dialCode!);
                             },
                             backgroundColor: Colors.white,
@@ -129,7 +128,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                               hintText: 'Phone Number or Email',
                               hintStyle: TextStyle(
                                 fontWeight: FontWeight.w300,
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 color: Color(0xFF080F18),
                               ),
                             ),
@@ -146,12 +145,13 @@ class AuthScreenView extends GetView<AuthScreenController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right:4.0),
+                      padding: const EdgeInsets.only(right: 4.0),
                       child: SizedBox(
                         height: 24.h,
                         width: 24.w,
                         child: Checkbox(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.r),
                           ),

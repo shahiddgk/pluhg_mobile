@@ -11,9 +11,9 @@ Widget waitingConnectionCard({
   required dynamic prefs,
 }) {
   RxBool responded = false.obs;
-  bool _isRequester = prefs.getString("emailAddress") != null
-      ? prefs.getString("emailAddress") == data["requester"]["contact"]
-      : prefs.getString("phoneNumber") == data["requester"]["contact"];
+  bool _isRequester = prefs.getString(prefuseremail) != null
+      ? prefs.getString(prefuseremail) == data["requester"]["contact"]
+      : prefs.getString(prefuserphone) == data["requester"]["contact"];
 
   if (_isRequester) {
     responded.value = data["isRequesterAccepted"];

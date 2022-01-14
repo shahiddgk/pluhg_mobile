@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/screens/chat/chat_widgets/fullscreen_image.dart';
 
 class ImageList extends StatelessWidget {
@@ -24,7 +25,7 @@ class ImageList extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => FullScreenWrapper(
                             imageProvider: NetworkImage(
-                                "https://pluhg.s3.us-east-2.amazonaws.com/" +
+                                APICALLS.imageBaseUrl +
                                     img.toString()),
                             backgroundColor: Colors.black,
                           ),
@@ -37,7 +38,7 @@ class ImageList extends StatelessWidget {
                           height: 330.h,
                           placeholder: "assets/images/camera.png",
                           image:
-                              "https://pluhg.s3.us-east-2.amazonaws.com/" + img,
+                          APICALLS.imageBaseUrl+ img,
                           fit: BoxFit.cover),
                       Container(
                         height: 6,

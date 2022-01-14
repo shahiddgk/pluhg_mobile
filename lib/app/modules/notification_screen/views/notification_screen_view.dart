@@ -73,17 +73,17 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                 radius: 50 / 2,
                                 backgroundImage: notificationResponse.data[i].userId.profileImage.isEmpty
                                     ? SvgPicture.asset(
-                                            "resources/svg/profile.svg")
-                                        as ImageProvider
+                                    "resources/svg/profile.svg")
+                                as ImageProvider
                                     : NetworkImage(
-                                        APICALLS.imageBaseUrl+'${notificationResponse.data[i].userId.profileImage}'),
+                                    APICALLS.imageBaseUrl+'${notificationResponse.data[i].userId.profileImage}'),
                               ),
                               SizedBox(width: 10),
                               Expanded(
                                 child: Container(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: size.width - 36 - 45,
@@ -101,7 +101,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                       Row(
                                         mainAxisSize: MainAxisSize.max,
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             controller.getTimeDifference(notificationResponse.data[i].createdAt),
