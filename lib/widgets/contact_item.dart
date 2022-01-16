@@ -37,7 +37,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                   Text(
                     contact.phoneNumber.isEmpty
                         ? contact.emailAddress
-                        : contact.phoneNumber,
+                        : contact.phoneNumber.first,
                     style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,

@@ -169,15 +169,20 @@ class APICALLS with ValidationMixin {
   }
 
 
-  // send email support
-
   Future<void> sendSupportEmail(
       {required String emailAddress,
-      required String token,
-      required String subject,
-      required String emailContent,
-      required BuildContext context}) async {
+        required String token,
+        required String subject,
+        required String emailContent,
+        required BuildContext context}) async {
     var uri = Uri.parse("$url/api/sendSupportEmail");
+    print("$url/api/sendSupportEmail");
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token_user = prefs.getString(preftoken);
+    print(emailAddress);
+    print(subject);
+    print(emailContent);
 
     var body = {
       "emailAddress": emailAddress,
@@ -191,14 +196,14 @@ class APICALLS with ValidationMixin {
     var response = await http.post(uri,
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
+          "Authorization": "Bearer $token_user"
         },
         body: jsonEncode(body));
-    print(token);
+    print(response.body);
     print("Victorhezzzz");
     var parsedResponse = jsonDecode(response.body);
 
-    if (parsedResponse["hasError"] == false) {
+    if (parsedResponse["status"] == true) {
       print(parsedResponse);
       showPluhgDailog(
           context, "Great", "Your message has been sent successfully");
@@ -213,6 +218,7 @@ class APICALLS with ValidationMixin {
       print("Error");
     }
   }
+
 
 
 
@@ -797,7 +803,7 @@ class APICALLS with ValidationMixin {
       final userPhoneNumber = formatPhoneNumber(user['phoneNumber'] as String);
 
       final registeredContacts = contacts.where((c) {
-        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
+        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber.first);
         return contactPhoneNumber == userPhoneNumber;
       });
 

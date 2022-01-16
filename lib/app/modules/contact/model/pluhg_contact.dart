@@ -6,7 +6,8 @@ class PluhgContact {
   bool isPlughedUser = false;
   String? id;
   Uint8List? photo;
-  String name, phoneNumber, emailAddress;
+  List<String> phoneNumber;
+  String name, emailAddress;
 
   PluhgContact({
     required this.id,
@@ -20,7 +21,7 @@ class PluhgContact {
   PluhgContact copyWith({
     String? id,
     String? name,
-    String? phoneNumber,
+    List<String>? phoneNumber,
     Uint8List? photo,
     String? emailAddress,
     bool? isPlughedUser,
@@ -56,7 +57,7 @@ class PluhgContact {
       return {
         "name": this.name,
         "phoneNumber": this
-            .phoneNumber
+            .phoneNumber[0]
             .replaceAll('(', '')
             .replaceAll(')', '')
             .replaceAll('-', '')
@@ -84,7 +85,10 @@ class PluhgContact {
       name: contact.displayName,
       isPlughedUser: false,
       // photo: '',//contact.photo,
-      phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
+      phoneNumber: contact.phones.isNotEmpty
+          ? contact.phones
+              .map((e) => e.number)
+              .toList() /*.first.number */ : [],
       emailAddress:
           contact.emails.isNotEmpty ? contact.emails.first.address : '',
     );
