@@ -185,6 +185,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void getMessages(String userId, String oppUserId) {
+
     socket.emit('getUserMessage', {
       'userId': userId,
       'oppUserId': oppUserId,
@@ -194,6 +195,7 @@ class _ChatScreenState extends State<ChatScreen> {
       var messagesArr = data['data'];
 
 
+      print(messagesArr);
 
       for (int i = 0; i < messagesArr.length; i++) {
         if (messagesArr[i]['recevierId'] == myid) {
@@ -212,6 +214,9 @@ class _ChatScreenState extends State<ChatScreen> {
             .reversed
             .toList();
         loading = false;
+
+
+
       });
     });
   }

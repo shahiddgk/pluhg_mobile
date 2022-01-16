@@ -45,12 +45,24 @@ class ChatScreenController extends GetxController {
       //get last messages
       getMessages(userID.toString());
     });
+
+    socket.onConnectError((data) {
+      print("error");
+      print(data);
+    });
   }
 
   void getMessages(String userId) {
-    socket.emit('getMessages', {'userId': userId});
-    socket.on('getMessagesResponse', (data) {
+
+    socket.emit('getMessageListing', {'userId': userId});
+    socket.on('getListingResponse', (data) {
+
+      print("----------------8888888----------------------------------------------");
+      print(data);
+
       var chatsArr = data['data'];
+
+
       users = List<UserChat>.from(chatsArr
           .map((dynamic message) => UserChat.fromJson(message))
           .toList());

@@ -22,7 +22,7 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
     //double width_item = (MediaQuery.of(context).size.width - 4.w) / 3;
 
     return Scaffold(
-      appBar: SearchAppBar(searchController, (value) {}),
+      appBar: SearchAppBar(searchController, (value) {}, messages_page: false),
       backgroundColor: Colors.white,
       body: FutureBuilder(
         builder: (context, snapshot) {

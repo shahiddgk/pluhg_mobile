@@ -9,9 +9,10 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   TextEditingController searchController = new TextEditingController();
   bool backButton;
   Function onChanged;
+  bool messages_page;
 
   SearchAppBar(this.searchController, this.onChanged,
-      {this.backButton = false});
+      {this.backButton = false, required this.messages_page});
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +23,15 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: backButton ? 30 : 0,
       leading: backButton
           ? GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Icon(
-                  Icons.arrow_back_ios_outlined,
-                  color: Colors.grey,
-                ),
-              ),
-            )
+        onTap: () => Navigator.pop(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Icon(
+            Icons.arrow_back_ios_outlined,
+            color: Colors.grey,
+          ),
+        ),
+      )
           : SizedBox.shrink(),
       title: Container(
         height: 40.0,
@@ -44,9 +45,9 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             onChanged(value);
           },
           decoration: InputDecoration(
-              hintText: "Search connections",
+              hintText: messages_page==true?"Search messages":"Search connections",
               prefixIcon: Padding(
-               padding: EdgeInsets.all(8.w),
+                  padding: EdgeInsets.all(8.w),
                   child: SvgPicture.asset(
                     "assets/images/search.svg",
 
