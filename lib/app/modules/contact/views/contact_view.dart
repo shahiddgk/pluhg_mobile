@@ -442,7 +442,7 @@ class ContactView extends GetView<ContactController> {
     controller.requesterImage = pluhgContact.photo;
     controller.requesterContact.value = pluhgContact.phoneNumber.isEmpty
         ? pluhgContact.emailAddress
-        : pluhgContact.phoneNumber.first;
+        : pluhgContact.phoneNumber;
     controller.requesterName.value = pluhgContact.name;
     controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
     controller.title.value = "Select Contact";
@@ -462,7 +462,7 @@ class ContactView extends GetView<ContactController> {
       controller.contactImage = pluhgContact.photo;
       controller.contactContact.value = pluhgContact.phoneNumber.isEmpty
           ? pluhgContact.emailAddress
-          : pluhgContact.phoneNumber.first;
+          : pluhgContact.phoneNumber;
       controller.contactName.value = pluhgContact.name;
       controller.isContactPluhg.value = contacts[index].isPlughedUser;
 

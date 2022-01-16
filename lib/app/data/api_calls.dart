@@ -803,7 +803,7 @@ class APICALLS with ValidationMixin {
       final userPhoneNumber = formatPhoneNumber(user['phoneNumber'] as String);
 
       final registeredContacts = contacts.where((c) {
-        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber.first);
+        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
         return contactPhoneNumber == userPhoneNumber;
       });
 

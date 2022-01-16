@@ -6,8 +6,7 @@ class PluhgContact {
   bool isPlughedUser = false;
   String? id;
   Uint8List? photo;
-  List<String> phoneNumber;
-  String name, emailAddress;
+  String name, phoneNumber, emailAddress;
 
   PluhgContact({
     required this.id,
@@ -21,7 +20,7 @@ class PluhgContact {
   PluhgContact copyWith({
     String? id,
     String? name,
-    List<String>? phoneNumber,
+    String? phoneNumber,
     Uint8List? photo,
     String? emailAddress,
     bool? isPlughedUser,
@@ -57,7 +56,7 @@ class PluhgContact {
       return {
         "name": this.name,
         "phoneNumber": this
-            .phoneNumber[0]
+            .phoneNumber
             .replaceAll('(', '')
             .replaceAll(')', '')
             .replaceAll('-', '')
@@ -71,13 +70,13 @@ class PluhgContact {
   }
 
   factory PluhgContact.fromJson(Map json) => PluhgContact(
-        id: '',
-        photo: null,
-        name: json['name'],
-        isPlughedUser: json['isPlughedUser'] ?? false,
-        phoneNumber: json['phoneNumber'] ?? '',
-        emailAddress: json['emailaddress'] ?? '',
-      );
+    id: '',
+    photo: null,
+    name: json['name'],
+    isPlughedUser: json['isPlughedUser'] ?? false,
+    phoneNumber: json['phoneNumber'] ?? '',
+    emailAddress: json['emailaddress'] ?? '',
+  );
 
   factory PluhgContact.fromContact(Contact contact) {
     return PluhgContact(
@@ -85,12 +84,9 @@ class PluhgContact {
       name: contact.displayName,
       isPlughedUser: false,
       // photo: '',//contact.photo,
-      phoneNumber: contact.phones.isNotEmpty
-          ? contact.phones
-              .map((e) => e.number)
-              .toList() /*.first.number */ : [],
+      phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
       emailAddress:
-          contact.emails.isNotEmpty ? contact.emails.first.address : '',
+      contact.emails.isNotEmpty ? contact.emails.first.address : '',
     );
   }
 }

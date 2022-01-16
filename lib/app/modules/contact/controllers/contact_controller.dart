@@ -100,7 +100,7 @@ class ContactController extends GetxController with ValidationMixin{
       String userEmail = prefs!.getString(prefuseremail) ?? "";
       PluhgContact? contactToRemove;
       _allContacts.forEach((element) {
-        if (comparePhoneNumber(element.phoneNumber.first,(userPhoneNumber)) ||
+        if (comparePhoneNumber(element.phoneNumber,(userPhoneNumber)) ||
             comparePhoneNumber(element.emailAddress,userEmail)) {
           contactToRemove = element;
         }
