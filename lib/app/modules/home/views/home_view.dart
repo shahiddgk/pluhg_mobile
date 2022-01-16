@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
+import 'package:plug/app/modules/chat_screen/controllers/chat_screen_controller.dart';
 import 'package:plug/app/modules/chat_screen/views/chat_screen_view.dart';
 import 'package:plug/app/modules/connection_screen/views/connect_two_people.dart';
 import 'package:plug/app/modules/connection_screen/views/connection_screen_view.dart';
@@ -29,6 +30,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
+  final controller_chat = Get.put(ChatScreenController());
+
   List<Widget> pages = [
     ConnectionScreenView(),
     ConnectScreenView(),
@@ -103,7 +106,6 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               type: BottomNavigationBarType.fixed,
               showSelectedLabels: true,
               showUnselectedLabels: true,
-
               selectedItemColor: pluhgColour,
               unselectedItemColor: Colors.black,
               selectedFontSize: 12.sp,
@@ -135,25 +137,29 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                         children: [
                           SvgPicture.asset('assets/svg/inactive_messages.svg'),
                           //waiting for backend api changes
-                          /*Positioned(
+                          Positioned(
                             top: -8,
                             right: -8,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: AppColors.pluhgColour,
-                                  shape: BoxShape.circle),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Text("",
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400),
-                                    textAlign: TextAlign.center),
-                              ),
-                            ),
-                          )*/
+                            child: controller_chat.total_unread_messages == 0
+                                ? Container()
+                                : Container(
+                                    decoration: BoxDecoration(
+                                        color: AppColors.pluhgColour,
+                                        shape: BoxShape.circle),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(
+                                          controller_chat.total_unread_messages
+                                              .toString(),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
+                                          textAlign: TextAlign.center),
+                                    ),
+                                  ),
+                          )
                         ],
                       )),
                   activeIcon:

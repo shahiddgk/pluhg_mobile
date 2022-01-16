@@ -90,6 +90,12 @@ class ContactController extends GetxController with ValidationMixin{
         pluhgContacts = contacts
             .map<PluhgContact>((contact) => PluhgContact.fromContact(contact))
             .toList();
+
+        print("----------------------------------------------");
+        for(PluhgContact p in  pluhgContacts)
+        {
+          print(p.phoneNumbers);
+        }
       } catch (ex) {
         print(ex);
       }

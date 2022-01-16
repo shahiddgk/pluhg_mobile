@@ -181,6 +181,9 @@ List<Widget> getAction(
         ),
         onPressed: () async {
           APICALLS apicalls = APICALLS();
+
+          print("-------------------------");
+          print(text.length);
           if (text.length > 5) {
             final isSent = await apicalls.sendReminderMessage(
               message: text,

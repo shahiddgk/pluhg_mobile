@@ -777,6 +777,7 @@ class APICALLS with ValidationMixin {
   //Check if user is a Pluhg user or not
   Future<List<PluhgContact>> checkPluhgUsers(
       {required List<PluhgContact> contacts}) async {
+
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 

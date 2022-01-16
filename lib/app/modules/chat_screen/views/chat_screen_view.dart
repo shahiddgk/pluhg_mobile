@@ -13,6 +13,7 @@ import '../controllers/chat_screen_controller.dart';
 class ChatScreenView extends GetView<ChatScreenController> {
   final controller = Get.put(ChatScreenController());
   TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

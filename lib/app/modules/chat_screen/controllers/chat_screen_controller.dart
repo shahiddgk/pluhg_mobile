@@ -13,6 +13,7 @@ class ChatScreenController extends GetxController {
   final size = Get.size;
   String? userID;
   final count = 0.obs;
+  int total_unread_messages = 0;
 
   @override
   void onInit() {
@@ -40,8 +41,6 @@ class ChatScreenController extends GetxController {
 
     // if the web socketis connected
     socket.onConnect((data) {
-
-
       //get last messages
       getMessages(userID.toString());
     });
@@ -53,19 +52,21 @@ class ChatScreenController extends GetxController {
   }
 
   void getMessages(String userId) {
-
     socket.emit('getMessageListing', {'userId': userId});
     socket.on('getListingResponse', (data) {
-
-      print("----------------8888888----------------------------------------------");
+      print(
+          "----------------8888888----------------------------------------------");
       print(data);
 
       var chatsArr = data['data'];
 
-
       users = List<UserChat>.from(chatsArr
           .map((dynamic message) => UserChat.fromJson(message))
           .toList());
+
+      for (UserChat user in users) {
+        total_unread_messages = total_unread_messages + user.unReadCount;
+      }
       /*for (int i = 0; i < chatsArr.length; i++) {
         setMessageResponse(chatsArr[i]);
       }*/
@@ -73,8 +74,6 @@ class ChatScreenController extends GetxController {
   }
 
   void setMessageResponse(dynamic message) {
-
-
     /*users.add(
       UserChat(
         name: message['receiverDetails']['name'],
