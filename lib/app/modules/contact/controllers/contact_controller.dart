@@ -18,7 +18,6 @@ class ContactController extends GetxController with ValidationMixin{
   List<PluhgContact> _allContacts = [];
   Completer<List<PluhgContact>> contactsFuture = Completer();
 
-  // List<PluhgContact> contacts_ = [];
   RxBool permissionDenied = false.obs;
   RxBool isContactPluhg = false.obs;
   RxBool isRequesterPluhg = false.obs;

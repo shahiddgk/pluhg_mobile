@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
@@ -14,6 +16,8 @@ class ChatScreenController extends GetxController {
   String? userID;
   final count = 0.obs;
   int total_unread_messages = 0;
+  RxString search = "".obs;
+
 
   @override
   void onInit() {
@@ -24,6 +28,8 @@ class ChatScreenController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+
+
   }
 
   @override
@@ -54,9 +60,6 @@ class ChatScreenController extends GetxController {
   void getMessages(String userId) {
     socket.emit('getMessageListing', {'userId': userId});
     socket.on('getListingResponse', (data) {
-      print(
-          "----------------8888888----------------------------------------------");
-      print(data);
 
       var chatsArr = data['data'];
 
@@ -67,6 +70,7 @@ class ChatScreenController extends GetxController {
       for (UserChat user in users) {
         total_unread_messages = total_unread_messages + user.unReadCount;
       }
+
       /*for (int i = 0; i < chatsArr.length; i++) {
         setMessageResponse(chatsArr[i]);
       }*/
@@ -95,4 +99,11 @@ class ChatScreenController extends GetxController {
       ),
     );*/
   }
+
+  //Get chats list
+  List<UserChat> get users_ => users.where((user) {
+    final regexp = RegExp(search.value, caseSensitive: false);
+    return regexp.hasMatch(user.name);
+  }).toList();
+
 }

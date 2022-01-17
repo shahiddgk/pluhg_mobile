@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:plug/app/values/colors.dart';
+import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/screens/chat/media_options/open_setting.dart';
 import 'package:plug/utils/permissions.dart';
 import 'package:plug/widgets/widgets_show.dart';
@@ -101,10 +102,10 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
 
     try {
       FilePickerResult? files = await FilePicker.platform.pickFiles(
-          type: FileType.any,
-          allowMultiple: false,
-          allowCompression: true,
-         /* allowedExtensions: [
+        type: FileType.any,
+        allowMultiple: false,
+        allowCompression: true,
+        /* allowedExtensions: [
             'pdf',
             'docx',
             'doc',
@@ -112,7 +113,8 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
             'xslx',
             'ppt',
             'pptx'
-          ]*/);
+          ]*/
+      );
 
       if (files != null) {
         if (files.files.length > 1) {
@@ -394,9 +396,7 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
                   ? _buildMultiDocLoading()
                   : Container(
                       child: Center(
-                        child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.activeIconColour)),
+                        child: pluhgProgress(),
                       ),
                     )
               : Container(),
@@ -447,25 +447,23 @@ class _MultiDocumentPickerState extends State<MultiDocumentPicker> {
                   Icons.add,
                   checkTotalNoOfFilesIfExceeded() == false
                       ? () {
-                    if (Platform.isAndroid) {
-                      PermissionsUtil.checkAndRequestPermission(
-                          Permission.photos)
-                          .then((res) {
-                        if (res == true) {
-                          captureMultiPageDoc(false);
-                        } else if (res == false) {
-                          Navigator.pushReplacement(
-                              this.context,
-                              new MaterialPageRoute(
-                                  builder: (context) => OpenSettings()));
-                        } else {}
-                      });
-                    }
-                    else {
-                      captureMultiPageDoc(false);
-
-                    }
-                  }
+                          if (Platform.isAndroid) {
+                            PermissionsUtil.checkAndRequestPermission(
+                                    Permission.photos)
+                                .then((res) {
+                              if (res == true) {
+                                captureMultiPageDoc(false);
+                              } else if (res == false) {
+                                Navigator.pushReplacement(
+                                    this.context,
+                                    new MaterialPageRoute(
+                                        builder: (context) => OpenSettings()));
+                              } else {}
+                            });
+                          } else {
+                            captureMultiPageDoc(false);
+                          }
+                        }
                       : () {
                           ShowWidgets.toast(
                               'Maximum number of files can be selected: ${maxNoOfFilesInMultiSharing}');

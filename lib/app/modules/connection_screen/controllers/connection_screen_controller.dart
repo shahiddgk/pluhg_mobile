@@ -10,6 +10,8 @@ class ConnectionScreenController extends GetxController
   dynamic userProfileDetails = {}.obs;
   List recommended = [];
 
+
+
   SharedPreferences? prefs;
   RxInt currentIndex = 0.obs;
   RxInt activeList = 0.obs;

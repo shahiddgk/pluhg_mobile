@@ -40,13 +40,12 @@ Widget waitingConnectionCard({
             children: [
               Expanded(
                 child: Container(
-                 // height: 164,
+                  // height: 164,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
-                        BoxShadow(
-                            blurRadius: 40, color: Colors.black12)
+                        BoxShadow(blurRadius: 40, color: Colors.black12)
                       ]),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,8 +65,8 @@ Widget waitingConnectionCard({
                                       BoxShadow(
                                           color: Colors.black12, blurRadius: 20)
                                     ]),
-                                child:
-                                card(Get.context!, data["requester"]["refId"])),
+                                child: card(
+                                    Get.context!, data["requester"]["refId"])),
                             Container(
                                 width: 84.0,
                                 padding: EdgeInsets.all(8.0),
@@ -78,18 +77,15 @@ Widget waitingConnectionCard({
                                       BoxShadow(
                                           color: Colors.black12, blurRadius: 20)
                                     ]),
-                                child:
-                                card(Get.context!, data["contact"]["refId"])),
+                                child: card(
+                                    Get.context!, data["contact"]["refId"])),
                           ],
                         ),
                       ),
                       responded.value
                           ? SizedBox()
                           : Container(
-                              margin: EdgeInsets.only(
-                                top: 12.0,
-                                bottom: 12.0
-                              ),
+                              margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -160,7 +156,9 @@ Widget waitingConnectionCard({
                         color: Color(0xff898B8B),
                         fontSize: 10)),
                 Text(
-                  "@${data['userId']["userName"]}",
+                  data['userId']["userName"] == null
+                      ? data['userId']["name"]
+                      : "@" + data['userId']["userName"],
                   style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
