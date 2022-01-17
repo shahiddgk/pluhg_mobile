@@ -41,7 +41,7 @@ class Message {
       date: DateFormat('dd MMMM, yyyy').format(DateTime.now()).toString(),
       type: senderId == myid ? 'source' : 'destination',
       isRead: /*message['senderId'] == myid ? true :*/ message['isRead'],
-      isDeleted: message['isDeleted'],
+      isDeleted: false /*message['isDeleted']*/,
     );
   }
 
