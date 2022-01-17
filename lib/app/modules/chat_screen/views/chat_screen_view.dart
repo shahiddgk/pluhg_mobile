@@ -15,58 +15,52 @@ class ChatScreenView extends GetView<ChatScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: SearchAppBar(
-        searchController,
-        (value) {
-          controller.search.value = value;
-          print(controller.search.value);
-          print(controller.users_.length);
-
-        },
-        messages_page: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: Text(
-                'Messages',
-                style: TextStyle(
-                  color: pluhgColour,
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w600,
+    return Obx(() => Scaffold(
+          appBar: SearchAppBar(
+            searchController,
+            controller.serachMessages,
+            messages_page: true,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Text(
+                    'Messages',
+                    style: TextStyle(
+                      color: pluhgColour,
+                      fontSize: 30.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(height: controller.size.height * 0.02),
+                if (controller.users.length == 0)
+                  Center(child: Text('No message yet!')),
+                if (controller.users.length != 0)
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: controller.users.length,
+                    itemBuilder: (ctx, i) => InkWell(
+                      onTap: () {
+                        //Gi to chat screen
+                        Get.to(() => ChatScreen(
+                            username_receiver: controller.users[i].userName,
+                            name_receiver: controller.users[i].name,
+                            profile_receiver: APICALLS.imageBaseUrl +
+                                controller.users[i].profileImage!,
+                            senderId: controller.users[i].senderId,
+                            recevierId: controller.users[i].recevierId));
+                      }, // get last message item
+                      child: getMainChatItem(controller.users[i]),
+                    ),
+                  ),
+              ],
             ),
-            SizedBox(height: controller.size.height * 0.02),
-            if (controller.users_.length == 0)
-              Center(child: Text('No message yet!')),
-            if (controller.users_.length != 0)
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: controller.users_.length,
-                itemBuilder: (ctx, i) => InkWell(
-                        onTap: () {
-                          //Gi to chat screen
-                          Get.to(() => ChatScreen(
-                              username_receiver: controller.users_[i].userName,
-                              name_receiver: controller.users_[i].name,
-                              profile_receiver: APICALLS.imageBaseUrl +
-                                  controller.users_[i].profileImage!,
-                              senderId: controller.users_[i].senderId,
-                              recevierId: controller.users_[i].recevierId));
-                        }, // get last message item
-                        child: getMainChatItem(controller.users_[i]),
-                      )
-                    ,
-              ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

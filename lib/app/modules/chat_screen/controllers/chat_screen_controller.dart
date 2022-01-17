@@ -11,7 +11,15 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 class ChatScreenController extends GetxController {
   //TODO: Implement ChatScreenController
   late IO.Socket socket;
-  List<UserChat> users = [];
+
+
+
+  RxList users = [].obs;
+  List<UserChat> usersTemp = [];
+
+
+
+
   final size = Get.size;
   String? userID;
   final count = 0.obs;
@@ -63,13 +71,16 @@ class ChatScreenController extends GetxController {
 
       var chatsArr = data['data'];
 
-      users = List<UserChat>.from(chatsArr
+      users.value = List<UserChat>.from(chatsArr
           .map((dynamic message) => UserChat.fromJson(message))
           .toList());
 
       for (UserChat user in users) {
         total_unread_messages = total_unread_messages + user.unReadCount;
       }
+
+      usersTemp = List<UserChat>.from(users.value);
+
 
       /*for (int i = 0; i < chatsArr.length; i++) {
         setMessageResponse(chatsArr[i]);
@@ -100,10 +111,18 @@ class ChatScreenController extends GetxController {
     );*/
   }
 
-  //Get chats list
-  List<UserChat> get users_ => users.where((user) {
-    final regexp = RegExp(search.value, caseSensitive: false);
-    return regexp.hasMatch(user.name);
-  }).toList();
+
+  serachMessages(String name) {
+
+    if (name.isEmpty) {
+      users.value = usersTemp;
+    } else {
+      users.value = usersTemp
+          .where((element) =>
+          element.name.toLowerCase().contains(name.toLowerCase()))
+          .toList();
+    }
+
+  }
 
 }

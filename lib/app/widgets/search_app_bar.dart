@@ -43,6 +43,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: TextFormField(
           controller: searchController,
+          textInputAction: TextInputAction.search,
           onChanged: (value) {
             onChanged(value);
           },
