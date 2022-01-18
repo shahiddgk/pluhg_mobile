@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/models/notification_response.dart';
 
 import '../controllers/notification_screen_controller.dart';
@@ -15,6 +16,8 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
   Widget build(BuildContext context) {
     Size size = Get.size;
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: SimpleAppBar(backButton: true,notificationButton: false,),
       body: FutureBuilder<dynamic>(
           future: controller.getNotificationList(),
           builder: (context, snapshot) {
@@ -34,22 +37,13 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
               );
             } else {
               NotificationResponse notificationResponse = snapshot.data;
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: size.height * 0.05),
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF080F18)),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      SizedBox(height: size.height * 0.02),
                       Text(
                         'Notifications',
                         style: TextStyle(
