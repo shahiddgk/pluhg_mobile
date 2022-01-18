@@ -89,8 +89,8 @@ class _ChatScreenState extends State<ChatScreen> {
       getMessages(widget.senderId, widget.recevierId);
       socket.on('sendMessageResponse', (msg) {
         print('**************');
-        print(msg['data']);
-        setMessageResponse(msg['data']);
+        print(msg);
+        setMessageResponse(msg);
       });
       socket.on('readMessageResponse', (data) {
         /* messages.forEach((element) {
@@ -180,12 +180,11 @@ class _ChatScreenState extends State<ChatScreen> {
     if (!this.mounted) return;
 
     setState(() {
-      messages.insert(0, Message.fromJson(message, myid));
+      messages.insert(0, Message.fromJson2(message["data"], myid, message["data"]["senderDetails"]["_id"]));
     });
   }
 
   void getMessages(String userId, String oppUserId) {
-
     socket.emit('getUserMessage', {
       'userId': userId,
       'oppUserId': oppUserId,
@@ -193,7 +192,6 @@ class _ChatScreenState extends State<ChatScreen> {
     socket.on('getUserMessageResponse', (data) {
       if (!this.mounted) return;
       var messagesArr = data['data'];
-
 
       print(messagesArr);
 
@@ -207,16 +205,11 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       setState(() {
-
-
         messages = List<Message>.from(
                 messagesArr.map((e) => Message.fromJson(e, myid)).toList())
             .reversed
             .toList();
         loading = false;
-
-
-
       });
     });
   }

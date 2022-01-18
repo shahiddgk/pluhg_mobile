@@ -60,7 +60,6 @@ class ContactView extends GetView<ContactController> {
             child: TextFormField(
               controller: searchController,
               onChanged: (value) {
-                print(searchController.text);
                 controller.search.value = searchController.text;
                 print(searchController.text);
               },

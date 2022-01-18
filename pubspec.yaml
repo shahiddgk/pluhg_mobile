@@ -64,6 +64,7 @@ dependencies:
   mime:
   photo_view:
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -169,7 +169,9 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                                                     const EdgeInsets.all(8.0),
                                                 child: waitingConnectionCard(
                                                     data: data[index],
-                                                    prefs: controller.prefs),
+                                                    prefs: controller.prefs
+
+                                                ),
                                               )
                                         :
                                         // controller.connectedList.value == 0 ||

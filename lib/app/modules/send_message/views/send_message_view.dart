@@ -63,7 +63,7 @@ class SendMessageView extends GetView<SendMessageController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 168.22.h,
+                      height: 178.22.h,
                       width: 88.66.w,
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -132,7 +132,7 @@ class SendMessageView extends GetView<SendMessageController> {
                     ),
                     SvgPicture.asset("resources/svg/middle.svg"),
                     Container(
-                      height: 168.22.h,
+                      height: 178.22.h,
                       width: 88.66.w,
                       decoration: BoxDecoration(
                           color: Colors.white,
