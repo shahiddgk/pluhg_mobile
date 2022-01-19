@@ -63,7 +63,8 @@ dependencies:
   emoji_picker_flutter:
   mime:
   photo_view:
-
+  open_document:
+  dio:
 
 dev_dependencies:
   flutter_test:

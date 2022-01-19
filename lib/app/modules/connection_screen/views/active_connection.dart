@@ -11,6 +11,7 @@ import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/screens/chat/chat_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/dialog_box.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 import 'package:plug/widgets/text_style.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 
@@ -19,7 +20,10 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
   final bool isRequester;
   final Function refreshActiveConnection;
 
-  ActiveConnectionScreenView({this.data, required this.isRequester,required this.refreshActiveConnection});
+  ActiveConnectionScreenView(
+      {this.data,
+      required this.isRequester,
+      required this.refreshActiveConnection});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +31,6 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
         .parseUTC(data["created_at"])
         .toLocal();
     String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
-
-
-    print("------------------------------");
-    print(data);
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -70,7 +70,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                               height: 16.h,
                             ),
                             Row(
-                             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Container(width: 20.w),
                                 Column(
@@ -78,7 +78,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                     Row(
                                       children: [
                                         Container(
-                                            height: 131.72.w,
+                                            height: 151.72.h,
                                             width: 87.2.w,
                                             decoration: BoxDecoration(
                                                 color: Colors.white,
@@ -118,47 +118,14 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                     ),
                                   ],
                                 ),
-                                Container(width: 20.w,),
-                                Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 9.4,
-                                      ),
-                                      Text("Plugged by:",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              color: Color(0xff898B8B),
-                                              fontSize: 10)),
-                                      Text("@${data['userId']["userName"]}",
-                                          style: subtitleTextStyle),
-                                      SizedBox(height: 8.71.h),
-                                      Text(
-                                        "Date:",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            color: Color(0xff898B8B),
-                                            fontSize: 10),
-                                      ),
-                                      Text(
-                                          formattedDate
-                                              .toString()
-                                              .substring(0, 11),
-                                          style: subtitleTextStyle),
-                                      SizedBox(height: 8.71.h),
-                                      Text(
-                                        "Time:",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            color: Color(0xff898B8B),
-                                            fontSize: 10),
-                                      ),
-                                      Text(
-                                        formattedDate.toString().substring(12),
-                                        style: subtitleTextStyle,
-                                      ),
-                                    ]),
+                                Container(
+                                  width: 20.w,
+                                ),
+                                PlugByWidgetCard(
+                                    userName: data['userId']["userName"] == null
+                                        ? data['userId']["name"]
+                                        : "@" + data['userId']["userName"],
+                                    date: formattedDate)
                               ],
                             ),
                             SizedBox(
@@ -245,7 +212,6 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                               : data["contact"]["refId"]["_id"],
                                         )));
                           }),
-
                         ],
                       )
                     ],
@@ -256,10 +222,12 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
   }
 
   void showDialogWithRating(BuildContext buildContext) {
-    showDialog(context: buildContext,builder: (BuildContext context){
-    return  showPluhgRatingDialog(context, "Close connection",
-          "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
-          onCLosed: (value) {
+    showDialog(
+        context: buildContext,
+        builder: (BuildContext context) {
+          return showPluhgRatingDialog(context, "Close connection",
+              "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
+              onCLosed: (value) {
             ProgressDialog pd = ProgressDialog(context: buildContext);
             pd.show(
               max: 100,
@@ -267,23 +235,28 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
               progressType: ProgressType.normal,
               progressBgColor: Colors.transparent,
             );
-            APICALLS().closeConnection(connectionID: data["_id"], context: buildContext, rating: value.toString()).then((value){
-              if(value){
+            APICALLS()
+                .closeConnection(
+                    connectionID: data["_id"],
+                    context: buildContext,
+                    rating: value.toString())
+                .then((value) {
+              if (value) {
                 //call active connection API again
                 pd.close();
                 showPluhgDailog2(buildContext, "Great!!!",
-                    "You have successfully cancelled this  connection", onCLosed: () {
-                      Navigator.pop(buildContext);
-                      refreshActiveConnection();
-                    });
-              }else{
+                    "You have successfully cancelled this  connection",
+                    onCLosed: () {
+                  Navigator.pop(buildContext);
+                  refreshActiveConnection();
+                });
+              } else {
                 pd.close();
-                showPluhgDailog(
-                    buildContext , "So sorry", "Couldn't complete your request, try again");
+                showPluhgDailog(buildContext, "So sorry",
+                    "Couldn't complete your request, try again");
               }
             });
           });
-    });
-
+        });
   }
 }

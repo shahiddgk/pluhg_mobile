@@ -88,7 +88,6 @@ class APICALLS with ValidationMixin {
         ));
       } else {
         prefs.setBool(prefloggedout, false);
-        print(parsedResponse['data']['token'].toString());
         prefs.setString(preftoken, parsedResponse['data']['token'].toString());
         prefs.setString(prefuserid,
             parsedResponse['data']['user']['data']['_id'].toString());
@@ -176,13 +175,10 @@ class APICALLS with ValidationMixin {
         required String emailContent,
         required BuildContext context}) async {
     var uri = Uri.parse("$url/api/sendSupportEmail");
-    print("$url/api/sendSupportEmail");
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token_user = prefs.getString(preftoken);
-    print(emailAddress);
-    print(subject);
-    print(emailContent);
+
 
     var body = {
       "emailAddress": emailAddress,
@@ -199,12 +195,10 @@ class APICALLS with ValidationMixin {
           "Authorization": "Bearer $token_user"
         },
         body: jsonEncode(body));
-    print(response.body);
-    print("Victorhezzzz");
+
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       showPluhgDailog(
           context, "Great", "Your message has been sent successfully");
 
@@ -262,16 +256,14 @@ class APICALLS with ValidationMixin {
           "Authorization": "Bearer $token"
         },
         body: jsonEncode(body));
-    print(token);
     var parsedResponse = jsonDecode(response.body);
+
     // print(parsedResponse["data"]["_id"].toString());
-    print("Connection ID");
     bool bothemail =
         requesterContact.contains("@") && contactContact.contains("@");
     bool bothphone =
         !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
-      print(parsedResponse);
       pluhgSnackBar("Great", "You have connected them, about to send message");
 
       Get.off(StatusScreen(
@@ -291,6 +283,8 @@ class APICALLS with ValidationMixin {
 
       //all good
     } else {
+
+      print(parsedResponse['message']);
       // error
       pluhgSnackBar("So sorry", "${parsedResponse['message']}");
 
@@ -338,7 +332,7 @@ class APICALLS with ValidationMixin {
 
     if (parsedResponse["status"]) {
       pd.close();
-      print(parsedResponse);
+
       return true;
       //all good
     } else {
@@ -555,7 +549,6 @@ class APICALLS with ValidationMixin {
     } else {
       //ERROR
 
-      print("Victorhez notification update successful");
       pluhgSnackBar("Sorry", "${parsedResponse['message']}");
       return false;
     }
@@ -827,7 +820,7 @@ class APICALLS with ValidationMixin {
     var response =
         await http.get(uri, headers: {"Authorization": "Bearer $token"});
     var parsedResponse = jsonDecode(response.body);
-    print(parsedResponse);
+    print(parsedResponse["data"]);
     return NotificationResponse.fromJson(parsedResponse);
   }
 

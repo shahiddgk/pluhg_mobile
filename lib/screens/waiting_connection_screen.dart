@@ -9,12 +9,15 @@ import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/button.dart';
 import 'package:plug/widgets/colours.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Color primaryColor = Color(0xFF000BFF);
 
 class WaitingConnectionScreen extends StatefulWidget {
   final dynamic data;
+
   const WaitingConnectionScreen({
     Key? key,
     this.data,
@@ -33,6 +36,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
   String? phone;
   late bool isRequester;
   bool _responded = false;
+
   getUserID() async {
     SharedPreferences pres = await SharedPreferences.getInstance();
     setState(() {
@@ -61,7 +65,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: SimpleAppBar(backButton: true,),
+        appBar: SimpleAppBar(
+          backButton: true,
+        ),
         body: CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
@@ -75,8 +81,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.026,
-                        vertical: size.width * 0.026),
+                        horizontal: 16.w, vertical: size.width * 0.026),
                     margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
                     decoration: BoxDecoration(
                       color: Color(0xffEBEBEB),
@@ -96,7 +101,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                 Row(
                                   children: [
                                     Container(
-                                        height: 131.72,
+                                        height: 151.72.h,
                                         width: 87.2,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
@@ -116,7 +121,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                       width: 16,
                                     ),
                                     Container(
-                                        height: 131.72,
+                                        height: 151.72.h,
                                         width: 87.2,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
@@ -136,56 +141,13 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              width: 3,
-                            ),
-                            Column(children: [
-                              SizedBox(
-                                height: 9.4,
-                              ),
-                              Text("Plugged by:",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      color: Color(0xff898B8B),
-                                      fontSize: 10)),
-                              Text(
-                                "@${data['userId']["userName"]}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: Color(0xff575858)),
-                              ),
-                              SizedBox(height: 4.71),
-                              Text(
-                                "Date:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: Color(0xff898B8B),
-                                    fontSize: 10),
-                              ),
-                              Text(
-                                formattedDate.toString().substring(0, 11),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: Color(0xff575858)),
-                              ),
-                              SizedBox(height: 4.71),
-                              Text(
-                                "Time:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: Color(0xff898B8B),
-                                    fontSize: 10),
-                              ),
-                              Text(
-                                formattedDate.toString().substring(12),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
-                                    color: Color(0xff575858)),
-                              ),
-                            ]),
+                            Container(width: 20.w),
+                            Expanded(
+                                child: PlugByWidgetCard(
+                                    userName: data['userId']["userName"] == null
+                                        ? data['userId']["name"]
+                                        : "@" + data['userId']["userName"],
+                                    date: formattedDate))
                           ],
                         ),
                         SizedBox(
@@ -206,7 +168,10 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                               width: 10,
                             ),
                             Text(
-                              "Message From \n @${data["userId"]["userName"]}",
+                              "Message From \n" +
+                                  (data['userId']["userName"] == null
+                                      ? data['userId']["name"]
+                                      : "@" + data['userId']["userName"]),
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -215,7 +180,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                           ],
                         ),
                         Container(
-                          width: 307.22,
+                          //width: 307.22,
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),

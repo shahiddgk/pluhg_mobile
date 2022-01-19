@@ -5,6 +5,8 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/screens/waiting_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget waitingConnectionCard({
   required dynamic data,
@@ -56,8 +58,9 @@ Widget waitingConnectionCard({
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Container(
-                                width: 84,
-                                padding: EdgeInsets.all(8.0),
+                                height:Get.size.height<812? 138.72.h:120.h,
+                            width: 87.2.w,
+                                padding: EdgeInsets.all(6.0.w),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15),
@@ -68,8 +71,9 @@ Widget waitingConnectionCard({
                                 child: card(
                                     Get.context!, data["requester"]["refId"])),
                             Container(
-                                width: 84.0,
-                                padding: EdgeInsets.all(8.0),
+                                height:Get.size.height<812? 138.72.h:120.h,
+                                width: 87.2.w,
+                                padding: EdgeInsets.all(6.0.w),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15),
@@ -144,59 +148,18 @@ Widget waitingConnectionCard({
                 ),
               ),
               SizedBox(
-                width: 8,
+                width: 12.w,
               ),
-              Column(children: [
-                SizedBox(
-                  height: 9.4,
-                ),
-                Text("Plugged by:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10)),
-                Text(
-                  data['userId']["userName"] == null
+
+              PlugByWidgetCard(
+                  userName: data['userId']["userName"] == null
                       ? data['userId']["name"]
                       : "@" + data['userId']["userName"],
-                  style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-                SizedBox(height: 4.71),
-                Text(
-                  "Date:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Color(0xff898B8B),
-                      fontSize: 10),
-                ),
-                Text(
-                  formattedDate.toString().substring(0, 11),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-                SizedBox(height: 4.71),
-                Text(
-                  "Time:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Color(0xff898B8B),
-                      fontSize: 10),
-                ),
-                Text(
-                  formattedDate.toString().substring(12),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-              ]),
+                  date: formattedDate),
+
+
               SizedBox(
-                width: 8,
+                width: 8.w,
               ),
               Center(
                 child: Icon(

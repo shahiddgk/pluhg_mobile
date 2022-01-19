@@ -12,6 +12,7 @@ import '../controllers/notification_screen_controller.dart';
 
 class NotificationScreenView extends GetView<NotificationScreenController> {
   final controller = Get.put(NotificationScreenController());
+
   @override
   Widget build(BuildContext context) {
     Size size = Get.size;

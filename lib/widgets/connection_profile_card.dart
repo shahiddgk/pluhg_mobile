@@ -66,8 +66,8 @@ Widget cardProfile2(BuildContext context, var data, String text) {
       ),
       !data.containsKey("profileImage") || data["profileImage"] == null
           ? Container(
-              width: 68.73,
-              height: 65.65,
+              width: 68.73.w,
+              height: 65.65.h,
               child: Center(
                 child: SvgPicture.asset("resources/svg/profile.svg"),
               ),
@@ -75,8 +75,8 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                   color: Colors.white, borderRadius: BorderRadius.circular(15)),
             )
           : Container(
-              width: 68.73,
-              height: 65.65,
+              width: 68.73.w,
+              height: 65.65.h,
               // padding: EdgeInsets.all(10),
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(15)),
@@ -99,7 +99,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
               child: Text("@${data["userName"]}",
                   style: TextStyle(
                       color: Color(0xff8D8D8D),
-                      fontSize: 12,
+                      fontSize: 13.5.sp,
                       fontWeight: FontWeight.w400),
                   textAlign: TextAlign.center),
             )
@@ -108,7 +108,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       color: Color(0xff8D8D8D),
-                      fontSize: 12,
+                      fontSize: 12.5.sp,
                       fontWeight: FontWeight.w400),
                   maxLines: 2,
                   textAlign: TextAlign.center),

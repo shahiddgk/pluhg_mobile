@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
@@ -29,6 +31,13 @@ class NotificationScreenController extends GetxController {
     return await apicalls.getNotifications();
   }
 
+  mark_as_read() async{//readNotification
+    /*var response = await http.post(uri,
+        body: jsonEncode(body), headers: {"Content-Type": "application/json"});
+    var parsedResponse = jsonDecode(response.body);
+    print(parsedResponse)*/
+  }
+
   getTimeDifference(String date) {
     DateTime time = new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
     if (DateTime.now().difference(time).inMinutes < 1) {
@@ -41,4 +50,6 @@ class NotificationScreenController extends GetxController {
       return "${DateTime.now().difference(time).inDays} days";
     }
   }
+
+
 }

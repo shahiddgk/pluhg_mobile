@@ -10,6 +10,8 @@ import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/widgets/button.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/dialog_box.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 
 class RecommendedScreenView
     extends GetView<RecommendedConnectionScreenController> {
@@ -54,7 +56,7 @@ class RecommendedScreenView
                         children: [
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: size.width * 0.026,
+                                horizontal: 16.w,
                                 vertical: size.width * 0.026),
                             margin: EdgeInsets.symmetric(
                                 horizontal: size.width * 0.04),
@@ -78,7 +80,7 @@ class RecommendedScreenView
                                             // mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Container(
-                                                  height: 140,
+                                                  height: 151.72.h,
                                                   width: 87.2,
                                                   decoration: BoxDecoration(
                                                       color: Colors.white,
@@ -95,13 +97,14 @@ class RecommendedScreenView
                                                   child: cardProfile2(
                                                       context,
                                                       responseData
-                                                          .requester.refId.toJson(),
+                                                          .requester.refId
+                                                          .toJson(),
                                                       "Requester")),
                                               SizedBox(
                                                 width: 16,
                                               ),
                                               Container(
-                                                  height: 140,
+                                                  height: 151.72.h,
                                                   width: 87.2,
                                                   decoration: BoxDecoration(
                                                       color: Colors.white,
@@ -117,110 +120,37 @@ class RecommendedScreenView
                                                       ]),
                                                   child: cardProfile2(
                                                       context,
-                                                      responseData
-                                                          .contact.refId.toJson(),
+                                                      responseData.contact.refId
+                                                          .toJson(),
                                                       "Contact")),
                                             ],
                                           ),
                                         ],
                                       ),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
+
+                                      Container(width: 20.w),
                                       Expanded(
-                                        child: Column(children: [
-                                          SizedBox(
-                                            height: 9.4,
-                                          ),
-                                          Text("Plugged by:",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w300,
-                                                  color: Color(0xff898B8B),
-                                                  fontSize: 10)),
-                                          Text(
-                                            "@${responseData.userId.userName}",
-                                            maxLines: 2,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color: Color(0xff575858)),
-                                          ),
-                                          SizedBox(height: 4.71),
-                                          Text(
-                                            "Date:",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                color: Color(0xff898B8B),
-                                                fontSize: 10),
-                                          ),
-                                          Text(
-                                            formattedDate
-                                                .toString()
-                                                .substring(0, 11),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color: Color(0xff575858)),
-                                          ),
-                                          SizedBox(height: 4.71),
-                                          Text(
-                                            "Time:",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w300,
-                                                color: Color(0xff898B8B),
-                                                fontSize: 10),
-                                          ),
-                                          Text(
-                                            formattedDate
-                                                .toString()
-                                                .substring(12),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12,
-                                                color: Color(0xff575858)),
-                                          ),
-                                        ]),
-                                      ),
+                                          child: PlugByWidgetCard(
+                                              userName: responseData
+                                                          .userId.userName ==
+                                                      null
+                                                  ? "Pluhg user"
+                                                  : "@" +
+                                                      responseData
+                                                          .userId.userName,
+                                              date: formattedDate))
                                     ],
                                   ),
                                   SizedBox(
                                     height: 14.79,
                                   ),
-                                  // data["both"].toString().isNotEmpty
-                                  //     ? Text("Message to both")
-                                  //     : Text(''),
-                                  // SizedBox(
-                                  //   height: 6,
-                                  // ),
-                                  // data["both"].toString().isNotEmpty
-                                  //     ? Container(
-                                  //         width: 307.22,
-                                  //         padding: EdgeInsets.all(8),
-                                  //         decoration: BoxDecoration(
-                                  //             borderRadius: BorderRadius.circular(15),
-                                  //             color: Colors.white),
-                                  //         child: Text(
-                                  //           "${data["both"]}",
-                                  //           textAlign: TextAlign.justify,
-                                  //           style: TextStyle(
-                                  //               fontSize: 12,
-                                  //               fontWeight: FontWeight.w400),
-                                  //         ),
-                                  //       )
-                                  //     : Text(''),
-                                  // data["both"].toString().isNotEmpty
-                                  //     ? SizedBox(
-                                  //         height: 14.79,
-                                  //       )
-                                  //     : Text(''),
                                   Text(
                                       "Message to @${responseData.requester.name}"),
                                   SizedBox(
                                     height: 6,
                                   ),
                                   Container(
-                                    width: 307.22,
+                                  //  width: 307.22,
                                     padding: EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
@@ -242,7 +172,7 @@ class RecommendedScreenView
                                     height: 6,
                                   ),
                                   Container(
-                                    width: 307.22,
+                                 //   width: 307.22,
                                     padding: EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),

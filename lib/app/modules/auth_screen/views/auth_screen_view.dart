@@ -62,7 +62,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                     'Connect people without sharing their contact details.',
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
-                      fontSize: 15,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),
