@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 
 Widget whoIConnectedCard({
   required dynamic data,
@@ -47,8 +48,9 @@ Widget whoIConnectedCard({
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
-                            width: 82.w,
-                            padding: EdgeInsets.all(8.0.w),
+                            height:Get.size.height<812? 138.72.h:120.h,
+                            width: 87.2.w,
+                            padding: EdgeInsets.all(6.0.w),
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15),
@@ -59,8 +61,9 @@ Widget whoIConnectedCard({
                             child:
                                 card(Get.context!, data["requester"]["refId"])),
                         Container(
-                            width: 82.w,
-                            padding: EdgeInsets.all(8.0.w),
+                            height:Get.size.height<812? 138.72.h:120.h,
+                            width: 87.2.w,
+                            padding: EdgeInsets.all(6.0.w),
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(15),
@@ -73,9 +76,9 @@ Widget whoIConnectedCard({
                       ],
                     )),
                     Container(
-                      height: 24.h,
-                      margin:
-                          EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
+                      height: 28.h,
+                      margin: EdgeInsets.only(
+                          top: 12.0.h, left: 24.0.w, right: 24.0.w),
                       decoration: BoxDecoration(
                           color: data["isRequesterAccepted"] &&
                                   data["isContactAccepted"]
@@ -90,7 +93,7 @@ Widget whoIConnectedCard({
                                   : "Pending",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w400))),
                     )
                   ],
@@ -98,58 +101,16 @@ Widget whoIConnectedCard({
               ),
             ),
             SizedBox(
-              width: 8,
+              width: 12.w,
             ),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 9.4,
-                  ),
-                  Text("Plugged by:",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          color: Color(0xff898B8B),
-                          fontSize: 10)),
-                  Text(
-                    "@${data['userId']["userName"]}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: Color(0xff575858)),
-                  ),
-                  SizedBox(height: 4.71),
-                  Text(
-                    "Date:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10),
-                  ),
-                  Text(
-                    formattedDate.toString().substring(0, 11),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: Color(0xff575858)),
-                  ),
-                  SizedBox(height: 4.71),
-                  Text(
-                    "Time:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10),
-                  ),
-                  Text(
-                    formattedDate.toString().substring(12),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: Color(0xff575858)),
-                  ),
-                ]),
+            PlugByWidgetCard(
+                userName: data['userId']["userName"] == null
+                    ? data['userId']["name"]
+                    : "@" + data['userId']["userName"],
+                date: formattedDate),
+            SizedBox(
+              width: 8.w,
+            ),
             Center(
               child: Icon(
                 Icons.arrow_forward_ios_outlined,

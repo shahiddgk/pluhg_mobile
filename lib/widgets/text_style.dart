@@ -30,11 +30,15 @@ TextStyle body4TextStyle = TextStyle(
   fontSize: 12,
 );
 
+TextStyle style_title = TextStyle(
+    fontWeight: FontWeight.w300,
+    color: Color(0xff898B8B),
+    fontSize: 12.sp);
 
 TextStyle subtitleTextStyle = TextStyle(
   fontFamily: "Muli",
   fontSize: 14.sp,
-    fontWeight: FontWeight.w800,
+    fontWeight: FontWeight.w700,
     color: Color(0xff575858)
 );
 

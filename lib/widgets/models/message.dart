@@ -24,8 +24,6 @@ class Message {
   });
 
   factory Message.fromJson2(Map message, myid, senderId) {
-    print("------");
-    print(message);
 
     return Message(
       id: message['_id'].toString(),

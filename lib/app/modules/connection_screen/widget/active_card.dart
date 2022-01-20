@@ -9,6 +9,7 @@ import 'package:plug/app/modules/connection_screen/views/active_connection.dart'
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/image.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -22,9 +23,6 @@ Widget activeConnectionCard({
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
   return GestureDetector(
     onTap: () {
-
-
-
       Get.to(() => ActiveConnectionScreenView(
             data: data,
             isRequester: prefs.getString(prefuseremail).toString() ==
@@ -63,6 +61,7 @@ Widget activeConnectionCard({
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
+                        height: 151.72.h,
                         width: 84.w,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
@@ -110,9 +109,12 @@ Widget activeConnectionCard({
                               height: 4.0.h,
                             ),
                             data != null &&
-                                    data["requester"]["refId"].containsKey("userName") &&
-                                    data["requester"]["refId"]["userName"] != null
-                                ? Text("@${data["requester"]["refId"]["userName"]}",
+                                    data["requester"]["refId"]
+                                        .containsKey("userName") &&
+                                    data["requester"]["refId"]["userName"] !=
+                                        null
+                                ? Text(
+                                    "@${data["requester"]["refId"]["userName"]}",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -208,58 +210,16 @@ Widget activeConnectionCard({
                 ),
               ),
             ),
-            SizedBox(
-              width: 12,
+            Container(
+              width: 12.w,
             ),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Plugged by:",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          color: Color(0xff898B8B),
-                          fontSize: 10)),
-                  Text(
-                    data == null ? "Pluhg" : "@${data['userId']["userName"]}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: Color(0xff575858)),
-                  ),
-                  SizedBox(height: 4.71),
-                  Text(
-                    "Date:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10),
-                  ),
-                  Text(
-                    formattedDate.toString().substring(0, 11),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: Color(0xff575858)),
-                  ),
-                  SizedBox(height: 4.71),
-                  Text(
-                    "Time:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10),
-                  ),
-                  Text(
-                    formattedDate.toString().substring(12),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: Color(0xff575858)),
-                  ),
-                ]),
-            SizedBox(
-              width: 12,
+            PlugByWidgetCard(
+                userName: data['userId']["userName"] == null
+                    ? data['userId']["name"]
+                    : "@" + data['userId']["userName"],
+                date: formattedDate),
+            Container(
+              width: 8.w,
             ),
             Center(
               child: Icon(

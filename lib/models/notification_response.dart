@@ -68,7 +68,7 @@ class UserId {
   UserId({
     required this.emailAddress,
     required this.phoneNumber,
-    required this.lastLogin,
+  //  required this.lastLogin,
     required this.numberOfConnections,
     this.name,
     required this.userName,
@@ -83,7 +83,7 @@ class UserId {
   });
   late final String emailAddress;
   late final String phoneNumber;
-  late final String lastLogin;
+ // late final String lastLogin;
   late final int numberOfConnections;
   late final Null name;
   late final String userName;
@@ -99,7 +99,7 @@ class UserId {
   UserId.fromJson(Map<String, dynamic> json){
     emailAddress = json['emailAddress'];
     phoneNumber = json['phoneNumber'];
-    lastLogin = json['lastLogin'];
+   // lastLogin = json['lastLogin'];
     numberOfConnections = json['numberOfConnections'];
     name = null;
     userName = json['userName'];
@@ -117,7 +117,7 @@ class UserId {
     final _data = <String, dynamic>{};
     _data['emailAddress'] = emailAddress;
     _data['phoneNumber'] = phoneNumber;
-    _data['lastLogin'] = lastLogin;
+  //  _data['lastLogin'] = lastLogin;
     _data['numberOfConnections'] = numberOfConnections;
     _data['name'] = name;
     _data['userName'] = userName;

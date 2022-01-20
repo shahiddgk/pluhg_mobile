@@ -8,6 +8,11 @@ class NotificationController extends GetxController {
   }
 
   void fcmNotificationReset() {
-    receivedNotification.value = false;
+    try {
+      receivedNotification.value = false;
+    }
+    catch(e){
+      print(e.toString());
+    }
   }
 }

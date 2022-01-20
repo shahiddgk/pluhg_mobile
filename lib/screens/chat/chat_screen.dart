@@ -93,9 +93,11 @@ class _ChatScreenState extends State<ChatScreen> {
         setMessageResponse(msg);
       });
       socket.on('readMessageResponse', (data) {
+        print('**************');
+        print(data);
+
         /* messages.forEach((element) {
 
-          print("---------------------------------------------------------------");
           print(data["data"]["senderId"] );
           if (element.id == data['data']['_id']) {
             var message = data['data'];
