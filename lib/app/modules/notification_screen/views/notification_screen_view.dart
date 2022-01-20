@@ -55,6 +55,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                       // SizedBox(height: size.height * 0.00007),
                       ListView.builder(
                         shrinkWrap: true,
+                        reverse: true,
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: notificationResponse.data.length,
                         itemBuilder: (ctx, i) => Container(

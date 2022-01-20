@@ -157,7 +157,7 @@ Widget waitingConnectionCard({
                         fontSize: 10)),
                 Text(
                   data['userId']["userName"] == null
-                      ? data['userId']["name"]
+                      ? data['userId']["name"] ?? ""
                       : "@" + data['userId']["userName"],
                   style: TextStyle(
                       fontWeight: FontWeight.w800,

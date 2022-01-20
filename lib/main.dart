@@ -64,7 +64,7 @@ void _configureFirebase() async {
     controller.fcmNotificationReceived();
     print('Message data: ${message.data}');
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification}');
+      print('Message also contained a notification: ${message.notification!.body.toString()}');
     }
   });
 }

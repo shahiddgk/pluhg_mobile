@@ -11,7 +11,8 @@ class ConnectionScreenController extends GetxController
   List recommended = [];
 
 
-
+  late Future activeDataList,waitingConnectionDataList,whoIConnectedDataList;
+  var data;
   SharedPreferences? prefs;
   RxInt currentIndex = 0.obs;
   RxInt activeList = 0.obs;
@@ -23,8 +24,8 @@ class ConnectionScreenController extends GetxController
   void onInit() {
     super.onInit();
     preference();
-
-    // fetchProfileDetails();
+    //get first tab response
+    getActiveConnection();
   }
 
   void preference() async {
@@ -38,10 +39,23 @@ class ConnectionScreenController extends GetxController
 
   @override
   void onClose() {}
+
+  getWaitingConnection(){
+    waitingConnectionDataList = waitingData();
+  }
+
+  getActiveConnection(){
+    activeDataList = activeData();
+  }
+
+  getWhoIConnected(){
+    whoIConnectedDataList = whoIconnectedData();
+  }
+
   activeData() async {
     prefs = await SharedPreferences.getInstance();
 
-    var data = await apicalls.getActiveConnections(
+    data = await apicalls.getActiveConnections(
       token: prefs!.getString(preftoken).toString(),
       // contact: prefs.get("phoneNumber").toString(),
       contact: prefs!.getString(prefuseremail).toString(),
@@ -52,7 +66,7 @@ class ConnectionScreenController extends GetxController
     }*/
     if (data["data"] != null) {
       activeList.value = data["data"].length;
-      return data["data"];
+      return activeDataList;
     } else {
       activeList.value = 0;
       return null;
@@ -61,7 +75,7 @@ class ConnectionScreenController extends GetxController
 
   waitingData() async {
     prefs = await SharedPreferences.getInstance();
-    var data = await apicalls.getWaitingConnections(
+    data = await apicalls.getWaitingConnections(
       token: prefs!.getString(preftoken).toString(),
       // contact: prefs.get("phoneNumber").toString(),
       contact: prefs!.getString(prefuseremail).toString(),
@@ -78,7 +92,7 @@ class ConnectionScreenController extends GetxController
   whoIconnectedData() async {
     prefs = await SharedPreferences.getInstance();
 
-    var data = await apicalls.getRecommendedConnections(
+    data = await apicalls.getRecommendedConnections(
       token: prefs!.getString(preftoken).toString(),
       // contact: prefs.get("phoneNumber").toString(),
       userID: prefs!.getString(prefuserid).toString(),
