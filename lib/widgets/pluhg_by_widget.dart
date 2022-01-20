@@ -10,7 +10,9 @@ class PlugByWidgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Container(
+        width: 100.w,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
         height: 9.4,
       ),
@@ -18,7 +20,10 @@ class PlugByWidgetCard extends StatelessWidget {
       Container(
         height: 4.h,
       ),
-      Text(userName.toString(), style: subtitleTextStyle),
+      Container(child: Text(userName.toString(),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: subtitleTextStyle)),
       SizedBox(height: 8.71.h),
       Text("Date:", style: style_title),
       Container(
@@ -34,6 +39,6 @@ class PlugByWidgetCard extends StatelessWidget {
         date.toString().substring(12),
         style: subtitleTextStyle,
       ),
-    ]);
+    ]));
   }
 }
