@@ -31,6 +31,11 @@ class NotificationScreenController extends GetxController {
     return await apicalls.getNotifications();
   }
 
+  markas_read(body) async{
+    read.value = true;
+    await apicalls.mark_as_read(body);
+  }
+
 
   getTimeDifference(String date) {
     DateTime time = new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);

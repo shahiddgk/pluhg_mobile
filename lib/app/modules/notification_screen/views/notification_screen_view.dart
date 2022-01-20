@@ -108,7 +108,16 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              controller.read.value = true;
+                                              if(notificationResponse.data[i].status != 1) {
+                                                notificationResponse.data[i].status=1;
+                                                controller.read.value = true;
+
+                                                controller.markas_read({
+                                                  "notificationId":[notificationResponse.data[i].id]
+                                                });
+
+                                              }
+
                                             },
                                             child: Text(
                                               notificationResponse.data[i].status == 1
