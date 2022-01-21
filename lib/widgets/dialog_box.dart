@@ -121,140 +121,116 @@ showPluhgDailog2(
 showPluhgDailog4(BuildContext context, String connectionID, String party) {
   var text = "";
 
-  return showPlatformDialog(
-    context: context,
-    builder: (BuildContext context) => BasicDialogAlert(
-      title: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Text(
-          "Add a Message",
-          style: TextStyle(fontSize: 20, color: pluhgColour),
-        ),
-      ),
-      content: Container(
-        height: 120,
-        width: 200,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: pluhgColour,
+  return Dialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24.0),
+    ),
+    elevation: 0,
+    backgroundColor: Colors.white,
+    child: Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Add a Message",
+            style: TextStyle(fontSize: 20, color: pluhgColour),
           ),
-        ),
-        child: Card(
-          child: TextFormField(
-            onChanged: (value) => text = value,
-            maxLines: 4,
-            decoration: InputDecoration(
-              border: InputBorder.none,
+          Container(
+            height: 120,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: pluhgColour,
+              ),
+            ),
+            child: TextFormField(
+              onChanged: (value) {
+                text = value;
+                print(text);
+              },
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
             ),
           ),
-        ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                 sendReminder(context, text, party, connectionID);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: pluhgColour,
+                        )),
+                    child: Center(
+                      child: Text("Send Reminder",
+                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                    )),
+              ),
+              SizedBox(
+                width: 12.0,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: pluhgColour,
+                        )),
+                    child: Center(
+                      child: Text("Cancel",
+                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                    )),
+              ),
+            ],
+          ),
+        ],
       ),
-      actions: getAction(context, text, party, connectionID),
     ),
   );
 }
 
-List<Widget> getAction(
-    BuildContext context, String text, String party, String connectionID) {
-  if (Platform.isAndroid) {
-    return <Widget>[
-      BasicDialogAction(
-        title: Container(
-          width: 120.w,
-          height: 51.h,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(59.r),
-            border: Border.all(
-              color: pluhgColour,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              "Send Reminder",
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: pluhgColour,
-              ),
-            ),
-          ),
-        ),
-        onPressed: () async {
-          APICALLS apicalls = APICALLS();
-
-          print("-------------------------");
-          print(text.length);
-          if (text.length > 5) {
-            final isSent = await apicalls.sendReminderMessage(
-              message: text,
-              connectionID: connectionID,
-              party: party,
-              context: context,
-            );
-            if (isSent) {
-              Navigator.of(context).pop();
-              pluhgSnackBar('Great', '$party has been notified');
-            } else {
-              pluhgSnackBar(
-                  'Sorry', 'An unexpected error occurred. Please try again.');
-            }
-          } else {
-            pluhgSnackBar('Sorry', '$party must be up to five text');
-          }
-        },
-      )
-    ];
+sendReminder(BuildContext context, String text, String party,
+    String connectionID) async {
+  if (text.length > 5) {
+    final isSent = await APICALLS().sendReminderMessage(
+      message: text,
+      connectionID: connectionID,
+      party: party,
+      context: context,
+    );
+    if (isSent) {
+      Navigator.of(context).pop();
+      pluhgSnackBar('Great', '$party has been notified');
+    } else {
+      pluhgSnackBar('Sorry', 'An unexpected error occurred. Please try again.');
+    }
   } else {
-    return <Widget>[
-      BasicDialogAction(
-        title: Text(
-          "Send Reminder",
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: pluhgColour,
-          ),
-        ),
-        onPressed: () async {
-          APICALLS apicalls = APICALLS();
-          if (text.length > 5) {
-            final isSent = await apicalls.sendReminderMessage(
-              message: text,
-              connectionID: connectionID,
-              party: party,
-              context: context,
-            );
-            if (isSent) {
-              Navigator.of(context).pop();
-              pluhgSnackBar('Great', '$party has been notified');
-            } else {
-              pluhgSnackBar(
-                  'Sorry', 'An unexpected error occurred. Please try again.');
-            }
-          } else {
-            pluhgSnackBar('Sorry', '$party must be up to five text');
-          }
-        },
-      ),
-      BasicDialogAction(
-        title: Text(
-          "Cancel",
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: pluhgColour,
-          ),
-        ),
-        onPressed: () async {
-         Navigator.pop(context);
-        },
-      )
-    ];
+    pluhgSnackBar('Sorry', '$party must be up to five text');
   }
 }
 
-showPluhgRatingDialog(BuildContext context,String title,
-    String subTitle, {
-      required Function onCLosed,
-    }){
+showPluhgRatingDialog(
+  BuildContext context,
+  String title,
+  String subTitle, {
+  required Function onCLosed,
+}) {
   //initial value
   double rating = 0.0;
   print("rating $rating");
@@ -297,7 +273,7 @@ showPluhgRatingDialog(BuildContext context,String title,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   onCLosed(rating);
                   Navigator.pop(context);
                 },
@@ -319,7 +295,7 @@ showPluhgRatingDialog(BuildContext context,String title,
                 width: 12.0,
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.pop(context);
                 },
                 child: Container(
@@ -343,4 +319,3 @@ showPluhgRatingDialog(BuildContext context,String title,
     ),
   );
 }
-

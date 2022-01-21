@@ -33,7 +33,7 @@ class NotificationScreenController extends GetxController {
 
   markas_read(body) async{
     read.value = true;
-    await apicalls.mark_as_read(body);
+    await apicalls.markAsRead(body);
   }
 
 

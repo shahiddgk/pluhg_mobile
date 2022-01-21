@@ -810,7 +810,7 @@ class APICALLS with ValidationMixin {
 
 
 
-  mark_as_read(body) async{//
+  markAsRead(body) async{//to mark notification as read
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString(preftoken);

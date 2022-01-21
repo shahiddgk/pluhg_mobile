@@ -11,7 +11,7 @@ class ConnectionScreenController extends GetxController
   List recommended = [];
 
 
-  late Future activeDataList,waitingConnectionDataList,whoIConnectedDataList;
+  //late Future activeDataList,waitingConnectionDataList,whoIConnectedDataList;
   var data;
   SharedPreferences? prefs;
   RxInt currentIndex = 0.obs;
@@ -25,7 +25,7 @@ class ConnectionScreenController extends GetxController
     super.onInit();
     preference();
     //get first tab response
-    getActiveConnection();
+    //getActiveConnection();
   }
 
   void preference() async {
@@ -40,7 +40,7 @@ class ConnectionScreenController extends GetxController
   @override
   void onClose() {}
 
-  getWaitingConnection(){
+ /* getWaitingConnection(){
     waitingConnectionDataList = waitingData();
   }
 
@@ -50,7 +50,7 @@ class ConnectionScreenController extends GetxController
 
   getWhoIConnected(){
     whoIConnectedDataList = whoIconnectedData();
-  }
+  }*/
 
   activeData() async {
     prefs = await SharedPreferences.getInstance();
@@ -66,7 +66,7 @@ class ConnectionScreenController extends GetxController
     }*/
     if (data["data"] != null) {
       activeList.value = data["data"].length;
-      return activeDataList;
+      return data["data"];
     } else {
       activeList.value = 0;
       return null;

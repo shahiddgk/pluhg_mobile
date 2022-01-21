@@ -56,8 +56,7 @@ class RecommendedScreenView
                         children: [
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: size.width * 0.026),
+                                horizontal: 16.w, vertical: size.width * 0.026),
                             margin: EdgeInsets.symmetric(
                                 horizontal: size.width * 0.04),
                             decoration: BoxDecoration(
@@ -127,7 +126,6 @@ class RecommendedScreenView
                                           ),
                                         ],
                                       ),
-
                                       Container(width: 20.w),
                                       Expanded(
                                           child: PlugByWidgetCard(
@@ -150,7 +148,7 @@ class RecommendedScreenView
                                     height: 6,
                                   ),
                                   Container(
-                                  //  width: 307.22,
+                                    //  width: 307.22,
                                     padding: EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
@@ -172,7 +170,7 @@ class RecommendedScreenView
                                     height: 6,
                                   ),
                                   Container(
-                                 //   width: 307.22,
+                                    //   width: 307.22,
                                     padding: EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
@@ -249,8 +247,12 @@ class RecommendedScreenView
                                       : true,
                                   child: GestureDetector(
                                     onTap: () {
-                                      showPluhgDailog4(context, responseData.id,
-                                          'requester');
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return showPluhgDailog4(context,
+                                                responseData.id, 'requester');
+                                          });
                                     },
                                     child: button2("Requester"),
                                   ),
@@ -264,8 +266,12 @@ class RecommendedScreenView
                                       : true,
                                   child: GestureDetector(
                                     onTap: () {
-                                      showPluhgDailog4(
-                                          context, responseData.id, 'contact');
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return showPluhgDailog4(context,
+                                                responseData.id, 'contact');
+                                          });
                                     },
                                     child: button2("Contact"),
                                   ),
