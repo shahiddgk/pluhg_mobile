@@ -37,7 +37,8 @@ TextStyle style_title = TextStyle(
 
 TextStyle subtitleTextStyle = TextStyle(
   fontFamily: "Muli",
-  fontSize: 14.sp,
+  fontSize: 12.sp,
+    height: 0.9,
     fontWeight: FontWeight.w700,
     color: Color(0xff575858)
 );

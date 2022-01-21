@@ -810,6 +810,20 @@ class APICALLS with ValidationMixin {
 
 
 
+  mark_as_read(body) async{//
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString(preftoken);
+    var uri = Uri.parse("$url/api/readNotification");
+
+    var response =
+    await http.post(uri, headers: {"Authorization": "Bearer $token"},body: body);
+    var parsedResponse = jsonDecode(response.body);
+
+    print(parsedResponse);
+  }
+
+
   // get notification list
   Future<dynamic> getNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

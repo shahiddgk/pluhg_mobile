@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/hitesh/Documents/Projects/flutter
-FLUTTER_APPLICATION_PATH=/Users/hitesh/Documents/Projects/Flutter Projects/pluhg
+FLUTTER_ROOT=/Users/mac/Desktop/flutter1.2.5
+FLUTTER_APPLICATION_PATH=/Users/mac/Desktop/pluhg_flutter
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_TARGET=lib/main.dart
 FLUTTER_BUILD_DIR=build
@@ -10,4 +10,4 @@ EXCLUDED_ARCHS[sdk=iphonesimulator*]=i386
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=false
 TREE_SHAKE_ICONS=true
-PACKAGE_CONFIG=/Users/hitesh/Documents/Projects/Flutter Projects/pluhg/.dart_tool/package_config.json
+PACKAGE_CONFIG=/Users/mac/Desktop/pluhg_flutter/.dart_tool/package_config.json

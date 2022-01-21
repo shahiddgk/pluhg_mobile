@@ -31,12 +31,11 @@ class NotificationScreenController extends GetxController {
     return await apicalls.getNotifications();
   }
 
-  mark_as_read() async{//readNotification
-    /*var response = await http.post(uri,
-        body: jsonEncode(body), headers: {"Content-Type": "application/json"});
-    var parsedResponse = jsonDecode(response.body);
-    print(parsedResponse)*/
+  markas_read(body) async{
+    read.value = true;
+    await apicalls.mark_as_read(body);
   }
+
 
   getTimeDifference(String date) {
     DateTime time = new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
