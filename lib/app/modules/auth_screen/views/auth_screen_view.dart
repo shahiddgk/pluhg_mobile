@@ -35,7 +35,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                   alignment: Alignment.center,
                   child: SvgPicture.asset(
                     "assets/svg/registrationblue.svg",
-                    height: MediaQuery.of(context).size.height * 0.34,
+                    height: MediaQuery.of(context).size.height * 0.32,
                   ),
                 ),
                 SizedBox(height: controller.size.height * 0.04),
@@ -44,7 +44,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                   child: Text(
                     'Hi!',
                     style: TextStyle(
-                      fontSize: 48,
+                      fontSize: 46.sp,
                       fontWeight: FontWeight.w400,
                       color: pluhgColour,
                     ),
@@ -205,7 +205,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 30.h),
                 controller.isLoading.value
                     ? Center(child: pluhgProgress())
                     : Center(
@@ -220,7 +220,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                           ),
                         ),
                       ),
-                SizedBox(height: 30),
+                SizedBox(height: 30.h),
               ],
             ),
           ),

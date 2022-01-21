@@ -42,7 +42,7 @@ class Data {
   late final String updatedAt;
 
   Data.fromJson(Map<String, dynamic> json){
-    status = json['status'];
+    status =  json['status']==null?0:json['status'];
     id = json['_id'];
     userId = UserId.fromJson(json['userId']);
     notificationMsg = NotificationMsg.fromJson(json['notificationMsg']);

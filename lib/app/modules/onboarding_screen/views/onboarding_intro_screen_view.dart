@@ -15,14 +15,13 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Obx(() => Column(
+      body:  Obx(() => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   color: pluhgColour,
                   width: double.infinity,
-                  height: 568.13.h,
+                  height: 548.13.h,
                   child: SafeArea(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -55,7 +54,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                             controller.title[controller.currentIndex.value],
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 25.sp,
+                              fontSize: 23.sp,
                               fontWeight: FontWeight.w600,
                               height: 1.4,
                             ),
@@ -70,7 +69,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                           ),
                           SizedBox(
                             width: 263.42.w,
-                            height: 274.h,
+                            height: 264.h,
                             child: SvgPicture.asset(
                               controller.imgList[controller.currentIndex.value],
                             ),
@@ -93,7 +92,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                             4, (index) => _indicator(index == controller.currentIndex.value)),
                       ),
                       SizedBox(
-                        height: 80.47.h,
+                        height: 70.47.h,
                       ),
                       Row(
                         children: [
@@ -136,7 +135,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                 ),
               ],
             )),
-      ),
+
     );
   }
 

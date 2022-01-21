@@ -15,8 +15,7 @@ class OnboardingScreenView extends GetView<OnboardingScreenController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff000BFF),
-      body: SingleChildScrollView(
-        child: Center(
+      body:  Center(
           child: Column(
             children: [
               SizedBox(height: 120),
@@ -37,7 +36,7 @@ class OnboardingScreenView extends GetView<OnboardingScreenController> {
                   children: [TextSpan(text: "(You are the Plugh!)")],
                 ),
               ),
-              SizedBox(height: 100.01.h),
+              SizedBox(height: 80.01.h),
               ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 261.w),
                 child: PluhgButton(
@@ -49,7 +48,7 @@ class OnboardingScreenView extends GetView<OnboardingScreenController> {
               )
             ],
           ),
-        ),
+
       ),
     );
   }

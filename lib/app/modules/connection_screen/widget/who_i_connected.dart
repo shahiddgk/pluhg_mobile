@@ -31,24 +31,26 @@ Widget whoIConnectedCard({
           children: [
             Expanded(
               child: Container(
-                //  height: 164.h,
+                // height: 164,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
-                      BoxShadow(
-                          blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
+                      BoxShadow(blurRadius: 40, color: Colors.black12)
                     ]),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Container(
+                      height: 12.w,
+                    ),
                     Center(
                         child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
-                            height:Get.size.height<812? 138.72.h:120.h,
+                            height: Get.size.height < 812 ? 142.72.h : 120.h,
                             width: 87.2.w,
                             padding: EdgeInsets.all(6.0.w),
                             decoration: BoxDecoration(
@@ -61,7 +63,7 @@ Widget whoIConnectedCard({
                             child:
                                 card(Get.context!, data["requester"]["refId"])),
                         Container(
-                            height:Get.size.height<812? 138.72.h:120.h,
+                            height: Get.size.height < 812 ? 142.72.h : 120.h,
                             width: 87.2.w,
                             padding: EdgeInsets.all(6.0.w),
                             decoration: BoxDecoration(
@@ -78,7 +80,10 @@ Widget whoIConnectedCard({
                     Container(
                       height: 28.h,
                       margin: EdgeInsets.only(
-                          top: 12.0.h, left: 24.0.w, right: 24.0.w),
+                          top: 12.0.h,
+                          left: 24.0.w,
+                          right: 24.0.w,
+                          bottom: 12.h),
                       decoration: BoxDecoration(
                           color: data["isRequesterAccepted"] &&
                                   data["isContactAccepted"]

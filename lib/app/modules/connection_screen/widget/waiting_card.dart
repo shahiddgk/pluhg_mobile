@@ -5,6 +5,8 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/screens/waiting_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 
 Widget waitingConnectionCard({
   required dynamic data,
@@ -30,7 +32,7 @@ Widget waitingConnectionCard({
         Get.to(() => WaitingConnectionScreen(data: data));
       },
       child: Container(
-          margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
+          margin: EdgeInsets.only(top: 24.h, bottom: 12.h),
           //height: 164,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -56,7 +58,9 @@ Widget waitingConnectionCard({
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Container(
-                                width: 84,
+                                height:
+                                    Get.size.height < 812 ? 138.72.h : 120.h,
+                                width: 87.2.w,
                                 padding: EdgeInsets.all(8.0),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
@@ -68,7 +72,9 @@ Widget waitingConnectionCard({
                                 child: card(
                                     Get.context!, data["requester"]["refId"])),
                             Container(
-                                width: 84.0,
+                                height:
+                                    Get.size.height < 812 ? 142.72.h : 120.h,
+                                width: 87.2.w,
                                 padding: EdgeInsets.all(8.0),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
@@ -143,60 +149,16 @@ Widget waitingConnectionCard({
                   ),
                 ),
               ),
-              SizedBox(
-                width: 8,
+              Container(
+                width: 12.w,
               ),
-              Column(children: [
-                SizedBox(
-                  height: 9.4,
-                ),
-                Text("Plugged by:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10)),
-                Text(
-                  data['userId']["userName"] == null
-                      ? data['userId']["name"] ?? ""
+              PlugByWidgetCard(
+                  userName: data['userId']["userName"] == null
+                      ? data['userId']["name"]
                       : "@" + data['userId']["userName"],
-                  style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-                SizedBox(height: 4.71),
-                Text(
-                  "Date:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Color(0xff898B8B),
-                      fontSize: 10),
-                ),
-                Text(
-                  formattedDate.toString().substring(0, 11),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-                SizedBox(height: 4.71),
-                Text(
-                  "Time:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Color(0xff898B8B),
-                      fontSize: 10),
-                ),
-                Text(
-                  formattedDate.toString().substring(12),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-              ]),
-              SizedBox(
-                width: 8,
+                  date: formattedDate),
+              Container(
+                width: 8.w,
               ),
               Center(
                 child: Icon(

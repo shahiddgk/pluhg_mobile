@@ -8,6 +8,7 @@ import 'package:plug/app/modules/connection_screen/controllers/connection_screen
 import 'package:plug/app/modules/connection_screen/views/active_connection.dart';
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/colors.dart';
+import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/image.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,8 +40,7 @@ Widget activeConnectionCard({
     },
     child: Container(
         margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
-        width: Get.width,
-        height: 164,
+
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
@@ -49,7 +49,6 @@ Widget activeConnectionCard({
           children: [
             Expanded(
               child: Container(
-                height: 164,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
@@ -60,82 +59,34 @@ Widget activeConnectionCard({
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+
                     Container(
-                        height: 151.72.h,
-                        width: 84.w,
-                        padding: EdgeInsets.all(8.0),
+                        height: Get.size.height < 812 ? 142.72.h : 120.h,
+                        width: 87.2.w,
+                        padding: EdgeInsets.all(6.0.w),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: [
-                              BoxShadow(color: Colors.black12, blurRadius: 20)
+                              BoxShadow(
+                                  color: Colors.black12, blurRadius: 20)
                             ]),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              height: 64,
-                              width: 64,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16)),
-                              child: data == null ||
-                                      !data["requester"]["refId"]
-                                          .containsKey("profileImage") ||
-                                      data["requester"]["refId"]
-                                              ["profileImage"] ==
-                                          null
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                        ),
-                                        child: SvgPicture.asset(
-                                            "resources/svg/profile.svg"),
-                                      ),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      child: Image.network(
-                                        APICALLS.imageBaseUrl +
-                                            "${data["requester"]["refId"]['profileImage'].toString()}",
-                                        height: 64.h,
-                                        width: 64.w,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                            ),
-                            SizedBox(
-                              height: 4.0.h,
-                            ),
-                            data != null &&
-                                    data["requester"]["refId"]
-                                        .containsKey("userName") &&
-                                    data["requester"]["refId"]["userName"] !=
-                                        null
-                                ? Text(
-                                    "@${data["requester"]["refId"]["userName"]}",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Color(0xff8D8D8D),
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400),
-                                    textAlign: TextAlign.center)
-                                : Text(
-                                    data == null
-                                        ? "Empty"
-                                        : "@${data["requester"]['refId']["name"]}",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: Color(0xff8D8D8D),
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400),
-                                    textAlign: TextAlign.center),
-                          ],
-                        )),
+                        child:
+                        card(Get.context!, data["requester"]["refId"])),
                     Container(
+                        height: Get.size.height < 812 ? 142.72.h : 120.h,
+                        width: 87.2.w,
+                        padding: EdgeInsets.all(6.0.w),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12, blurRadius: 20)
+                            ]),
+                        child:
+                        card(Get.context!, data["contact"]["refId"])),
+                  /*  Container(
                         width: 84.w,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
@@ -205,7 +156,7 @@ Widget activeConnectionCard({
                                         fontWeight: FontWeight.w400),
                                     textAlign: TextAlign.center),
                           ],
-                        )),
+                        )),*/
                   ],
                 ),
               ),
