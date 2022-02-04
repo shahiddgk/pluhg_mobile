@@ -33,7 +33,11 @@ void main() async {
           /// THIS IS FOR COUNTRY CODE PICKER
         ],
         title: 'Pluhg',
-        theme: ThemeData(fontFamily: "Axiforma", primaryColor: pluhgColour),
+        theme: ThemeData(
+          fontFamily: "Axiforma",
+          primaryColor: pluhgColour,
+          backgroundColor: Colors.white,
+        ),
         builder: (context, widget) {
           return MediaQuery(
             //Setting font does not change with system font size
@@ -52,7 +56,7 @@ void main() async {
 //Too recieve FCM notification
 void _configureFirebase() async {
   await Firebase.initializeApp();
-  if(Platform.isIOS){
+  if (Platform.isIOS) {
     await FirebaseMessaging.instance.requestPermission();
   }
   await FirebaseMessaging.instance.getToken();
@@ -64,7 +68,8 @@ void _configureFirebase() async {
     controller.fcmNotificationReceived();
     print('Message data: ${message.data}');
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification!.body.toString()}');
+      print(
+          'Message also contained a notification: ${message.notification!.body.toString()}');
     }
   });
 }

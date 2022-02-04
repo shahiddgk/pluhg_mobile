@@ -23,8 +23,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS with ValidationMixin {
-  static const url = "http://3.18.123.250";
-  static const ws_url = "ws://3.18.123.250";
+  static const url = "https://api.pluhg.com";
+  static const ws_url = "ws://api.pluhg.com";
 
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
@@ -833,6 +833,7 @@ class APICALLS with ValidationMixin {
 
     var response =
         await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    print("NOTIFICATIONS: ${response.body}");
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse["data"]);
     return NotificationResponse.fromJson(parsedResponse);

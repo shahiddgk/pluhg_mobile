@@ -29,7 +29,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
+              elevation: 0,
               actions: [NotifIcon()],
             ),
             backgroundColor: Colors.white,
