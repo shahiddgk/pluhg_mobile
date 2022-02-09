@@ -1,26 +1,26 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/profile_screen/controllers/set_profile.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:plug/utils/validation_mixin.dart';
 
 class SetProfileScreenView extends GetView<SetProfileScreenController> {
   final String contact;
   final String userID;
   final String token;
-  SetProfileScreenView(
-      {required this.contact, required this.token, required this.userID});
+
+  SetProfileScreenView({required this.contact, required this.token, required this.userID});
   TextEditingController _nameController = TextEditingController();
 
   TextEditingController _contactController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final controller = Get.put(SetProfileScreenController());
+
   APICALLS apicalls = APICALLS();
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   "Set Your Profile",
-                  style: TextStyle(
-                      color: pluhgColour,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600),
+                  style: TextStyle(color: pluhgColour, fontSize: 28, fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(
@@ -57,7 +54,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                       Container(
                         width: Get.width - 24,
                         child: TextFormField(
-                          textCapitalization: TextCapitalization.words,
+                          textCapitalization: TextCapitalization.sentences,
                           controller: _nameController,
                           validator: (val) {
                             if (val == null || val.isEmpty) {
@@ -72,23 +69,23 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 fontWeight: FontWeight.w400,
                                 fontFamily: "Muli",
                                 fontStyle: FontStyle.normal,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.02),
+                                fontSize: MediaQuery.of(context).size.height * 0.02),
                           ),
                         ),
                       ),
-                      !contact.contains("@")
+                      PhoneValidator.validate(contact)
                           ? Container(
                               width: Get.width,
                               child: TextFormField(
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return "Fill field";
+                                validator: (value) {
+                                  String error = _validateEmail(value);
+                                  if (error.isNotEmpty) {
+                                    return error;
                                   }
                                 },
                                 controller: _contactController,
                                 keyboardType: TextInputType.emailAddress,
-                                textCapitalization: TextCapitalization.words,
+                                textCapitalization: TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   labelText: "Set your email",
                                   prefixIcon: Icon(Icons.email_outlined),
@@ -97,9 +94,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                       fontWeight: FontWeight.w400,
                                       fontFamily: "Muli",
                                       fontStyle: FontStyle.normal,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02),
+                                      fontSize: MediaQuery.of(context).size.height * 0.02),
                                 ),
                               ))
                           : Container(
@@ -108,25 +103,17 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 Container(
                                   width: 60,
                                   child: CountryCodePicker(
-                                    boxDecoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xff707070))),
-                                    onInit: (val) {
-                                      controller.currentCountryCode.value =
-                                          val!.dialCode!;
-                                      print(val.dialCode!);
+                                    boxDecoration: BoxDecoration(border: Border.all(color: Color(0xff707070))),
+                                    onInit: (val) async {
+                                      await controller.updateCountryCode(val);
                                     },
-                                    initialSelection:
-                                        controller.countryISOCode.value,
+                                    onChanged: (val) async {
+                                      await controller.updateCountryCode(val);
+                                    },
+                                    initialSelection: controller.isoCountryCode.value,
                                     padding: EdgeInsets.zero,
+                                    backgroundColor: Colors.white,
                                     showFlag: false,
-                                    onChanged: (val) {
-                                      controller.currentCountryCode.value =
-                                          val.dialCode.toString().trim();
-                                      //   print("#" +
-                                      //       currentCountryCode +
-                                      //       "#");
-                                    },
                                   ),
                                 ),
                                 SizedBox(
@@ -137,19 +124,15 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                   child: TextFormField(
                                       keyboardType: TextInputType.number,
                                       validator: (value) {
-                                        if (value == null ||
-                                            value.trim().length == 0) {
-                                          return "Field is required";
-                                        }
-                                        if (value.length < 6) {
-                                          return "Add valid data";
+                                        String error = _validatePhone(value);
+                                        if (error.isNotEmpty) {
+                                          return error;
                                         }
                                       },
                                       controller: _contactController,
                                       decoration: InputDecoration(
                                         focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFF080F18)),
+                                          borderSide: BorderSide(color: Color(0xFF080F18)),
                                         ),
                                         // border: UnderlineInputBorder(
                                         //   borderSide:
@@ -162,10 +145,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                             fontWeight: FontWeight.w400,
                                             fontFamily: "Muli",
                                             fontStyle: FontStyle.normal,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
+                                            fontSize: MediaQuery.of(context).size.height * 0.02),
                                       )),
                                 ),
                               ]),
@@ -180,36 +160,12 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
               controller.isLoading.value
                   ? Center(child: pluhgProgress())
                   : GestureDetector(
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final prefs = await SharedPreferences.getInstance();
-                          controller.isLoading.value = true;
-                          bool d = await apicalls.createProfile(
-                              token: token,
-                              contact: _contactController.text.contains("@")
-                                  ? _contactController.text
-                                  : controller.currentCountryCode.value +
-                                      _contactController.text,
-                              contactType:
-                                  !contact.contains("@") ? "phone" : "email",
-                              username: _nameController.text);
-
-                          if (d == false) {
-                            if (!_contactController.text.contains("@")) {
-                              prefs.setString(prefusercountrycode,
-                                  controller.currentCountryCode.value);
-                            }
-                            controller.isLoading.value = false;
-                          }
-                        }
-                      },
+                      onTap: _submit,
                       child: Center(
                         child: Container(
                           width: 261,
                           height: 45,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(59),
-                              color: pluhgColour),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(59), color: pluhgColour),
                           child: Center(
                             child: Text(
                               "Next",
@@ -225,5 +181,51 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
             ],
           ),
         )));
+  }
+
+  String _validatePhone(String? contact) {
+    if (contact == null || !contact.isNotEmpty) {
+      return "Please add phone number";
+    }
+
+    String phone = _preparePhoneNumber(contact);
+    return !contact.isNum && !PhoneValidator.validate(phone) ? "Please provide valid phone number" : '';
+  }
+
+  String _validateEmail(String? contact) {
+    if (contact == null || !contact.isNotEmpty) {
+      return "Please add email";
+    }
+
+    return !EmailValidator.validate(contact) ? "Please provide valid email" : '';
+  }
+
+  String _preparePhoneNumber(String phone) {
+    return "${controller.currentCountryCode.value}$phone";
+  }
+
+  void _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      print("[SetProfileScreen:submit] invalid form");
+      return;
+    }
+
+    controller.isLoading.value = true;
+
+    String contact = _contactController.text;
+    bool isPhoneContact = contact.isNum;
+    if (isPhoneContact) {
+      contact = this._preparePhoneNumber(contact);
+    }
+
+    print("[SetProfileScreen:submit] contact [$contact] is phone number [$isPhoneContact]");
+    await apicalls.createProfile(
+      token: this.token,
+      contact: contact,
+      contactType: isPhoneContact ? User.PHONE_CONTACT_TYPE : User.EMAIL_CONTACT_TYPE,
+      username: _nameController.text,
+    );
+
+    controller.isLoading.value = false;
   }
 }

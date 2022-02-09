@@ -21,7 +21,7 @@ Widget recieverMessage(
         ),
         child: CircleAvatar(
           radius: 50,
-          backgroundImage: AssetImage("resources/$img.png"),
+          backgroundImage: NetworkImage(img),
         ),
       ),
       SizedBox(

@@ -8,16 +8,21 @@ class PluhgAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Icon(Icons.arrow_back_ios, color: Color(0xFF263238))),
+        onTap: () {
+          Get.back();
+        },
+        child: Icon(
+          Icons.arrow_back_ios,
+          color: Color(0xFF263238),
+        ),
+      ),
       backgroundColor: Colors.transparent,
-      shadowColor: Colors.transparent,
+      elevation: 0,
     );
   }
 
   static final _appBar = AppBar();
+
   @override
   Size get preferredSize => _appBar.preferredSize;
 }

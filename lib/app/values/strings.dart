@@ -1,5 +1,8 @@
 //SharedPreference
-final String prefuseremail = "pref_user_email";
-final String prefuserphone = "pref_user_phone";
-final String prefusercountrycode = "pref_user_country_code";
-final String preftoken = "pref_token";
+const String PREF_USER = "pref_user";
+const String PREF_IS_FIRST_APP_RUN = "pref_is_first_app_run";
+
+//TODO check these indexes
+// prefs.setString('token', '');
+// prefs.setString('userID', '');
+// prefs.setBool('logged_out', true);

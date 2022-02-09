@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:plug/app/modules/dynamic_link_service.dart';
 import 'package:plug/app/values/colors.dart';
 
-
 class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxInt currentIndex = 0.obs;
@@ -20,11 +19,12 @@ class HomeController extends GetxController {
   ];
   List<String> iconText = [
     "Connections",
-    "Connect",
+    "Connect People",
     "Messages",
     "Settings",
   ];
   final count = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -52,8 +52,7 @@ class HomeController extends GetxController {
           timeInSecForIosWeb: 1,
           backgroundColor: AppColors.pluhgColour,
           textColor: Colors.white,
-          fontSize: 16.0
-      );
+          fontSize: 16.0);
       return Future.value(false);
     }
     return Future.value(true);

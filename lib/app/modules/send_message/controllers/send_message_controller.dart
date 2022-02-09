@@ -8,6 +8,7 @@ class SendMessageController extends GetxController {
   RxString text = "Both".obs;
   RxBool loading = false.obs;
   final count = 0.obs;
+  RxInt selectedRadio = 1.obs;
   @override
   void onInit() {
     super.onInit();
@@ -21,4 +22,19 @@ class SendMessageController extends GetxController {
   @override
   void onClose() {}
   void increment() => count.value++;
+
+  void selectedRadioButton(int value){
+    selectedRadio.value = value;
+    switch(value){
+      case 1 :
+        text.value = "Both";
+        break;
+      case 2 :
+        text.value = "Contact";
+        break;
+      case 3 :
+        text.value = "Receiver";
+        break;
+    }
+  }
 }

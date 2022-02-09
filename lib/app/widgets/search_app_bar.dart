@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/instance_manager.dart';
+import 'package:plug/app/modules/chat_screen/controllers/chat_screen_controller.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/widgets/colors.dart';
+import 'package:plug/widgets/notif_icon.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   TextEditingController searchController = new TextEditingController();
   bool backButton;
   Function onChanged;
-  SearchAppBar(this.searchController,this.onChanged, {this.backButton = false});
+  bool messages_page;
+
+  SearchAppBar(this.searchController, this.onChanged,
+      {this.backButton = false, required this.messages_page});
 
   @override
   Widget build(BuildContext context) {
@@ -15,17 +22,19 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: false,
-      leadingWidth: backButton?30:0,
-      leading: backButton?GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Icon(
-            Icons.arrow_back_ios_outlined,
-            color: Colors.grey,
-          ),
-        ),
-      ):SizedBox.shrink(),
+      leadingWidth: backButton ? 30 : 0,
+      leading: backButton
+          ? GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Icon(
+                  Icons.arrow_back_ios_outlined,
+                  color: Colors.grey,
+                ),
+              ),
+            )
+          : SizedBox.shrink(),
       title: Container(
         height: 40.0,
         decoration: BoxDecoration(
@@ -34,15 +43,33 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: TextFormField(
           controller: searchController,
+          textInputAction: TextInputAction.search,
           onChanged: (value) {
             onChanged(value);
           },
           decoration: InputDecoration(
-              hintText: "Search Contact",
-              prefixIcon: Icon(
-                Icons.search_outlined,
-                color: Color(0xff080F18),
-              ),
+              hintText: messages_page == true
+                  ? "Search messages"
+                  : "Search connections",
+              prefixIcon: Padding(
+                  padding: EdgeInsets.all(8.w),
+                  child: SvgPicture.asset(
+                    "assets/images/search.svg",
+                    color: Color(0xff080F18),
+                  )),
+              /* suffixIcon: Visibility(
+                visible: controller.search.value.isEmpty ? false : true,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    searchController.clear();
+                    controller.search.value = "";
+                  },
+                ),
+              ),*/
               suffixIcon: Visibility(
                   visible: searchController.text.isNotEmpty,
                   child: IconButton(
@@ -67,24 +94,12 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                   fontWeight: FontWeight.w300)),
         ),
       ),
-      actions: [
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (contex) => NotificationScreenView()));
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.notifications_outlined, color: Color(0xff080F18)),
-          ),
-        ),
-      ],
+      actions: [NotifIcon()],
     );
   }
 
   static final _appBar = AppBar();
+
   @override
   Size get preferredSize => _appBar.preferredSize;
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'colors.dart';
 
@@ -69,8 +71,8 @@ Widget button2(String text) {
 
 Widget button3(String text, Color color) {
   return Container(
-    height: 45,
-    width: 159.53,
+    height: 45.h,
+    width: 150.w,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(59),
       color: color,
@@ -87,6 +89,38 @@ Widget button3(String text, Color color) {
       ),
     ),
   );
+}
+
+Widget outline_button(String text,{onPressed}) {
+  return InkWell(child: Container(
+    height: 45.h,
+    width: 150.w,
+    decoration: BoxDecoration(
+      border: Border.all(color: pluhgColour, width: 1),
+      borderRadius: BorderRadius.circular(59),
+      color: Colors.white,
+    ),
+    child: Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset("assets/images/message.svg"),
+          Container(width: 12.w),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+              color: pluhgColour,
+            ),
+          )
+        ],
+      ),
+    ),
+  ),onTap: (){
+    onPressed();
+  });
 }
 
 Widget button4(Widget widget, String text, Color color) {

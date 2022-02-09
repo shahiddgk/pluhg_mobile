@@ -1,37 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/screens/waiting_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
+import 'package:plug/widgets/pluhg_by_widget.dart';
 
 Widget waitingConnectionCard({
   required dynamic data,
-  required dynamic prefs,
+  required Rx<User> user,
 }) {
   RxBool responded = false.obs;
-  bool _isRequester = prefs.getString("emailAddress") != null
-      ? prefs.getString("emailAddress") == data["requester"]["contact"]
-      : prefs.getString("phoneNumber") == data["requester"]["contact"];
+  bool _isRequester =
+      user.value.compareEmail(data["requester"]["contact"]) || user.value.comparePhone(data["requester"]["contact"]);
 
-  if (_isRequester) {
-    responded.value = data["isRequesterAccepted"];
-  } else {
-    responded.value = data["isContactAccepted"];
-  }
+  responded.value = _isRequester ? data["isRequesterAccepted"] : data["isContactAccepted"];
 
   var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
       .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data["created_at"])
       .toLocal();
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
+
   return Obx(() => GestureDetector(
       onTap: () {
         Get.to(() => WaitingConnectionScreen(data: data));
       },
       child: Container(
-          margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
-          width: 340.33,
-          height: 145.98,
+          margin: EdgeInsets.only(top: 24.h, bottom: 12.h),
+          //height: 164,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
@@ -40,59 +38,44 @@ Widget waitingConnectionCard({
             children: [
               Expanded(
                 child: Container(
-                  height: 145.98,
-                  width: 180,
+                  // height: 164,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                            blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
-                      ]),
+                      boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)]),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Center(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              height: 85.54,
-                              width: 67.99,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color.fromARGB(5, 0, 0, 0),
-                                        blurRadius: 20)
-                                  ]),
-                              child: card(
-                                  Get.context!, data["requester"]["refId"])),
-                          SizedBox(
-                            width: 22,
-                          ),
-                          Container(
-                              height: 85.54,
-                              width: 67.99,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Color.fromARGB(5, 0, 0, 0),
-                                        blurRadius: 20)
-                                  ]),
-                              child:
-                                  card(Get.context!, data["contact"]["refId"])),
-                        ],
-                      )),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                                height: Get.size.height < 812 ? 138.72.h : 120.h,
+                                width: 87.2.w,
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
+                                child: card(Get.context!, data["requester"]["refId"])),
+                            Container(
+                                height: Get.size.height < 812 ? 142.72.h : 120.h,
+                                width: 87.2.w,
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
+                                child: card(Get.context!, data["contact"]["refId"])),
+                          ],
+                        ),
+                      ),
                       responded.value
                           ? SizedBox()
                           : Container(
-                              margin: EdgeInsets.only(
-                                top: Get.size.width * 0.05,
-                              ),
+                              margin: EdgeInsets.only(top: 12.0, bottom: 12.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -115,7 +98,7 @@ Widget waitingConnectionCard({
                                       ),
                                     ),
                                     onTap: () async {
-                                      _callApi(data, prefs, responded, true);
+                                      _callApi(data, responded, true);
                                     },
                                   ),
                                   SizedBox(
@@ -140,7 +123,7 @@ Widget waitingConnectionCard({
                                       ),
                                     ),
                                     onTap: () async {
-                                      _callApi(data, prefs, responded, false);
+                                      _callApi(data, responded, false);
                                     },
                                   ),
                                 ],
@@ -150,58 +133,15 @@ Widget waitingConnectionCard({
                   ),
                 ),
               ),
-              SizedBox(
-                width: 8,
+              Container(
+                width: 12.w,
               ),
-              Column(children: [
-                SizedBox(
-                  height: 9.4,
-                ),
-                Text("Plugged by:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Color(0xff898B8B),
-                        fontSize: 10)),
-                Text(
-                  "@${data['userId']["userName"]}",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-                SizedBox(height: 4.71),
-                Text(
-                  "Date:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Color(0xff898B8B),
-                      fontSize: 10),
-                ),
-                Text(
-                  formattedDate.toString().substring(0, 11),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-                SizedBox(height: 4.71),
-                Text(
-                  "Time:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Color(0xff898B8B),
-                      fontSize: 10),
-                ),
-                Text(
-                  formattedDate.toString().substring(12),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: Color(0xff575858)),
-                ),
-              ]),
-              SizedBox(
-                width: 8,
+              PlugByWidgetCard(
+                  userName:
+                      data['userId']["userName"] == null ? data['userId']["name"] : "@" + data['userId']["userName"],
+                  date: formattedDate),
+              Container(
+                width: 8.w,
               ),
               Center(
                 child: Icon(
@@ -216,20 +156,17 @@ Widget waitingConnectionCard({
           ))));
 }
 
-void _callApi(var data, dynamic prefs, responded, bool activeDecline) async {
+void _callApi(var data, RxBool responded, bool activeDecline) async {
   APICALLS apicalls = APICALLS();
+  User user = await UserState.get();
+
   responded.value = await apicalls.respondToConnectionRequest(
-      connectionID: data["_id"],
-      contact: prefs.getString("emailAddress"),
-      context: Get.context!,
-      isContact: data["contact"]["refId"]["_id"].toString() ==
-              prefs.getString("userID")
-          ? true
-          : false,
-      plugID: data["userId"]["_id"],
-      isAccepting: activeDecline,
-      isRequester: data["requester"]["refId"]["_id"].toString() ==
-              prefs.getString("userID")
-          ? true
-          : false);
+    connectionID: data["_id"],
+    contact: user.email,
+    context: Get.context!,
+    plugID: data["userId"]["_id"],
+    isAccepting: activeDecline,
+    isContact: user.compareId(data["contact"]["refId"]["_id"].toString()),
+    isRequester: user.compareId(data["requester"]["refId"]["_id"].toString()),
+  );
 }

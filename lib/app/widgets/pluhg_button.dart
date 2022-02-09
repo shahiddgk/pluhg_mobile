@@ -12,6 +12,7 @@ class PluhgButton extends StatelessWidget {
 
   final Function()? onPressed;
   final double? verticalPadding;
+  final double? horizontalPadding;
   final Color? color, borderColor;
 
   const PluhgButton(
@@ -25,6 +26,7 @@ class PluhgButton extends StatelessWidget {
       this.borderColor,
       this.borderWidth,
       this.verticalPadding,
+      this.horizontalPadding,
       this.borderRadius})
       : assert(text != null || child != null),
         super(key: key);
@@ -34,31 +36,37 @@ class PluhgButton extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: double.infinity),
       child: ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-              primary: color ?? AppColors.pluhgColour,
-              onSurface: color ?? AppColors.pluhgColour,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              padding: EdgeInsets.symmetric(vertical: verticalPadding ?? 12.5.h),
-              side: BorderSide(
-                width: borderWidth ?? 1,
-                  color: onPressed == null
-                      ? Colors.transparent
-                      : borderColor ?? AppColors.pluhgColour),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(borderRadius ?? 59.r),
-              )),
-          child: text != null
-              ? Text(
-                  text!,
-                  style: TextStyle(
-                    fontSize: fontSize ?? 15.sp,
-                    color: textColor ?? Colors.white,
-                    fontWeight: FontWeight.w400,
-                  ),
-                )
-              : child),
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          primary: color ?? AppColors.pluhgColour,
+          onSurface: color ?? AppColors.pluhgColour,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          padding: EdgeInsets.symmetric(
+            vertical: verticalPadding ?? 12.5.h,
+            horizontal: horizontalPadding ?? 0.0,
+          ),
+          side: BorderSide(
+            width: borderWidth ?? 1,
+            color: onPressed == null
+                ? Colors.transparent
+                : borderColor ?? AppColors.pluhgColour,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius ?? 59.r),
+          ),
+        ),
+        child: text != null
+            ? Text(
+                text!,
+                style: TextStyle(
+                  fontFamily: 'Axiforma',
+                  fontSize: fontSize ?? 15.sp,
+                  color: textColor ?? Colors.white,
+                ),
+              )
+            : child,
+      ),
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:country_code_picker/country_code.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_sim_country_code/flutter_sim_country_code.dart';
 import 'package:get/get.dart';
+import 'package:plug/app/services/UserState.dart';
+import 'package:plug/utils/location.dart';
 
 class AuthScreenController extends GetxController {
   RxBool isNumber = false.obs;
@@ -11,7 +13,7 @@ class AuthScreenController extends GetxController {
   RxBool checked = false.obs;
 
   var currentCountryCode = ''.obs;
-  var isoCountryCode = 'US'.obs;
+  var isoCountryCode = ''.obs;
 
   RxString deviceTokenString = ''.obs;
 
@@ -22,7 +24,7 @@ class AuthScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    determinePosition();
+    fetchCountryCode();
     getDeviceToken();
   }
 
@@ -44,9 +46,29 @@ class AuthScreenController extends GetxController {
     deviceTokenString.value = (await FirebaseMessaging.instance.getToken())!;
   }
 
-  Future<String> determinePosition() async {
-    final countryCode = await FlutterSimCountryCode.simCountryCode;
-    isoCountryCode.value = countryCode!;
+  Future<String> fetchCountryCode() async {
+    print("[AuthScreenController:fetchCountryCode] start fetching iso country code");
+    User user = await UserState.get();
+    String countryCode;
+    if (user.countryCode.isNotEmpty) {
+      countryCode = user.countryCode;
+      print("[AuthScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
+    } else {
+      countryCode = await DeviceCountryCode.get();
+      print(
+          "[AuthScreenController:fetchCountryCode] the code has been fetched from the DeviceCountryCode [$countryCode]");
+    }
+
+    isoCountryCode.value = countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
     return isoCountryCode.value;
+  }
+
+  Future<void> updateCountryCode(CountryCode? countryCode) async {
+    final isoCode = countryCode!.code ?? User.DEFAULT_COUNTRY_CODE;
+    final dialCode = countryCode.dialCode ?? '';
+    print("[AuthScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
+
+    isoCountryCode.value = isoCode;
+    currentCountryCode.value = dialCode;
   }
 }

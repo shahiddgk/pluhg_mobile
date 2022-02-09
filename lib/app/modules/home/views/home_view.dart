@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
+import 'package:plug/app/modules/chat_screen/controllers/chat_screen_controller.dart';
 import 'package:plug/app/modules/chat_screen/views/chat_screen_view.dart';
 import 'package:plug/app/modules/connection_screen/views/connect_two_people.dart';
 import 'package:plug/app/modules/connection_screen/views/connection_screen_view.dart';
 import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 
 import '../controllers/home_controller.dart';
@@ -16,6 +17,7 @@ import '../controllers/home_controller.dart';
 class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
+
   // final dynamic data;
   HomeView({
     required this.index,
@@ -26,17 +28,15 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
-  List<Widget> pages = [
-    ConnectionScreenView(),
-    ConnectScreenView(),
-    ChatScreenView(),
-    ProfileScreenView()
-  ];
+  final controller_chat = Get.put(ChatScreenController());
+
+  List<Widget> pages = [ConnectionScreenView(), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
 
   final controller = Get.put(HomeController());
 
   //Timer for retrieving dynamic in IOS
-  late Timer _timerLink;
+  Timer? _timerLink;
+
   @override
   void initState() {
     super.initState();
@@ -101,32 +101,58 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               showUnselectedLabels: true,
               selectedItemColor: pluhgColour,
               unselectedItemColor: Colors.black,
-              selectedFontSize: 12.sp,
-              unselectedFontSize: 12.sp,
+              selectedFontSize: 11.sp,
+              unselectedFontSize: 11.sp,
               items: [
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset('assets/svg/inactive_connections.svg'),
-                  activeIcon:
-                      SvgPicture.asset('assets/svg/active_connections.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 1.h),
+                      child: SvgPicture.asset('assets/svg/inactive_connections.svg')),
+                  activeIcon: SvgPicture.asset('assets/svg/active_connections.svg'),
                   label: 'Connections',
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                      'assets/svg/inactive_connect_people.svg'),
-                  activeIcon:
-                      SvgPicture.asset('assets/svg/active_connect_people.svg'),
-                  label: 'Connect',
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 1.h),
+                      child: SvgPicture.asset('assets/svg/inactive_connect_people.svg')),
+                  activeIcon: SvgPicture.asset('assets/svg/active_connect_people.svg'),
+                  label: "Connect People",
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset('assets/svg/inactive_messages.svg'),
-                  activeIcon:
-                      SvgPicture.asset('assets/svg/active_messages.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 1.h),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SvgPicture.asset('assets/svg/inactive_messages.svg'),
+                          //waiting for backend api changes
+                          Positioned(
+                            top: -8,
+                            right: -8,
+                            child: controller_chat.total_unread_messages == 0
+                                ? Container()
+                                : Container(
+                                    decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Text(controller_chat.total_unread_messages.toString(),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
+                                          textAlign: TextAlign.center),
+                                    ),
+                                  ),
+                          )
+                        ],
+                      )),
+                  activeIcon: SvgPicture.asset('assets/svg/active_messages.svg'),
                   label: 'Messages',
                 ),
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset('assets/svg/inactive_settings.svg'),
-                  activeIcon:
-                      SvgPicture.asset('assets/svg/active_settings.svg'),
+                  icon: Padding(
+                      padding: EdgeInsets.only(bottom: 1.h),
+                      child: SvgPicture.asset('assets/svg/inactive_settings.svg')),
+                  activeIcon: SvgPicture.asset('assets/svg/active_settings.svg'),
                   label: 'Settings',
                 ),
               ],
@@ -146,7 +172,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     if (_timerLink != null) {
-      _timerLink.cancel();
+      _timerLink!.cancel();
     }
     super.dispose();
   }

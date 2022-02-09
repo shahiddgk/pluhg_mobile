@@ -1,17 +1,16 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/widgets/button.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/text_style.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../controllers/send_message_controller.dart';
 
@@ -20,13 +19,16 @@ class SendMessageView extends GetView<SendMessageController> {
   final Uint8List? contactImage, requesterImage;
   final APICALLS apicalls = APICALLS();
   final controller = Get.put(SendMessageController());
-  SendMessageView(
-      {required this.contactName,
-      required this.contactContact,
-      required this.contactImage,
-      required this.requesterContact,
-      required this.requesterImage,
-      required this.requesterName});
+
+  SendMessageView({
+    required this.contactName,
+    required this.contactContact,
+    required this.contactImage,
+    required this.requesterContact,
+    required this.requesterImage,
+    required this.requesterName,
+  });
+
   final TextEditingController _bothMessage = TextEditingController();
   final TextEditingController _recieverMessage = TextEditingController();
   final TextEditingController _contactMessage = TextEditingController();
@@ -36,19 +38,8 @@ class SendMessageView extends GetView<SendMessageController> {
     return Obx(
       () => Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Colors.grey,
-            ),
-          ),
-          actions: [
-            Icon(Icons.notifications_outlined, color: Color(0xff080F18)),
-          ],
+        appBar: SimpleAppBar(
+          backButton: true,
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -72,42 +63,30 @@ class SendMessageView extends GetView<SendMessageController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 168.22.h,
+                      height: 178.22.h,
                       width: 88.66.w,
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 40,
-                                color: Color.fromARGB(5, 0, 0, 0))
-                          ],
-                          borderRadius: BorderRadius.circular(15.r)),
+                        color: Colors.white,
+                        boxShadow: [BoxShadow(blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))],
+                        borderRadius: BorderRadius.circular(15.r),
+                      ),
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 40.h,
-                          ),
+                          SizedBox(height: 40.h),
                           requesterName.isEmpty
                               ? Text("")
                               : requesterImage == null
                                   ? SvgPicture.asset("resources/svg/avatar.svg")
                                   : requesterImage == null
-                                      ? SvgPicture.asset(
-                                          "resources/svg/avatar.svg")
+                                      ? SvgPicture.asset("resources/svg/avatar.svg")
                                       : Container(
                                           width: 67.37.w,
                                           height: 69.35.h,
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: MemoryImage(
-                                                      requesterImage!)),
-                                              borderRadius:
-                                                  BorderRadius.circular(13)),
+                                              image: DecorationImage(image: MemoryImage(requesterImage!)),
+                                              borderRadius: BorderRadius.circular(13)),
                                         ),
-                          Text(
-                              requesterName.isEmpty
-                                  ? "Add Contact"
-                                  : requesterName,
+                          Text(requesterName.isEmpty ? "Add Contact" : requesterName,
                               style: TextStyle(
                                   color: Color(0xff121212),
                                   letterSpacing: -0.3,
@@ -126,30 +105,21 @@ class SendMessageView extends GetView<SendMessageController> {
                           Container(
                               width: 74.62.w,
                               height: 20.86.h,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: pluhgColour),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: pluhgColour),
                               child: Center(
                                 child: Text("Requester",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400)),
+                                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
                               ))
                         ],
                       ),
                     ),
                     SvgPicture.asset("resources/svg/middle.svg"),
                     Container(
-                      height: 168.22.h,
+                      height: 178.22.h,
                       width: 88.66.w,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 40,
-                                color: Color.fromARGB(5, 0, 0, 0))
-                          ],
+                          boxShadow: [BoxShadow(blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))],
                           borderRadius: BorderRadius.circular(15.r)),
                       child: Column(
                         children: [
@@ -161,20 +131,15 @@ class SendMessageView extends GetView<SendMessageController> {
                               : contactImage == null
                                   ? SvgPicture.asset("resources/svg/avatar.svg")
                                   : contactImage == null
-                                      ? SvgPicture.asset(
-                                          "resources/svg/avatar.svg")
+                                      ? SvgPicture.asset("resources/svg/avatar.svg")
                                       : Container(
                                           width: 67.37.w,
                                           height: 69.35.h,
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: MemoryImage(
-                                                      contactImage!)),
-                                              borderRadius:
-                                                  BorderRadius.circular(13)),
+                                              image: DecorationImage(image: MemoryImage(contactImage!)),
+                                              borderRadius: BorderRadius.circular(13)),
                                         ),
-                          Text(
-                              contactName.isEmpty ? "Add Contact" : contactName,
+                          Text(contactName.isEmpty ? "Add Contact" : contactName,
                               style: TextStyle(
                                   color: Color(0xff121212),
                                   letterSpacing: -0.3,
@@ -193,15 +158,10 @@ class SendMessageView extends GetView<SendMessageController> {
                           Container(
                               width: 74.62.w,
                               height: 20.86.h,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: pluhgColour),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: pluhgColour),
                               child: Center(
                                 child: Text("Contact",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400)),
+                                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
                               ))
                         ],
                       ),
@@ -212,57 +172,40 @@ class SendMessageView extends GetView<SendMessageController> {
                   height: 10.h,
                 ),
                 Text("Send message to",
-                    style: TextStyle(
-                        color: Color(0xff263238),
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400)),
+                    style: TextStyle(color: Color(0xff263238), fontSize: 20.sp, fontWeight: FontWeight.w400)),
                 SizedBox(
                   height: 2.h,
                 ),
-                Container(
-                  width: 339.w,
-                  height: 47.65.h,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(39),
-                      color: Color(0xffEBEBEB)),
-                  child: Center(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      hint: Center(child: Text(controller.text.value)),
-                      items: <String>[
-                        'Both',
-                        'Requester',
-                        'Contact',
-                      ].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: new Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (val) {
-                        controller.text.value = val!;
-                        if (val == "Both") {
-                          // _message.text = contactMessage;
-                          controller.defaultText.value =
-                              controller.contactMessage.value;
-                        }
-
-                        if (val == "Requester") {
-                          print(val);
-
-                          // requesterMessage = _message.text;
-                          // _message.text = requesterMessage;
-                          controller.defaultText.value =
-                              controller.requesterMessage.value;
-                        }
-                        if (val == "Contact") {
-                          // contactMessage = _message.text;
-                          // _message.text = contactMessage;
-                          controller.defaultText.value =
-                              controller.contactMessage.value;
-                        }
-                      },
-                      underline: Container(),
+                InkWell(
+                  onTap: () {
+                    contactMessageSelection(context);
+                  },
+                  child: Container(
+                    width: 339.w,
+                    height: 47.65.h,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(39), color: Color(0xffEBEBEB)),
+                    child: new Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              controller.text.value,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          height: 48,
+                          width: 48,
+                          child: Image.asset("assets/images/ic_dropdown.png"),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -275,7 +218,7 @@ class SendMessageView extends GetView<SendMessageController> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      textCapitalization: TextCapitalization.words,
+                      textCapitalization: TextCapitalization.sentences,
                       controller: controller.text.value == "Both"
                           ? _bothMessage
                           : controller.text.value == "Contact"
@@ -285,8 +228,7 @@ class SendMessageView extends GetView<SendMessageController> {
                       maxLines: 300,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText:
-                            "Type your message to ${controller.text.value} \n(Optional) ",
+                        hintText: "Type your message to ${controller.text.value} \n(Optional) ",
                         hintStyle: body2TextStyle,
                       ),
                     ),
@@ -334,5 +276,114 @@ class SendMessageView extends GetView<SendMessageController> {
     if (data == false) {
       controller.loading.value = false;
     }
+  }
+
+  contactMessageSelection(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        context: context,
+        builder: (context) {
+          return Obx(
+            () => Stack(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 32.h,
+                      ),
+                      Text(
+                        "Select Receiver",
+                        style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w600, color: AppColors.pluhgColour),
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: 1,
+                            groupValue: controller.selectedRadio.value,
+                            activeColor: AppColors.pluhgColour,
+                            onChanged: (value) {
+                              controller.selectedRadioButton(value as int);
+                              Get.back();
+                            },
+                          ),
+                          Text(
+                            "Both",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: 2,
+                            groupValue: controller.selectedRadio.value,
+                            activeColor: AppColors.pluhgColour,
+                            onChanged: (value) {
+                              controller.selectedRadioButton(value as int);
+                              Get.back();
+                            },
+                          ),
+                          Text(
+                            "Contact",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Radio(
+                            value: 3,
+                            groupValue: controller.selectedRadio.value,
+                            activeColor: AppColors.pluhgColour,
+                            onChanged: (value) {
+                              controller.selectedRadioButton(value as int);
+                              Get.back();
+                            },
+                          ),
+                          Text(
+                            "Receiver",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.cancel,
+                      color: AppColors.pluhgColour,
+                    ),
+                    onPressed: () {
+                      Get.back();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

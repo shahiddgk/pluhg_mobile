@@ -7,10 +7,12 @@ class PluhgContact {
   String? id;
   Uint8List? photo;
   String name, phoneNumber, emailAddress;
+  List<String> phoneNumbers;
 
   PluhgContact({
     required this.id,
     required this.name,
+    required this.phoneNumbers,
     required this.phoneNumber,
     this.photo,
     required this.emailAddress,
@@ -21,11 +23,13 @@ class PluhgContact {
     String? id,
     String? name,
     String? phoneNumber,
+    List<String>? phoneNumbers,
     Uint8List? photo,
     String? emailAddress,
     bool? isPlughedUser,
   }) {
     return PluhgContact(
+      phoneNumbers: phoneNumbers!,
       id: id ?? this.id,
       name: name ?? this.name,
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -70,6 +74,7 @@ class PluhgContact {
   }
 
   factory PluhgContact.fromJson(Map json) => PluhgContact(
+        phoneNumbers: [],
         id: '',
         photo: null,
         name: json['name'],
@@ -80,6 +85,7 @@ class PluhgContact {
 
   factory PluhgContact.fromContact(Contact contact) {
     return PluhgContact(
+      phoneNumbers: contact.phones.map((e) => e.number).toList(),
       id: contact.id,
       name: contact.displayName,
       isPlughedUser: false,

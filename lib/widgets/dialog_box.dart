@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
@@ -118,74 +121,201 @@ showPluhgDailog2(
 showPluhgDailog4(BuildContext context, String connectionID, String party) {
   var text = "";
 
-  return showPlatformDialog(
-    context: context,
-    builder: (BuildContext context) => BasicDialogAlert(
-      title: Text(
-        "Add a Message",
-        style: TextStyle(fontSize: 20, color: pluhgColour),
-      ),
-      content: Container(
-        padding: EdgeInsets.only(left: 5),
-        height: 120,
-        width: 200,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: pluhgColour,
+  return Dialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24.0),
+    ),
+    elevation: 0,
+    backgroundColor: Colors.white,
+    child: Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Add a Message",
+            style: TextStyle(fontSize: 20, color: pluhgColour),
           ),
-        ),
-        child: TextFormField(
-          onChanged: (value) => text = value,
-          maxLines: 4,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-          ),
-        ),
-      ),
-      actions: <Widget>[
-        BasicDialogAction(
-          title: Container(
-            width: 120.w,
-            height: 51.h,
+          Container(
+            height: 120,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(59.r),
               border: Border.all(
                 color: pluhgColour,
               ),
             ),
-            child: Center(
-              child: Text(
-                "Send Reminder",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: pluhgColour,
-                ),
+            child: TextFormField(
+              onChanged: (value) {
+                text = value;
+                print(text);
+              },
+              maxLines: 4,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                border: InputBorder.none,
               ),
             ),
           ),
-          onPressed: () async {
-            APICALLS apicalls = APICALLS();
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                 sendReminder(context, text, party, connectionID);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: pluhgColour,
+                        )),
+                    child: Center(
+                      child: Text("Send Reminder",
+                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                    )),
+              ),
+              SizedBox(
+                width: 12.0,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: pluhgColour,
+                        )),
+                    child: Center(
+                      child: Text("Cancel",
+                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                    )),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
-            if (text.length > 5) {
-              final isSent = await apicalls.sendReminderMessage(
-                message: text,
-                connectionID: connectionID,
-                party: party,
-                context: context,
-              );
-              if (isSent) {
-                Navigator.of(context).pop();
-                pluhgSnackBar('Great', '$party has been notified');
-              } else {
-                pluhgSnackBar('Sorry', 'An unexpected error occurred. Please try again.');
-              }
-            } else {
-              pluhgSnackBar('Sorry', '$party must be up to five text');
-            }
-          },
-        ),
-      ],
+sendReminder(BuildContext context, String text, String party,
+    String connectionID) async {
+  if (text.length > 5) {
+    final isSent = await APICALLS().sendReminderMessage(
+      message: text,
+      connectionID: connectionID,
+      party: party,
+      context: context,
+    );
+    if (isSent) {
+      Navigator.of(context).pop();
+      pluhgSnackBar('Great', '$party has been notified');
+    } else {
+      pluhgSnackBar('Sorry', 'An unexpected error occurred. Please try again.');
+    }
+  } else {
+    pluhgSnackBar('Sorry', '$party must be up to five text');
+  }
+}
+
+showPluhgRatingDialog(
+  BuildContext context,
+  String title,
+  String subTitle, {
+  required Function onCLosed,
+}) {
+  //initial value
+  double rating = 0.0;
+  print("rating $rating");
+  return Dialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24.0),
+    ),
+    elevation: 0,
+    backgroundColor: Colors.white,
+    child: Container(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: TextStyle(fontSize: 20, color: pluhgColour),
+          ),
+          Text(subTitle, style: TextStyle(fontSize: 12, color: Colors.black)),
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: RatingBar.builder(
+              initialRating: 0,
+              minRating: 0,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: pluhgColour,
+              ),
+              onRatingUpdate: (ratingValue) {
+                print(rating);
+                rating = ratingValue;
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  onCLosed(rating);
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: pluhgColour,
+                        )),
+                    child: Center(
+                      child: Text("OK",
+                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                    )),
+              ),
+              SizedBox(
+                width: 12.0,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 12.0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: pluhgColour,
+                        )),
+                    child: Center(
+                      child: Text("Cancel",
+                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                    )),
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
