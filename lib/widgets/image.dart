@@ -14,22 +14,30 @@ defaultImage({double sideSize = 0}) {
     ),
     width: size,
     height: size,
-    child: Container(padding: EdgeInsets.all(12.w), child: SvgPicture.asset("assets/svg/profile.svg")),
+    child: Container(padding: EdgeInsets.all(6.w), child: SvgPicture.asset("assets/svg/profile.svg")),
   );
 }
 
-networkImage(double height, double width, String imageUrl) {
+networkImage(String imageUrl, {double sideSize = 0}) {
+  double size = sideSize == 0 ? 54.w : sideSize;
   return Container(
-    height: height,
-    width: width,
-    child: CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: BoxFit.fill,
-      placeholder: (context, url) => Padding(
-        padding: EdgeInsets.all(12.w),
-        child: pluhgProgress(),
+    decoration: BoxDecoration(
+      color: Color(0xffEBEBEB),
+      borderRadius: BorderRadius.circular(12.r),
+    ),
+    width: size,
+    height: size,
+    child: Padding(
+      padding: EdgeInsets.all(6.w),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.fill,
+        placeholder: (context, url) => Padding(
+          padding: EdgeInsets.all(12.w),
+          child: pluhgProgress(),
+        ),
+        errorWidget: (context, url, error) => Icon(Icons.error),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
     ),
   );
 }

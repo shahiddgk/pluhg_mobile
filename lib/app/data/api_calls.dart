@@ -12,6 +12,7 @@ import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
 import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
 import 'package:plug/models/file_model.dart';
@@ -19,6 +20,7 @@ import 'package:plug/models/notification_response.dart';
 import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:plug/widgets/dialog_box.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS with ValidationMixin {
@@ -89,6 +91,10 @@ class APICALLS with ValidationMixin {
     print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
     final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
     print("[verifyOTP] user data: ${userData.toString()}");
+
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    storage.setBool(PREF_IS_FIRST_APP_RUN, false);
+    print("[verifyOTP] PREF_IS_FIRST_APP_RUN: false");
 
     if (isRegistered) {
       User user = await UserState.get();
