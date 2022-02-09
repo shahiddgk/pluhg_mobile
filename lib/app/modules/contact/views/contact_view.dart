@@ -4,20 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
-import 'package:plug/app/modules/notification_screen/views/notification_screen_view.dart';
 import 'package:plug/app/modules/send_message/views/send_message_view.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
-import 'package:plug/app/widgets/search_app_bar.dart';
 import 'package:plug/widgets/contact_item.dart';
 import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/notif_icon.dart';
-import 'package:plug/widgets/text_style.dart';
 
 import '../controllers/contact_controller.dart';
 
@@ -98,10 +94,8 @@ class ContactView extends GetView<ContactController> {
         bottomSheet: Container(
           height: 70.h,
           child: Visibility(
-            visible: controller.requesterName.value.isNotEmpty &&
-                    controller.contactName.value.isNotEmpty
-                ? true
-                : false,
+            visible:
+                controller.requesterName.value.isNotEmpty && controller.contactName.value.isNotEmpty ? true : false,
             child: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 261.w),
@@ -160,8 +154,7 @@ class ContactView extends GetView<ContactController> {
                   'Requester',
                   controller.isRequesterPluhg.value,
                   () async {
-                    final fullContact = await FlutterContacts.getContact(
-                        controller.requesterId.value);
+                    final fullContact = await FlutterContacts.getContact(controller.requesterId.value);
 
                     if (fullContact != null) {
                       controller.requesterImage = null;
@@ -183,8 +176,7 @@ class ContactView extends GetView<ContactController> {
                   'Contact',
                   controller.isContactPluhg.value,
                   () async {
-                    final fullContact = await FlutterContacts.getContact(
-                        controller.contactId.value);
+                    final fullContact = await FlutterContacts.getContact(controller.contactId.value);
 
                     if (fullContact != null) {
                       controller.contactImage = null;
@@ -201,8 +193,7 @@ class ContactView extends GetView<ContactController> {
             Expanded(
               child: Obx(
                 () {
-                  if (controller.permissionDenied.value &&
-                      controller.contacts_.length != 0) {
+                  if (controller.permissionDenied.value && controller.contacts_.length != 0) {
                     return Center(
                       child: Text("'Permission to read contacts denied'"),
                     );
@@ -240,40 +231,27 @@ class ContactView extends GetView<ContactController> {
                                 itemBuilder: (context, index) {
                                   if (contacts[index].phoneNumber.isNotEmpty ||
                                       contacts[index].emailAddress.isNotEmpty) {
-                                    return contactItem(contacts[index],
-                                        () async {
-                                      if (controller
-                                              .requesterName.value.isEmpty ||
-                                          controller
-                                              .contactName.value.isEmpty) {
-                                        Contact? contact =
-                                            await FlutterContacts.getContact(
-                                                contacts[index].id!);
+                                    return contactItem(contacts[index], () async {
+                                      if (controller.requesterName.value.isEmpty ||
+                                          controller.contactName.value.isEmpty) {
+                                        Contact? contact = await FlutterContacts.getContact(contacts[index].id!);
 
                                         if (contact != null) {
-                                          PluhgContact pluhgContact =
-                                              PluhgContact.fromContact(contact);
-                                          if (controller
-                                              .requesterName.value.isEmpty) {
-                                            onRequesterSelect(pluhgContact,
-                                                index, context, contacts);
-                                          } else if (controller
-                                                  .contactName.value.isEmpty &&
-                                              controller.requesterName.value
-                                                  .isNotEmpty) {
-                                            onContactSelect(pluhgContact, index,
-                                                context, contacts);
+                                          PluhgContact pluhgContact = PluhgContact.fromContact(contact);
+                                          if (controller.requesterName.value.isEmpty) {
+                                            onRequesterSelect(pluhgContact, index, context, contacts);
+                                          } else if (controller.contactName.value.isEmpty &&
+                                              controller.requesterName.value.isNotEmpty) {
+                                            onContactSelect(pluhgContact, index, context, contacts);
                                           } else {
-                                            showPluhgDailog(context, "Info",
-                                                "So Sorry !  You can select the same person");
+                                            showPluhgDailog(
+                                                context, "Info", "So Sorry !  You can select the same person");
                                           }
                                         }
-                                      } else if (controller
-                                              .contactName.value.isNotEmpty &&
-                                          controller
-                                              .requesterName.value.isNotEmpty) {
-                                        showPluhgDailog(context, "Info",
-                                            "You can't have more than two contacts selected");
+                                      } else if (controller.contactName.value.isNotEmpty &&
+                                          controller.requesterName.value.isNotEmpty) {
+                                        showPluhgDailog(
+                                            context, "Info", "You can't have more than two contacts selected");
                                       }
                                     });
                                   } else {
@@ -298,38 +276,27 @@ class ContactView extends GetView<ContactController> {
 
 //TOD
   Future onTap(context) async {
-    String finalRequester = controller.requesterContact.value
-        .trim()
-        .split(" ")
-        .join("")
-        .split("-")
-        .join("");
+    String finalRequester = controller.requesterContact.value.trim().split(" ").join("").split("-").join("");
 
-    String finalcontact = controller.contactContact.value
-        .trim()
-        .split(" ")
-        .join("")
-        .split("-")
-        .join("");
+    String finalcontact = controller.contactContact.value.trim().split(" ").join("").split("-").join("");
 
+    //@TODO something wrong here. Need to avoid this storing
     String countryCode = controller.prefs!.getString("countryCode") ?? '';
 
     if (controller.contactContact.value.contains("@")) {
       finalcontact = controller.contactContact.value;
     } else if (!finalcontact.contains("+")) {
-      finalcontact =
-          finalcontact.substring(0, countryCode.length).contains(countryCode)
-              ? finalcontact
-              : countryCode + finalcontact;
+      finalcontact = finalcontact.substring(0, countryCode.length).contains(countryCode)
+          ? finalcontact
+          : countryCode + finalcontact;
     }
 
     if (controller.requesterContact.value.contains("@")) {
       finalRequester = controller.requesterContact.value;
     } else if (!finalRequester.contains("+")) {
-      finalRequester =
-          finalRequester.substring(0, countryCode.length).contains(countryCode)
-              ? finalRequester
-              : countryCode + finalRequester;
+      finalRequester = finalRequester.substring(0, countryCode.length).contains(countryCode)
+          ? finalRequester
+          : countryCode + finalRequester;
     }
 
     print(finalcontact);
@@ -347,8 +314,8 @@ class ContactView extends GetView<ContactController> {
     );
   }
 
-  Widget _addContactItem(String requesterName, String requesterContact,
-      Uint8List? image, String buttonText, bool isPluhgUser, Function onTap) {
+  Widget _addContactItem(String requesterName, String requesterContact, Uint8List? image, String buttonText,
+      bool isPluhgUser, Function onTap) {
     return Stack(
       //alignment: Alignment.topRight,
       clipBehavior: Clip.none,
@@ -358,24 +325,16 @@ class ContactView extends GetView<ContactController> {
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 40,
-                color: Colors.black12,
-              )
-            ],
-            borderRadius: BorderRadius.circular(15),
+            boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
+            borderRadius: BorderRadius.circular(15.r),
           ),
           child: Column(
             children: [
               contactImage(image, isPluhgUser),
               Text(
                 requesterName.isNotEmpty ? requesterName : 'Add Contact',
-                style: TextStyle(
-                    color: Color(0xff121212),
-                    letterSpacing: -0.3,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400),
+                style:
+                    TextStyle(color: Color(0xff121212), letterSpacing: -0.3, fontSize: 10, fontWeight: FontWeight.w400),
               ),
               SizedBox(
                 height: 4.0,
@@ -407,10 +366,7 @@ class ContactView extends GetView<ContactController> {
                 child: Center(
                   child: Text(
                     buttonText,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400),
+                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400),
                   ),
                 ),
               )
@@ -434,34 +390,30 @@ class ContactView extends GetView<ContactController> {
     );
   }
 
-  void onRequesterSelect(PluhgContact pluhgContact, int index,
-      BuildContext context, List<PluhgContact> contacts) {
+  void onRequesterSelect(PluhgContact pluhgContact, int index, BuildContext context, List<PluhgContact> contacts) {
     print("Pluhg user ${pluhgContact.isPlughedUser}");
     controller.requesterId.value = controller.contacts_[index].id!;
     controller.requesterImage = pluhgContact.photo;
-    controller.requesterContact.value = pluhgContact.phoneNumber.isEmpty
-        ? pluhgContact.emailAddress
-        : pluhgContact.phoneNumber;
+    controller.requesterContact.value =
+        pluhgContact.phoneNumber.isEmpty ? pluhgContact.emailAddress : pluhgContact.phoneNumber;
     controller.requesterName.value = pluhgContact.name;
     controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
     controller.title.value = "Select Contact";
     contacts.remove(pluhgContact);
 
     if (controller.contactName.value.isEmpty) {
-      showPluhgDailog(context, "Info",
-          "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
+      showPluhgDailog(
+          context, "Info", "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
     }
   }
 
-  void onContactSelect(PluhgContact pluhgContact, int index,
-      BuildContext context, List<PluhgContact> contacts) {
+  void onContactSelect(PluhgContact pluhgContact, int index, BuildContext context, List<PluhgContact> contacts) {
     print("Pluhg user ${pluhgContact.isPlughedUser}");
     if (pluhgContact.phoneNumber != controller.requesterContact.value) {
       controller.contactId.value = controller.contacts_[index].id!;
       controller.contactImage = pluhgContact.photo;
-      controller.contactContact.value = pluhgContact.phoneNumber.isEmpty
-          ? pluhgContact.emailAddress
-          : pluhgContact.phoneNumber;
+      controller.contactContact.value =
+          pluhgContact.phoneNumber.isEmpty ? pluhgContact.emailAddress : pluhgContact.phoneNumber;
       controller.contactName.value = pluhgContact.name;
       controller.isContactPluhg.value = contacts[index].isPlughedUser;
 
@@ -475,10 +427,7 @@ class ContactView extends GetView<ContactController> {
     return Stack(
       children: [
         image == null
-            ? Container(
-                width: 70,
-                height: 70,
-                child: SvgPicture.asset("resources/svg/avatar.svg"))
+            ? Container(width: 70, height: 70, child: SvgPicture.asset("resources/svg/avatar.svg"))
             : Container(
                 width: 70,
                 height: 70,
