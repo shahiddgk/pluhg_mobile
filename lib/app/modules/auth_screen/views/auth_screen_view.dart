@@ -10,7 +10,9 @@ import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/url.dart';
+import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../controllers/auth_screen_controller.dart';
 
 class AuthScreenView extends GetView<AuthScreenController> {
@@ -77,22 +79,15 @@ class AuthScreenView extends GetView<AuthScreenController> {
                           width: 60.w,
                           //library to fetch country codes
                           child: CountryCodePicker(
-                            // favorite: ['+1', 'US'],
-                            onInit: (val) async {
-                              controller.currentCountryCode.value =
-                                  val!.dialCode!;
-                              print(val.dialCode!);
-                            },
                             backgroundColor: Colors.white,
                             initialSelection: controller.isoCountryCode.value,
                             padding: EdgeInsets.zero,
                             showFlag: false,
-                            onChanged: (val) {
-                              controller.currentCountryCode.value =
-                                  val.dialCode.toString().trim();
-                              //   print("#" +
-                              //       currentCountryCode +
-                              //       "#");
+                            onInit: (val) async {
+                              await controller.updateCountryCode(val);
+                            },
+                            onChanged: (val) async {
+                              await controller.updateCountryCode(val);
                             },
                           ),
                         ),
@@ -103,20 +98,18 @@ class AuthScreenView extends GetView<AuthScreenController> {
                           child: TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
+                              if (value == null) {
                                 return "Field is required";
                               }
-                              if (value.length < 6) {
-                                return "Add valid data";
+
+                              String error = _validateContact(value);
+                              if (error.isNotEmpty) {
+                                return error;
                               }
                             },
                             controller: _textController,
                             onChanged: (val) {
-                              if (controller.isNumeric(val)) {
-                                controller.isNumber.value = true;
-                              } else {
-                                controller.isNumber.value = false;
-                              }
+                              controller.isNumber.value = controller.isNumeric(val);
                             },
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
@@ -150,8 +143,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                         height: 24.h,
                         width: 24.w,
                         child: Checkbox(
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.r),
                           ),
@@ -159,12 +151,14 @@ class AuthScreenView extends GetView<AuthScreenController> {
                           checkColor: Colors.white,
                           value: controller.hasAccepted.value,
                           onChanged: (val) {
-                            if (_textController.text.isNotEmpty) {
-                              controller.hasAccepted.value = val!;
-                            } else {
-                              pluhgSnackBar(
-                                  "Sorry", "Please add email or phone number");
+                            String contact = _textController.text;
+                            String error = _validateContact(contact);
+                            if (error.isNotEmpty) {
+                              controller.hasAccepted.value = false;
+                              return pluhgSnackBar("Sorry", error);
                             }
+
+                            controller.hasAccepted.value = !controller.hasAccepted.value;
                           },
                         ),
                       ),
@@ -184,9 +178,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             style: TextStyle(
                               color: pluhgColour,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap =
-                                  () => launchURL("https://pluhg.com/terms"),
+                            recognizer: TapGestureRecognizer()..onTap = () => launchURL("https://pluhg.com/terms"),
                           ),
                           TextSpan(
                             text: 'and\n',
@@ -196,9 +188,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             style: TextStyle(
                               color: pluhgColour,
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap =
-                                  () => launchURL("https://pluhg.com/privacy"),
+                            recognizer: TapGestureRecognizer()..onTap = () => launchURL("https://pluhg.com/privacy"),
                           ),
                         ],
                       ),
@@ -212,11 +202,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 261.w),
                           child: PluhgButton(
-                            onPressed:
-                                controller.hasAccepted.value ? _submit : null,
-                            text: controller.hasAccepted.value
-                                ? 'Continue'
-                                : 'Get Started',
+                            onPressed: controller.hasAccepted.value ? _submit : null,
+                            text: controller.hasAccepted.value ? 'Continue' : 'Get Started',
                           ),
                         ),
                       ),
@@ -229,24 +216,50 @@ class AuthScreenView extends GetView<AuthScreenController> {
     );
   }
 
-  void _submit() async {
-    if (_formKey.currentState!.validate()) {
-      if (controller.hasAccepted.value) {
-        controller.isLoading.value = true;
-        if (controller.isNumeric(_textController.text)) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          //save country code in preference
-          prefs.setString("countryCode", controller.currentCountryCode.value);
-        }
-
-        final signedIn = await apicalls.signUpSignIn(
-            contact: _textController.text.contains("@")
-                ? _textController.text
-                : controller.currentCountryCode.value + _textController.text);
-        if (!signedIn) {
-          controller.isLoading.value = false;
-        }
-      }
+  String _validateContact(String contact) {
+    if (!contact.isNotEmpty) {
+      return "Please add email or phone number";
     }
+
+    if (contact.isNum) {
+      String phone = _preparePhoneNumber(contact);
+      return !PhoneValidator.validate(phone) ? "Please provide valid phone number" : '';
+    }
+
+    return !EmailValidator.validate(contact) ? "Please provide valid email" : '';
+  }
+
+  String _preparePhoneNumber(String phone) {
+    return "${controller.currentCountryCode.value}$phone";
+  }
+
+  void _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      print("[AuthScreenView:submit] invalid form");
+      return;
+    }
+
+    if (!controller.hasAccepted.value) {
+      print("[AuthScreenView:submit] agreements has not been accepted");
+      return;
+    }
+
+    controller.isLoading.value = true;
+
+    String contact = _textController.text;
+    bool isPhoneContact = contact.isNum;
+    if (isPhoneContact) {
+      contact = this._preparePhoneNumber(contact);
+    }
+
+    print("[AuthScreenView:submit] contact [$contact] is phone number [$isPhoneContact]");
+    if (isPhoneContact) {
+      //@TODO something wrong here. Need to avoid this storing
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString("countryCode", controller.currentCountryCode.value);
+    }
+
+    await apicalls.signUpSignIn(contact: contact);
+    controller.isLoading.value = false;
   }
 }

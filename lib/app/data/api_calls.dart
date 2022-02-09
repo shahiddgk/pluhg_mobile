@@ -11,7 +11,7 @@ import 'package:plug/app/modules/auth_screen/views/otp_screen.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
 import 'package:plug/models/file_model.dart';
@@ -19,7 +19,6 @@ import 'package:plug/models/notification_response.dart';
 import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:plug/widgets/dialog_box.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS with ValidationMixin {
@@ -39,182 +38,157 @@ class APICALLS with ValidationMixin {
       'type': contact.contains("@") ? 'email' : 'phone'
     };
 
-    var response = await http.post(uri,
-        body: jsonEncode(body), headers: {"Content-Type": "application/json"});
+    var response = await http.post(uri, body: jsonEncode(body), headers: {"Content-Type": "application/json"});
     var parsedResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
+      print("[signUpSignIn] success: ${parsedResponse['message']}");
       pluhgSnackBar('Great', parsedResponse['message'].toString());
-      Get.to(OTPScreenView(contact: contact));
-      return false;
-    } else {
-      pluhgSnackBar('Sorry', parsedResponse['message'].toString());
-      return false;
+      Get.to(() => OTPScreenView(contact: contact));
+      return true;
     }
+
+    print("[signUpSignIn] error: ${parsedResponse['message']}");
+    pluhgSnackBar('Sorry', parsedResponse['message'].toString());
+    return false;
   }
 
   //Verify OTP
-  Future<bool> verifyOTP(
-      {required String contact,
-      required BuildContext context,
-      required String code,
-      required String fcmToken}) async {
-    var uri = Uri.parse("$url/api/verifyOTP");
-    bool success;
+  Future<bool> verifyOTP({
+    required String contact,
+    required BuildContext context,
+    required String code,
+    required String fcmToken,
+  }) async {
+    //@todo need to move to some request DTO instead
     var body = {
-      "emailAddress": contact.contains("@") ? contact : "",
-      "phoneNumber": !contact.contains("@") ? contact : "",
+      "emailAddress": EmailValidator.validate(contact) ? contact : "",
+      "phoneNumber": PhoneValidator.validate(contact) ? contact : "",
       "code": code,
-      "type": contact.contains("@") ? "email" : 'phone',
+      "type": EmailValidator.validate(contact) ? User.EMAIL_CONTACT_TYPE : User.PHONE_CONTACT_TYPE,
       "deviceToken": fcmToken.toString()
     };
 
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json"}, body: jsonEncode(body));
-
+    var uri = Uri.parse("$url/api/verifyOTP");
+    var response = await http.post(uri, headers: {"Content-Type": "application/json"}, body: jsonEncode(body));
     var parsedResponse = jsonDecode(response.body);
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (response.statusCode == 200) {
-      pluhgSnackBar('Great', 'Successfully logged in');
-      if (parsedResponse['data']['user']['isRegistered'] == false) {
-        Get.offAll(SetProfileScreenView(
-          userID: parsedResponse['data']['user']['data']['_id'].toString(),
-          token: parsedResponse['data']['token'].toString(),
-          contact: parsedResponse['data']['user']['data']['emailAddress'] ==
-                  null
-              ? parsedResponse['data']['user']['data']['phoneNumber'].toString()
-              : parsedResponse['data']['user']['data']['emailAddress']
-                  .toString(),
-        ));
-      } else {
-        prefs.setBool(prefloggedout, false);
-        prefs.setString(preftoken, parsedResponse['data']['token'].toString());
-        prefs.setString(prefuserid,
-            parsedResponse['data']['user']['data']['_id'].toString());
-        prefs.setString(prefusername,
-            parsedResponse['data']['user']['data']['userName'].toString());
-        prefs.setString(prefuseremail,
-            parsedResponse['data']['user']['data']['emailAddress'].toString());
-        prefs.setString(prefuserphone,
-            parsedResponse['data']['user']['data']['phoneNumber'].toString());
-        Get.offAll(() => HomeView(
-              index: 1.obs,
-            ));
-      }
-      return false;
-    } else {
-      pluhgSnackBar('Sorry', parsedResponse['message'].toString());
+    if (response.statusCode != 200) {
+      final errorMessage = parsedResponse['message'].toString();
+
+      print("[verifyOTP] error: $errorMessage");
+      pluhgSnackBar('Sorry', errorMessage);
+
       return false;
     }
+
+    print("[verifyOTP] Successfully logged in");
+    pluhgSnackBar('Great', 'Successfully logged in');
+    final token = parsedResponse['data']['token'].toString();
+    final userData = parsedResponse['data']['user']['data'];
+
+    print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
+    final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
+    print("[verifyOTP] user data: ${userData.toString()}");
+
+    if (isRegistered) {
+      User user = await UserState.get();
+      await UserState.store(
+        User.registered(
+          token: token,
+          id: userData['_id'].toString(),
+          name: userData['userName'].toString(),
+          phone: userData['phoneNumber'].toString(),
+          email: userData['emailAddress'].toString(),
+          countryCode: user.countryCode.isNotEmpty ? user.countryCode : User.DEFAULT_COUNTRY_CODE,
+        ),
+      );
+
+      Get.offAll(() => HomeView(index: 1.obs));
+      return true;
+    }
+
+    Get.offAll(() => SetProfileScreenView(
+          token: token,
+          userID: userData['_id'].toString(),
+          contact: userData['emailAddress'] == null
+              ? userData['phoneNumber'].toString()
+              : userData['emailAddress'].toString(),
+        ));
+
+    return true;
   }
 
-
   // save users informations / Create Profile
-  Future<bool> createProfile(
-      {required String token,
-      required String contact,
-      required String contactType,
-      required String username}) async {
+  Future<bool> createProfile({
+    required String token,
+    required String contact,
+    required String contactType,
+    required String username,
+  }) async {
     var uri = Uri.parse("$url/api/createProfile");
 
-    var body = {};
-
-    if (contactType == "email") {
-      body = {
-        "phoneNumber": contact,
-        "userName": username,
-      };
-    } else if (contactType == "phone") {
-      body = {
-        "emailAddress": contact,
-        "userName": username,
-      };
+    var body = {"userName": username};
+    if (User.isEmailContactType(contactType)) {
+      body["emailAddress"] = contact;
+    }
+    if (User.isPhoneContactType(contactType)) {
+      body["phoneNumber"] = contact;
     }
 
-    var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
-        },
-        body: jsonEncode(body));
+    String requestBody = jsonEncode(body);
+    print("[Api:createProfile] send request [$requestBody]");
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json", "Authorization": "Bearer $token"},
+      body: requestBody,
+    );
 
     var parsedResponse = jsonDecode(response.body);
+    print("[Api:createProfile] response [$parsedResponse]");
 
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Your profile Has been set');
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      // prefs.setString('profileImage',
-      //     parsedResponse["data"]["userData"]["profileImage"].toString()); //TODO check the data it returns
+      User user = await UserState.get();
+      await UserState.storeNewProfile(token: token, name: username, contact: contact, countryCode: user.countryCode);
 
-      prefs.setString('token', token);
-      prefs.setString('userName', username);
-      prefs.setBool("logged_out", false);
-      prefs.setString(
-          !contact.contains("@") ? "phoneNumber" : "emailAddress", contact);
-
-      Get.offAll(() => HomeView(
-            index: 1.obs,
-          ));
+      Get.offAll(() => HomeView(index: 1.obs));
       return false;
     } else {
       pluhgSnackBar('Sorry', parsedResponse["message"].toString());
       if (response.statusCode == 401) {
-        Get.offAll(AuthScreenView());
+        Get.offAll(() => AuthScreenView());
       }
       // error
-
       return false;
     }
   }
 
-
   Future<void> sendSupportEmail(
       {required String emailAddress,
-        required String token,
-        required String subject,
-        required String emailContent,
-        required BuildContext context}) async {
+      required String token,
+      required String subject,
+      required String emailContent,
+      required BuildContext context}) async {
     var uri = Uri.parse("$url/api/sendSupportEmail");
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token_user = prefs.getString(preftoken);
-
-
-    var body = {
-      "emailAddress": emailAddress,
-      "subject": subject,
-      "emailContent": emailContent
-    };
+    var body = {"emailAddress": emailAddress, "subject": subject, "emailContent": emailContent};
 
     /// Set options
     /// Max and msg required
-
+    User user = await UserState.get();
     var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token_user"
-        },
-        body: jsonEncode(body));
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      showPluhgDailog(
-          context, "Great", "Your message has been sent successfully");
-
+      showPluhgDailog(context, "Great", "Your message has been sent successfully");
       //all good
     } else {
       // error
-
-      showPluhgDailog(
-          context, "So Sorry", "Couldn't send your message, try again letter");
-
+      showPluhgDailog(context, "So Sorry", "Couldn't send your message, try again letter");
       print("Error");
     }
   }
-
-
-
 
   // Connect two People API
   Future<bool> connectTwoPeople(
@@ -229,8 +203,7 @@ class APICALLS with ValidationMixin {
       // required Uint8List? requesterImage,
       required BuildContext context}) async {
     var uri = Uri.parse("$url/api/connect/people");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString(preftoken);
+    User user = await UserState.get();
 
     var body = {
       "requester": {
@@ -238,31 +211,25 @@ class APICALLS with ValidationMixin {
         "contact": requesterContact,
         "contactType": requesterContact.contains("@") ? 'email' : 'phone',
         "message":
-            "${prefs.getString(prefusername)} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
+            "${user.name} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
       },
       "contact": {
         "name": contactName,
         "contact": contactContact,
         "contactType": contactContact.contains("@") ? 'email' : 'phone',
         "message":
-            "${prefs.getString(prefusername)} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
+            "${user.name} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
       },
       'generalMessage': bothMessage
     };
 
     var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
-        },
-        body: jsonEncode(body));
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
     var parsedResponse = jsonDecode(response.body);
 
     // print(parsedResponse["data"]["_id"].toString());
-    bool bothemail =
-        requesterContact.contains("@") && contactContact.contains("@");
-    bool bothphone =
-        !requesterContact.contains("@") && !contactContact.contains("@");
+    bool bothemail = requesterContact.contains("@") && contactContact.contains("@");
+    bool bothphone = !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
       pluhgSnackBar("Great", "You have connected them, about to send message");
 
@@ -270,9 +237,7 @@ class APICALLS with ValidationMixin {
           buttonText: "Continue",
           heading: 'Connection Successful',
           iconName: 'success_status',
-          onPressed: () => Get.offAll(HomeView(
-                index: 0.obs,
-              )),
+          onPressed: () => Get.offAll(HomeView(index: 0.obs)),
           subheading: bothemail
               ? "$requesterName in phone and $contactName in phone will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
               : bothphone
@@ -283,7 +248,6 @@ class APICALLS with ValidationMixin {
 
       //all good
     } else {
-
       print(parsedResponse['message']);
       // error
       pluhgSnackBar("So sorry", "${parsedResponse['message']}");
@@ -291,7 +255,6 @@ class APICALLS with ValidationMixin {
       return false;
     }
   }
-
 
   // send Message to remind user
   Future<bool> sendReminderMessage(
@@ -301,10 +264,9 @@ class APICALLS with ValidationMixin {
       required BuildContext context}) async {
     var uri = Uri.parse("$url/api/connect/sendReminder");
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    User user = await UserState.get();
     ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString(preftoken);
+
     var parsedResponse;
     pd.show(
       max: 100,
@@ -313,18 +275,10 @@ class APICALLS with ValidationMixin {
       progressBgColor: Colors.transparent,
     );
 
-    var body = {
-      'connectionId': connectionID,
-      'message': message,
-      'party': party
-    };
+    var body = {'connectionId': connectionID, 'message': message, 'party': party};
 
     var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
-        },
-        body: jsonEncode(body));
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
 
     /// Set options
@@ -342,32 +296,35 @@ class APICALLS with ValidationMixin {
     }
   }
 
-
   // get user's informations
   Future getProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString(preftoken).toString();
+    User user = await UserState.get();
     var uri = Uri.parse("$url/api/profileDetails");
-    var response =
-        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
 
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse);
-    if (response.statusCode == 401) {
-      pluhgSnackBar("So sorry", "You have to login again, session expired");
-      Get.offAll(() => AuthScreenView());
-    } else if (response.statusCode == 200) {
+
+    if (response.statusCode == 200) {
       return parsedResponse;
       // all good, details in parsedResponse
-    } else {
-      return null;
     }
+
+    print("[Api:getProfile] error: status code [${response.statusCode}]; body [${response.body}]");
+    if (response.statusCode == 401) {
+      pluhgSnackBar("So sorry", "You have to login again, session expired");
+    } else {
+      pluhgSnackBar("So sorry", "Something went wrong");
+    }
+
+    print("[Api:getProfile] force user logout");
+    await UserState.logout();
+
+    return null;
   }
 
-
   //Update user's details API
-  void setProfile(
-      {required String token, String name = "", String address = ""}) async {
+  void setProfile({required String token, String name = "", String address = ""}) async {
     var uri = Uri.parse("$url/api/updateProfileDetails");
 
     var body = {};
@@ -380,8 +337,7 @@ class APICALLS with ValidationMixin {
       body["address"] = address;
     }
 
-    var response = await http.post(uri,
-        headers: {"Authorization": "Bearer $token"}, body: body);
+    var response = await http.post(uri, headers: {"Authorization": "Bearer $token"}, body: body);
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -393,8 +349,6 @@ class APICALLS with ValidationMixin {
       //ERROR
     }
   }
-
-
 
   Future<bool> setProfile2({
     required String? token,
@@ -425,19 +379,14 @@ class APICALLS with ValidationMixin {
       body["phoneNumber"] = phone;
     }
 
-    var response = await http.post(uri,
-        headers: {"Authorization": "Bearer $token"}, body: body);
+    var response = await http.post(uri, headers: {"Authorization": "Bearer $token"}, body: body);
 
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
       // All okay
-
-      Get.offAll(() => HomeView(
-            index: 3.obs,
-          ));
+      Get.offAll(HomeView(index: 3.obs));
       pluhgSnackBar("Great", "You have changed your profile details");
-
       return false;
     } else {
       //ERROR
@@ -446,8 +395,6 @@ class APICALLS with ValidationMixin {
       return false;
     }
   }
-
-
 
   // Update user's image
   Future<bool> updateProfile(
@@ -468,8 +415,7 @@ class APICALLS with ValidationMixin {
       // ..fields["emailAddress"] = emailAddress + "7y"
       // ..fields["phoneNumber"] = phoneNumber + "29"
       ..files.add(http.MultipartFile('profileImage', stream, length,
-          filename: basename(imageFile.path),
-          contentType: MediaType('image', 'png')))
+          filename: basename(imageFile.path), contentType: MediaType('image', 'png')))
       ..headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
@@ -477,13 +423,12 @@ class APICALLS with ValidationMixin {
     var response = await request.send();
 
     response.stream.transform(utf8.decoder).listen((var value) async {
-      var jar = response.stream.transform(utf8.decoder);
+      response.stream.transform(utf8.decoder);
     });
+
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
-        Get.offAll(() => HomeView(
-              index: 3.obs,
-            ));
+        Get.offAll(HomeView(index: 3.obs));
         pluhgSnackBar("Great", "You have changed your picture");
       });
 
@@ -494,16 +439,13 @@ class APICALLS with ValidationMixin {
     }
   }
 
-
-
   // get notifications informations
   dynamic getNotificationSettings({
     required String token,
   }) async {
     var uri = Uri.parse("$url/api/notification/settings");
     // NotificationSettings settingz;
-    var response =
-        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var response = await http.get(uri, headers: {"Authorization": "Bearer $token"});
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -516,7 +458,6 @@ class APICALLS with ValidationMixin {
       // showPluhgDailog(context, "Error", parsedResponse["message"].toString());
     }
   }
-
 
   // update notification's settings
   Future<bool> updateNotificationSettings({
@@ -534,11 +475,7 @@ class APICALLS with ValidationMixin {
     };
 
     var response = await http.post(uri,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json"
-        },
-        body: jsonEncode(body));
+        headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"}, body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -562,8 +499,7 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
-      response =
-          await http.get(uri, headers: {"Authorization": "Bearer $token"});
+      response = await http.get(uri, headers: {"Authorization": "Bearer $token"});
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -585,7 +521,6 @@ class APICALLS with ValidationMixin {
     }
   }
 
-
   // Get active connections
   Future<dynamic> getActiveConnections({
     required String token,
@@ -596,10 +531,7 @@ class APICALLS with ValidationMixin {
     try {
       response = await http.get(
         uri,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json"
-        },
+        headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
       );
     } catch (e) {
       print("API has Error");
@@ -622,7 +554,6 @@ class APICALLS with ValidationMixin {
     }
   }
 
-
   // Get waiting connections
   Future<dynamic> getWaitingConnections({
     required String token,
@@ -634,10 +565,7 @@ class APICALLS with ValidationMixin {
 
     http.Response response;
 
-    response = await http.get(uri, headers: {
-      "Authorization": "Bearer $token",
-      "Content-Type": "application/json"
-    });
+    response = await http.get(uri, headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"});
     print('response ${response.body}');
 
     var parsedResponse = jsonDecode(response.body);
@@ -654,7 +582,6 @@ class APICALLS with ValidationMixin {
     }
   }
 
-
   // Accept or reject connection
   Future<bool> respondToConnectionRequest({
     required String contact,
@@ -667,10 +594,9 @@ class APICALLS with ValidationMixin {
   }) async {
     print("contact: $contact");
     var uri = Uri.parse("$url/api/connect/acceptOrRejectConnection");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    User user = await UserState.get();
 
     ProgressDialog pd = ProgressDialog(context: context);
-    String? token = prefs.getString(preftoken);
     var parsedResponse;
     pd.show(
       max: 100,
@@ -685,11 +611,7 @@ class APICALLS with ValidationMixin {
     };
     print(body);
     var response = await http.post(uri,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token"
-        },
-        body: jsonEncode(body));
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
     // }
     // else if (!contact.contains("@")) {
@@ -714,8 +636,8 @@ class APICALLS with ValidationMixin {
     if (parsedResponse["status"] == true) {
       pd.close();
       print(parsedResponse);
-      showPluhgDailog2(context, "Success",
-          "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+      showPluhgDailog2(
+          context, "Success", "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
           onCLosed: () {
         Get.off(HomeView(
           index: 2.obs,
@@ -735,23 +657,17 @@ class APICALLS with ValidationMixin {
     }
   }
 
-
-
   //Close connection
   Future<bool> closeConnection(
-      {required String connectionID,
-      required BuildContext context,
-      required String rating}) async {
+      {required String connectionID, required BuildContext context, required String rating}) async {
     var uri = Uri.parse("$url/api/connect/closeConnection");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString(preftoken);
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    User user = await UserState.get();
+
     var parsedResponse;
     var response = await http.post(
       uri,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
-      },
+      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
       body: jsonEncode(
         {"connectionId": connectionID, "feedbackRating": rating},
       ),
@@ -759,33 +675,22 @@ class APICALLS with ValidationMixin {
     parsedResponse = jsonDecode(response.body);
     print("Close Response $parsedResponse");
     if (parsedResponse["status"] == true) {
-      return true;//all good
+      return true; //all good
     } else {
       // error
       return false;
     }
   }
 
-
   //Check if user is a Pluhg user or not
-  Future<List<PluhgContact>> checkPluhgUsers(
-      {required List<PluhgContact> contacts}) async {
-
+  Future<List<PluhgContact>> checkPluhgUsers({required List<PluhgContact> contacts}) async {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String? token = prefs.getString(preftoken);
-
-    Map body = {
-      "contacts": contacts.map((item) => item.toCleanedJson()).toList()
-    };
-
+    Map body = {"contacts": contacts.map((item) => item.toCleanedJson()).toList()};
+    User user = await UserState.get();
     var response = await http.post(
       uri,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token"
-      },
+      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
       body: jsonEncode(body),
     );
     Map parsedResponse = jsonDecode(response.body);
@@ -808,72 +713,55 @@ class APICALLS with ValidationMixin {
     return contacts;
   }
 
+  markAsRead(body) async {
+    //to mark notification as read
 
-
-  markAsRead(body) async{//to mark notification as read
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString(preftoken);
+    User user = await UserState.get();
     var uri = Uri.parse("$url/api/readNotification");
 
-    var response =
-    await http.post(uri, headers: {"Authorization": "Bearer $token"},body: body);
+    var response = await http.post(uri, headers: {"Authorization": "Bearer ${user.token}"}, body: body);
     var parsedResponse = jsonDecode(response.body);
 
     print(parsedResponse);
   }
 
-
   // get notification list
   Future<dynamic> getNotifications() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString(preftoken);
-
+    User user = await UserState.get();
     var uri = Uri.parse("$url/api/getNotificationList");
 
-    var response =
-        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
     print("NOTIFICATIONS: ${response.body}");
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse["data"]);
     return NotificationResponse.fromJson(parsedResponse);
   }
 
-
   ///to get connection details used in dynamic for milestone one
-  Future<RecommendationResponse> getConnectionDetails(
-      {required String connectionID}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString(preftoken);
+  Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
+    User user = await UserState.get();
+
     var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
     print('uri ${uri.toString()}');
-    var response =
-        await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
     print(response.body);
     Map<String, dynamic> map = jsonDecode(response.body);
     return RecommendationResponse.fromJson(map);
   }
 
-
   // Upload file (document / image(s))
-  Future<dynamic> uploadFile(
-      String senderId, List<String> files, String type, String subType) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String token = prefs.getString(preftoken).toString();
-    Map<String, String> headers = {"Authorization": "Bearer $token"};
-    print(token);
+  Future<dynamic> uploadFile(String senderId, List<String> files, String type, String subType) async {
+    User user = await UserState.get();
+    Map<String, String> headers = {"Authorization": "Bearer ${user.token}"};
+    print("[uploadFile] user token ${user.token}");
 
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
-      iterable.add(new http.MultipartFile.fromBytes(
-          'files', await File(files[i]).readAsBytes(),
-          filename: basename(files[i].split("/").last),
-          contentType: MediaType(type, subType)));
+      iterable.add(new http.MultipartFile.fromBytes('files', await File(files[i]).readAsBytes(),
+          filename: basename(files[i].split("/").last), contentType: MediaType(type, subType)));
     }
 
-    var request = http.MultipartRequest(
-        "POST", Uri.parse("$url/api/upload/upload-files"))
+    var request = http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
       ..files.addAll(iterable)
       ..headers.addAll(headers);
 
@@ -886,9 +774,6 @@ class APICALLS with ValidationMixin {
     print(httpResponse.body);
     var data = json.decode(httpResponse.body)["data"];
 
-    List<FileModel> files_res =
-        List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
-
-    return files_res;
+    return List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
   }
 }

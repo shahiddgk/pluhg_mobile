@@ -1,29 +1,22 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/models/file_model.dart';
 import 'package:plug/screens/chat/chat_widgets/chat_appbar.dart';
 import 'package:plug/screens/chat/chat_widgets/chat_bubble.dart';
-import 'package:plug/screens/chat/media_options/dialog_options_android.dart';
 import 'package:plug/screens/chat/chat_widgets/input_chat_widget.dart';
+import 'package:plug/screens/chat/media_options/dialog_options_android.dart';
 import 'package:plug/screens/chat/media_options/multi_document_picker.dart';
 import 'package:plug/screens/chat/media_options/multi_image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../../../widgets/chat_widgets.dart';
-import '../../../widgets/header.dart';
 import '../../../widgets/models/message.dart';
-import '../../../widgets/text_style.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen(
@@ -54,10 +47,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _controller_s = ScrollController();
 
   getMyId() async {
-    // get user(s id from shared preferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    myid = prefs.getString(prefuserid).toString();
-    print(myid);
+    // get user's id from shared preferences
+    User user = await UserState.get();
+    this.myid = user.id;
+    print("[ChatScreen::getMyId] ${this.myid}");
   }
 
   @override
@@ -130,8 +123,8 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void sendMessage_type(String text, String senderId, String recevierId,
-      String messageType, List<FileModel> files) async {
+  void sendMessage_type(
+      String text, String senderId, String recevierId, String messageType, List<FileModel> files) async {
     List<String> res_files_name = [];
 
     if (messageType == 'text')
@@ -146,8 +139,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     // try {
-    setMessage('source',
-        messageType == "text" ? text : json.encode(res_files_name), messageType,
+    setMessage('source', messageType == "text" ? text : json.encode(res_files_name), messageType,
         files: res_files_name);
 
     socket.emit('sendMessage', {
@@ -161,8 +153,7 @@ class _ChatScreenState extends State<ChatScreen> {
     FocusScope.of(context).unfocus();
   }
 
-  void setMessage(String type, dynamic message, String messageType,
-      {List<String>? files}) {
+  void setMessage(String type, dynamic message, String messageType, {List<String>? files}) {
     Message messageModel = Message(
       senderId: myid,
       type: type,
@@ -207,10 +198,7 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       setState(() {
-        messages = List<Message>.from(
-                messagesArr.map((e) => Message.fromJson(e, myid)).toList())
-            .reversed
-            .toList();
+        messages = List<Message>.from(messagesArr.map((e) => Message.fromJson(e, myid)).toList()).reversed.toList();
         loading = false;
       });
     });
@@ -228,8 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
         builder: (BuildContext context) {
           return Dialog(
               insetPadding: EdgeInsets.all(12.w),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
               child: Container(
                   padding: EdgeInsets.all(4),
                   height: 200.h,
@@ -243,8 +230,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 builder: (context) => MultiDocumentPicker(
                                       title: "Select File",
                                       callback: upload_document,
-                                      writeMessage:
-                                          (String? url, int time) async {
+                                      writeMessage: (String? url, int time) async {
                                         if (url != null) {
                                           ///send message
                                         }
@@ -258,8 +244,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 builder: (context) => MultiImagePicker(
                                       title: "Choose Image",
                                       callback: upload_document,
-                                      writeMessage:
-                                          (String? url, int time) async {
+                                      writeMessage: (String? url, int time) async {
                                         if (url != null) {
                                           ///send message
                                         }
@@ -271,8 +256,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   upload_document(type, subType, files) async {
     APICALLS apicalls = APICALLS();
-    var response =
-        await apicalls.uploadFile(widget.senderId, files, type, subType);
+    var response = await apicalls.uploadFile(widget.senderId, files, type, subType);
 
     sendMessage_type(
         "",
@@ -290,16 +274,12 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver,
-          widget.username_receiver),
-      bottomSheet:
-          InputChatWidget(send_function: send_message, send_doc: send_document),
+      appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver, widget.username_receiver),
+      bottomSheet: InputChatWidget(send_function: send_message, send_doc: send_document),
       body: Container(
         decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50),
-                bottomRight: Radius.circular(50))),
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50))),
         child: Column(
           children: [
             SizedBox(
@@ -316,9 +296,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         controller: _controller_s,
                         itemCount: messages.length,
                         itemBuilder: (ctx, i) {
-                          return BubbleChat(messages[i],
-                              isMe:
-                                  myid == messages[i].senderId ? true : false);
+                          return BubbleChat(messages[i], isMe: myid == messages[i].senderId ? true : false);
                         },
                       ),
                     ),

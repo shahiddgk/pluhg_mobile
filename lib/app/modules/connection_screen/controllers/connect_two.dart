@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ConnecTwoScreenController extends GetxController {
   //TODO: Implement ConnectionScreenController
@@ -27,19 +26,29 @@ class ConnecTwoScreenController extends GetxController {
 
   Future getInfo() async {
     isLoading.value = true;
-    SharedPreferences pref = await SharedPreferences.getInstance();
     APICALLS apicalls = APICALLS();
     profileDetails = await apicalls.getProfile();
     if (profileDetails == null) {
-      return Get.offAll(AuthScreenView());
+      return Get.offAll(() => AuthScreenView());
     }
-    else if (profileDetails["status"] == true) {
-      pref.setString(prefuseremail, profileDetails["data"]["emailAddress"]);
-      pref.setString(prefuserphone, profileDetails["data"]["phoneNumber"]);
-      isLoading.value = false;
+
+    if (profileDetails["status"] == true) {
+      User user = await UserState.get();
+
+      String? email = profileDetails["data"]["emailAddress"];
+      String? phone = profileDetails["data"]["phoneNumber"];
+      if (email != null && email.isNotEmpty) {
+        user.setEmail(email);
+      }
+      if (phone != null && phone.isNotEmpty) {
+        user.setPhone(phone);
+      }
+
+      await UserState.store(user);
     } else {
-      isLoading.value = false;
       pluhgSnackBar("So sorry", "${profileDetails["message"]}");
     }
+
+    isLoading.value = false;
   }
 }

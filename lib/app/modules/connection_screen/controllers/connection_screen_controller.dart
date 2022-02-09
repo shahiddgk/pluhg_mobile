@@ -1,35 +1,27 @@
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
-import 'package:plug/app/values/strings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:plug/app/services/UserState.dart';
 
-class ConnectionScreenController extends GetxController
-    with SingleGetTickerProviderMixin {
+class ConnectionScreenController extends GetxController with SingleGetTickerProviderMixin {
   //TODO: Implement ConnectionScreenController
   dynamic userProfileDetails = {}.obs;
   List recommended = [];
 
-
   //late Future activeDataList,waitingConnectionDataList,whoIConnectedDataList;
   var data;
-  SharedPreferences? prefs;
   RxInt currentIndex = 0.obs;
   RxInt activeList = 0.obs;
   RxInt waitingList = 0.obs;
   RxInt connectedList = 0.obs;
+  Rx<User> user = User.empty().obs;
+
   APICALLS apicalls = APICALLS();
 
   @override
   void onInit() {
     super.onInit();
-    preference();
     //get first tab response
     //getActiveConnection();
-  }
-
-  void preference() async {
-    prefs = await SharedPreferences.getInstance();
   }
 
   @override
@@ -40,7 +32,7 @@ class ConnectionScreenController extends GetxController
   @override
   void onClose() {}
 
- /* getWaitingConnection(){
+  /* getWaitingConnection(){
     waitingConnectionDataList = waitingData();
   }
 
@@ -53,56 +45,60 @@ class ConnectionScreenController extends GetxController
   }*/
 
   activeData() async {
-    prefs = await SharedPreferences.getInstance();
+    this.user.value = await UserState.get();
 
     data = await apicalls.getActiveConnections(
-      token: prefs!.getString(preftoken).toString(),
+      token: this.user.value.token,
+      contact: this.user.value.phone,
       // contact: prefs.get("phoneNumber").toString(),
-      contact: prefs!.getString(prefuseremail).toString(),
     );
 /*    if (data == null) {
       return Get.offAll
       (AuthScreenView());
     }*/
-    if (data["data"] != null) {
-      activeList.value = data["data"].length;
-      return data["data"];
-    } else {
+
+    if (data["data"] == null) {
       activeList.value = 0;
       return null;
     }
+
+    activeList.value = data["data"].length;
+    return data["data"];
   }
 
   waitingData() async {
-    prefs = await SharedPreferences.getInstance();
+    User user = await UserState.get();
+
     data = await apicalls.getWaitingConnections(
-      token: prefs!.getString(preftoken).toString(),
+      token: user.token,
+      contact: user.phone,
       // contact: prefs.get("phoneNumber").toString(),
-      contact: prefs!.getString(prefuseremail).toString(),
     );
-    if (data["data"] != null) {
-      waitingList.value = data["data"].length;
-      return data["data"];
-    } else {
+
+    if (data["data"] == null) {
       waitingList.value = 0;
       return null;
     }
+
+    waitingList.value = data["data"].length;
+    return data["data"];
   }
 
   whoIconnectedData() async {
-    prefs = await SharedPreferences.getInstance();
+    this.user.value = await UserState.get();
 
     data = await apicalls.getRecommendedConnections(
-      token: prefs!.getString(preftoken).toString(),
+      token: this.user.value.token,
+      userID: this.user.value.id,
       // contact: prefs.get("phoneNumber").toString(),
-      userID: prefs!.getString(prefuserid).toString(),
     );
-    if (data["data"] != null) {
-      connectedList.value = data["data"].length;
-      return data["data"];
-    } else {
+
+    if (data["data"] == null) {
       connectedList.value = 0;
       return null;
     }
+
+    connectedList.value = data["data"].length;
+    return data["data"];
   }
 }

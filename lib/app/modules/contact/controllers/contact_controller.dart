@@ -7,11 +7,11 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ContactController extends GetxController with ValidationMixin{
+class ContactController extends GetxController with ValidationMixin {
   //TODO: Implement ContactController
 
   final count = 0.obs;
@@ -57,7 +57,7 @@ class ContactController extends GetxController with ValidationMixin{
   void onClose() {}
 
   String getContact({required Contact contact}) {
-    if (contact.emails.isNotEmpty && contact.emails.first.address != null) {
+    if (contact.emails.isNotEmpty && contact.emails.first.address.isNotEmpty) {
       return contact.emails.first.address;
     } else {
       return contact.phones.first.normalizedNumber;
@@ -76,46 +76,39 @@ class ContactController extends GetxController with ValidationMixin{
     if (perm.isDenied) {
       permissionDenied.value = true;
       return;
-    } else {
-
-      //get list contact from phone
-      final contacts = await FlutterContacts.getContacts(
-          withProperties: true, withPhoto: true, withThumbnail: true,withAccounts: true);
-
-      // check for registered users
-      List<PluhgContact> pluhgContacts = [];
-      try {
-
-        pluhgContacts = contacts
-            .map<PluhgContact>((contact) => PluhgContact.fromContact(contact))
-            .toList();
-
-        print("----------------------------------------------");
-        for(PluhgContact p in  pluhgContacts)
-        {
-          print(p.phoneNumbers);
-        }
-      } catch (ex) {
-        print(ex);
-      }
-
-      _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
-      //remove users phone number
-      String userPhoneNumber = prefs!.getString(prefuserphone) ?? "";
-      String userEmail = prefs!.getString(prefuseremail) ?? "";
-      PluhgContact? contactToRemove;
-      _allContacts.forEach((element) {
-        if (comparePhoneNumber(element.phoneNumber,(userPhoneNumber)) ||
-            comparePhoneNumber(element.emailAddress,userEmail)) {
-          contactToRemove = element;
-        }
-        ;
-      });
-      if (contactToRemove != null) {
-        _allContacts.remove(contactToRemove);
-      }
-      contactsFuture.complete(_allContacts);
     }
+
+    //get list contact from phone
+    final contacts = await FlutterContacts.getContacts(
+        withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true);
+
+    // check for registered users
+    List<PluhgContact> pluhgContacts = [];
+    try {
+      pluhgContacts = contacts.map<PluhgContact>((contact) => PluhgContact.fromContact(contact)).toList();
+
+      print("----------------------------------------------");
+      for (PluhgContact p in pluhgContacts) {
+        print(p.phoneNumbers);
+      }
+    } catch (ex) {
+      print(ex);
+    }
+
+    _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
+    //remove users phone number
+    User user = await UserState.get();
+
+    PluhgContact? contactToRemove;
+    _allContacts.forEach((element) {
+      if (comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email)) {
+        contactToRemove = element;
+      }
+    });
+    if (contactToRemove != null) {
+      _allContacts.remove(contactToRemove);
+    }
+    contactsFuture.complete(_allContacts);
   }
 
   //Get Pluhg Contacts

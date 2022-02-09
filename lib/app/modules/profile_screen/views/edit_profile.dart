@@ -2,16 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/profile_screen/controllers/edit_profile.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/widgets/dialog_box.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
   final String token, userID, pics, username, email, name, phone, address;
@@ -36,13 +34,11 @@ class EditProfileView extends GetView<EditProfileController> {
   Future<Object?>? getdata() async {
     controller.data2 = await apicalls.getProfile();
 
-    _address = new TextEditingController(
-        text: address.isEmpty || address == "null" ? "" : address);
+    _address = new TextEditingController(text: address.isEmpty || address == "null" ? "" : address);
     _username = new TextEditingController(text: username.toString());
     _email = new TextEditingController(text: email.toString());
     _phone = new TextEditingController(text: phone.toString());
-    _name = new TextEditingController(
-        text: name.isEmpty || name == "null" ? "" : name.toString());
+    _name = new TextEditingController(text: name.isEmpty || name == "null" ? "" : name.toString());
   }
 
   @override
@@ -60,8 +56,7 @@ class EditProfileView extends GetView<EditProfileController> {
                   children: [
                     SizedBox(height: 34),
                     IconButton(
-                      icon:
-                          Icon(Icons.arrow_back_ios, color: Color(0xFF080F18)),
+                      icon: Icon(Icons.arrow_back_ios, color: Color(0xFF080F18)),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -104,8 +99,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                         )
                                       : CircleAvatar(
                                           backgroundColor: pluhgColour,
-                                          backgroundImage: NetworkImage(
-                                              APICALLS.imageBaseUrl + pics),
+                                          backgroundImage: NetworkImage(APICALLS.imageBaseUrl + pics),
                                           radius: 40.19,
                                         ),
                               Positioned(
@@ -140,9 +134,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                   fontSize: 20,
                                   color: Color(0xFF080F18),
                                 ),
-                                text: name == "null"
-                                    ? "Set Name"
-                                    : name.toString(),
+                                text: name == "null" ? "Set Name" : name.toString(),
                                 children: [
                                   TextSpan(
                                     text: '\n@$username',
@@ -181,10 +173,7 @@ class EditProfileView extends GetView<EditProfileController> {
                       controller: _email,
                     ),
                     InfoTile(
-                      hintText:
-                          address == null || address == "" || address == "null"
-                              ? "Enter Address"
-                              : "",
+                      hintText: address == "" || address == "null" ? "Enter Address" : "",
                       icon: 'resources/svg/address.svg',
                       controller: _address,
                     ),
@@ -209,25 +198,19 @@ class EditProfileView extends GetView<EditProfileController> {
                                       _phone.text.toString().isNotEmpty ||
                                       _name.text.toString().isNotEmpty ||
                                       controller.image.value != null) {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    String? token = prefs.getString(preftoken);
-                                    String? userID = prefs.getString(prefuserid);
-
+                                    User user = await UserState.get();
                                     if (controller.image.value != null) {
                                       controller.isloading.value = true;
                                       uploadNow(
                                         controller.image.value,
-                                        token,
+                                        user.token,
                                         name,
                                         controller.data2,
-                                        userID,
+                                        user.id,
                                       );
 
                                       getdata();
-                                    } else if (_username.text
-                                            .toString()
-                                            .isNotEmpty ||
+                                    } else if (_username.text.toString().isNotEmpty ||
                                         _address.text.toString().isNotEmpty ||
                                         _email.text.toString().isNotEmpty ||
                                         _phone.text.toString().isNotEmpty ||
@@ -237,18 +220,12 @@ class EditProfileView extends GetView<EditProfileController> {
                                           context: context,
                                           token: token,
                                           userName: _username.text,
-                                          name: _name.text.toString() ==
-                                                  controller.data2["data"]
-                                                          ["name"]
-                                                      .toString()
+                                          name: _name.text.toString() == controller.data2["data"]["name"].toString()
                                               ? "nothing"
                                               : _name.text.isEmpty
                                                   ? "nothing"
                                                   : _name.text,
-                                          address: _address.text ==
-                                                  controller.data2["data"]
-                                                          ["address"]
-                                                      .toString()
+                                          address: _address.text == controller.data2["data"]["address"].toString()
                                               ? "nothing"
                                               : _address.text.isEmpty
                                                   ? "nothing"
@@ -264,8 +241,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                     print(_name.text.toString());
                                     print(_username.text.toString());
                                   } else {
-                                    Get.snackbar(
-                                        "So Sorry", "You made no chnages");
+                                    Get.snackbar("So Sorry", "You made no chnages");
                                   }
                                 },
                                 child: Container(
@@ -316,6 +292,7 @@ class EditProfileView extends GetView<EditProfileController> {
       }
     }
   }
+
   //to show selection of gallery and camera
   showPictureSelectionSheet(BuildContext context) {
     showModalBottomSheet(
@@ -331,8 +308,7 @@ class EditProfileView extends GetView<EditProfileController> {
                 ),
                 title: new Text('Photo Library'),
                 onTap: () async {
-                  controller.image.value =
-                      (await _picker.pickImage(source: ImageSource.gallery))!;
+                  controller.image.value = (await _picker.pickImage(source: ImageSource.gallery))!;
                   Get.back();
                   showPluhgDailog(context, "Info!", "Make sure you save");
                 }),
@@ -340,8 +316,7 @@ class EditProfileView extends GetView<EditProfileController> {
               leading: new Icon(Icons.photo_camera, color: pluhgColour),
               title: new Text('Camera'),
               onTap: () async {
-                controller.image.value =
-                    (await _picker.pickImage(source: ImageSource.camera))!;
+                controller.image.value = (await _picker.pickImage(source: ImageSource.camera))!;
                 Get.back();
                 showPluhgDailog(context, "Info!", "Make sure you save");
               },

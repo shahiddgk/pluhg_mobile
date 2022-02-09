@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/modules/connection_screen/widget/active_card.dart';
 import 'package:plug/app/modules/connection_screen/widget/tab.dart';
@@ -11,7 +11,6 @@ import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/search_app_bar.dart';
 
 import '../controllers/connection_screen_controller.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ConnectionScreenView extends GetView<ConnectionScreenController> {
   final controller = Get.put(ConnectionScreenController());
@@ -48,9 +47,7 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                   width: Get.width,
                   margin: EdgeInsets.symmetric(horizontal: 12.0.w),
                   height: 42,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(53),
-                      color: Color(0xffEBEBEB)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(53), color: Color(0xffEBEBEB)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -59,38 +56,24 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                             controller.currentIndex.value = 0;
                           },
                           child: Container(
-                            width:
-                                (MediaQuery.of(context).size.width - 4.w) / 4,
-                            child: connectionTab(
-                                "Accepted",
-                                controller.currentIndex.value == 0
-                                    ? true
-                                    : false),
+                            width: (MediaQuery.of(context).size.width - 4.w) / 4,
+                            child: connectionTab("Accepted", controller.currentIndex.value == 0 ? true : false),
                           )),
                       InkWell(
                           onTap: () {
                             controller.currentIndex.value = 1;
                           },
                           child: Container(
-                              width:
-                                  (MediaQuery.of(context).size.width - 4.w) / 4,
-                              child: connectionTab(
-                                  "Waiting",
-                                  controller.currentIndex.value == 1
-                                      ? true
-                                      : false))),
+                              width: (MediaQuery.of(context).size.width - 4.w) / 4,
+                              child: connectionTab("Waiting", controller.currentIndex.value == 1 ? true : false))),
                       InkWell(
                           onTap: () {
                             controller.currentIndex.value = 2;
                           },
                           child: Container(
-                              width: (MediaQuery.of(context).size.width - 4.w) /
-                                  2.5,
-                              child: connectionTab(
-                                  "Who I Connected",
-                                  controller.currentIndex.value == 2
-                                      ? true
-                                      : false)))
+                              width: (MediaQuery.of(context).size.width - 4.w) / 2.5,
+                              child:
+                                  connectionTab("Who I Connected", controller.currentIndex.value == 2 ? true : false)))
                     ],
                   ),
                 ),
@@ -142,49 +125,32 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                               itemBuilder: (context, index) {
                                 dynamic data = snapshot.data;
                                 return controller.currentIndex.value == 0
-                                    ? snapshot.hasData == false ||
-                                            snapshot.connectionState !=
-                                                ConnectionState.done
+                                    ? snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
                                         ? Center(
                                             child: Text(
                                             " ",
-                                            style:
-                                                TextStyle(color: Colors.black),
+                                            style: TextStyle(color: Colors.black),
                                           ))
                                         : Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: activeConnectionCard(
-                                                data: data[index],
-                                                prefs: controller.prefs),
+                                            child: activeConnectionCard(data: data[index], user: controller.user),
                                           )
                                     : controller.currentIndex.value == 1
                                         ?
                                         // controller.waitingList.value == 0 ||
-                                        snapshot.hasData == false ||
-                                                snapshot.connectionState !=
-                                                    ConnectionState.done
+                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
                                             ? Center(child: Text(" "))
                                             : Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: waitingConnectionCard(
-                                                    data: data[index],
-                                                    prefs: controller.prefs
-
-                                                ),
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: waitingConnectionCard(data: data[index], user: controller.user),
                                               )
                                         :
                                         // controller.connectedList.value == 0 ||
-                                        snapshot.hasData == false ||
-                                                snapshot.connectionState !=
-                                                    ConnectionState.done
+                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
                                             ? Center(child: Text(" "))
                                             : Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: whoIConnectedCard(
-                                                    data: data[index],
-                                                    prefs: controller.prefs),
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: whoIConnectedCard(data: data[index], user: controller.user),
                                               );
                               }));
                     } else {

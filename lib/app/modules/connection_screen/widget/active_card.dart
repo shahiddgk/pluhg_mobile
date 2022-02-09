@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/connection_screen/controllers/connection_screen_controller.dart';
 import 'package:plug/app/modules/connection_screen/views/active_connection.dart';
-import 'package:plug/app/values/strings.dart';
-import 'package:plug/app/widgets/colors.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
-import 'package:plug/widgets/image.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget activeConnectionCard({
+  required Rx<User> user,
   required dynamic data,
-  required dynamic prefs,
 }) {
   var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
       .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data["created_at"])
@@ -26,21 +21,15 @@ Widget activeConnectionCard({
     onTap: () {
       Get.to(() => ActiveConnectionScreenView(
             data: data,
-            isRequester: prefs.getString(prefuseremail).toString() ==
-                        data["requester"]["refId"]["emailAddress"] ||
-                    prefs.getString(prefuserphone).toString() ==
-                        data["requester"]["refId"]["phoneNumber"]
-                ? true
-                : false,
+            isRequester: user.value.compareEmail(data["requester"]["refId"]["emailAddress"]) ||
+                user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
             refreshActiveConnection: () {
-              final controller = Get.put(ConnectionScreenController());
-              controller.activeData();
+              Get.put(ConnectionScreenController()).activeData();
             },
           ));
     },
     child: Container(
         margin: EdgeInsets.symmetric(vertical: Get.size.width * 0.04),
-
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             color: Color(0xffEBEBEB),
@@ -52,14 +41,10 @@ Widget activeConnectionCard({
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))
-                    ]),
+                    boxShadow: [BoxShadow(blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))]),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-
                     Container(
                         height: Get.size.height < 812 ? 142.72.h : 120.h,
                         width: 87.2.w,
@@ -67,12 +52,8 @@ Widget activeConnectionCard({
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12, blurRadius: 20)
-                            ]),
-                        child:
-                        card(Get.context!, data["requester"]["refId"])),
+                            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
+                        child: card(Get.context!, data["requester"]["refId"])),
                     Container(
                         height: Get.size.height < 812 ? 142.72.h : 120.h,
                         width: 87.2.w,
@@ -80,13 +61,9 @@ Widget activeConnectionCard({
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black12, blurRadius: 20)
-                            ]),
-                        child:
-                        card(Get.context!, data["contact"]["refId"])),
-                  /*  Container(
+                            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
+                        child: card(Get.context!, data["contact"]["refId"])),
+                    /*  Container(
                         width: 84.w,
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
@@ -165,9 +142,8 @@ Widget activeConnectionCard({
               width: 12.w,
             ),
             PlugByWidgetCard(
-                userName: data['userId']["userName"] == null
-                    ? data['userId']["name"]
-                    : "@" + data['userId']["userName"],
+                userName:
+                    data['userId']["userName"] == null ? data['userId']["name"] : "@" + data['userId']["userName"],
                 date: formattedDate),
             Container(
               width: 8.w,

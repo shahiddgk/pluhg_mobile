@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/colors.dart';
@@ -9,8 +8,8 @@ import 'package:plug/app/widgets/progressbar.dart';
 import '../controllers/support_screen_controller.dart';
 
 class SupportScreenView extends GetView<SupportScreenController> {
-  final String? email, token, userID;
-  SupportScreenView({this.token, this.email, this.userID});
+  final String? email, token;
+  SupportScreenView({this.token, this.email});
 
   final controller = Get.put(SupportScreenController());
   TextEditingController _subject = new TextEditingController();
@@ -42,9 +41,7 @@ class SupportScreenView extends GetView<SupportScreenController> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                      top: controller.size.height * 0.006,
-                      bottom: controller.size.height * 0.009),
+                  padding: EdgeInsets.only(top: controller.size.height * 0.006, bottom: controller.size.height * 0.009),
                   child: Text(
                     'How can we help you?',
                     style: TextStyle(
@@ -130,8 +127,7 @@ class SupportScreenView extends GetView<SupportScreenController> {
                       )
                     : InkWell(
                         onTap: () {
-                          if (_body.text.isNotEmpty &&
-                              _subject.text.isNotEmpty) {
+                          if (_body.text.isNotEmpty && _subject.text.isNotEmpty) {
                             controller.isLoading.value = true;
 
                             APICALLS apicalls = APICALLS();

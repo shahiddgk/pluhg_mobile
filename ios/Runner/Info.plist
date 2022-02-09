@@ -36,9 +36,9 @@
 	<key>NSLocationAlwaysAndWhenInUsageDescription</key>
 	<string>Always And In Use Permission</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Always Permission</string>
+	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>When In Use Permission</string>
+	<string>This app needs access to location when open.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow access to microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -46,6 +46,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/notification_screen/views/notification_settings.dart';
 import 'package:plug/app/modules/profile_screen/views/edit_profile.dart';
 import 'package:plug/app/modules/support_screen/views/support_screen_view.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
-import 'package:plug/app/widgets/url.dart';
 import 'package:plug/screens/privacy_policy_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/profile_screen_controller.dart';
 
@@ -46,8 +43,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                           color: pluhgColour,
                         )),
                     child: Center(
-                      child: Text("No",
-                          style: TextStyle(fontSize: 12, color: pluhgColour)),
+                      child: Text("No", style: TextStyle(fontSize: 12, color: pluhgColour)),
                     )),
               ),
               SizedBox(
@@ -55,12 +51,9 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
               ),
               InkWell(
                 onTap: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setString('token', '');
-                  prefs.setString('userID', '');
-                  prefs.setBool('logged_out', true);
-                  Get.offAll(() => AuthScreenView());
+                  await UserState.logout();
+                  print("[ProfileScreenView::_logout] user logged out");
+                  Get.offAll(AuthScreenView());
                 },
                 child: Container(
                     width: 47.67,
@@ -73,8 +66,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                       // )
                     ),
                     child: Center(
-                      child: Text("Yes",
-                          style: TextStyle(fontSize: 12, color: Colors.white)),
+                      child: Text("Yes", style: TextStyle(fontSize: 12, color: Colors.white)),
                     )),
               ),
             ],
@@ -114,14 +106,11 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                               height: controller.size.height * 0.42,
                               width: controller.size.width,
                               child: snapshot.data == null
-                                  ? SvgPicture.asset(
-                                      "resources/svg/profile.svg")
+                                  ? SvgPicture.asset("resources/svg/profile.svg")
                                   //TODO uncomment
 
                                   : Image.network(
-                                      APICALLS.imageBaseUrl +
-                                          snapshot.data['profileImage']
-                                              .toString(),
+                                      APICALLS.imageBaseUrl + snapshot.data['profileImage'].toString(),
                                       height: controller.size.height * 0.42,
                                       width: controller.size.width,
                                       fit: BoxFit.cover,
@@ -135,19 +124,16 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                           ),
                           Center(
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 18.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 18.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(height: 34),
                                   IconButton(
-                                    icon: Icon(Icons.arrow_back_ios,
-                                        color: Colors.transparent),
+                                    icon: Icon(Icons.arrow_back_ios, color: Colors.transparent),
                                     onPressed: () {},
                                   ),
-                                  SizedBox(
-                                      height: controller.size.height * 0.02),
+                                  SizedBox(height: controller.size.height * 0.02),
                                   Text(
                                     'My Profile',
                                     style: TextStyle(
@@ -156,27 +142,22 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  SizedBox(
-                                      height: controller.size.height * 0.037),
+                                  SizedBox(height: controller.size.height * 0.037),
                                   Row(
                                     children: [
                                       snapshot.data == null
-                                          ? SvgPicture.asset(
-                                              "resources/svg/profile.svg")
+                                          ? SvgPicture.asset("resources/svg/profile.svg")
                                           : CircleAvatar(
                                               backgroundColor: pluhgColour,
-                                              backgroundImage: NetworkImage(
-                                                  APICALLS.imageBaseUrl +
-                                                      snapshot.data[
-                                                          'profileImage']),
+                                              backgroundImage:
+                                                  NetworkImage(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
 
                                               //TODO uncomment this part
                                               radius: 40.19,
                                             ),
                                       SizedBox(width: 15),
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           RichText(
                                             text: TextSpan(
@@ -186,11 +167,9 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                               ),
                                               text: snapshot.data == null
                                                   ? "Set Name"
-                                                  : snapshot.data['name'] ==
-                                                          null
+                                                  : snapshot.data['name'] == null
                                                       ? "Set Name"
-                                                      : snapshot.data['name']
-                                                          .toString(),
+                                                      : snapshot.data['name'].toString(),
                                               children: [
                                                 TextSpan(
                                                   text: snapshot.data == null
@@ -218,12 +197,8 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                                 TextSpan(
                                                   text: snapshot.data == null
                                                       ? ".."
-                                                      : snapshot.data[
-                                                              'numberOfConnections']
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500),
+                                                      : snapshot.data['numberOfConnections'].toString(),
+                                                  style: TextStyle(fontWeight: FontWeight.w500),
                                                 ),
                                               ],
                                             ),
@@ -239,37 +214,23 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                         ],
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 18.0,
-                            vertical: controller.size.height * 0.04),
+                        padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: controller.size.height * 0.04),
                         child: Column(
                           children: [
                             GestureDetector(
                               onTap: () async {
                                 if (controller.profileDetails['data'] != null) {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
+                                  User user = await UserState.get();
                                   Get.to(
                                     () => EditProfileView(
-                                      name: controller.profileDetails['data']
-                                              ['name']
-                                          .toString(),
-                                      username: controller
-                                          .profileDetails['data']['userName']
-                                          .toString(),
-                                      pics: controller.profileDetails['data']
-                                              ['profileImage']
-                                          .toString(),
-                                      address: controller.profileDetails['data']
-                                              ['address']
-                                          .toString(),
-                                      phone: controller.profileDetails['data']
-                                              ['phoneNumber']
-                                          .toString(),
-                                      email: snapshot.data['emailAddress']
-                                          .toString(),
-                                      token: prefs.get(preftoken).toString(),
-                                      userID: prefs.get(prefuserid).toString(),
+                                      name: controller.profileDetails['data']['name'].toString(),
+                                      username: controller.profileDetails['data']['userName'].toString(),
+                                      pics: controller.profileDetails['data']['profileImage'].toString(),
+                                      address: controller.profileDetails['data']['address'].toString(),
+                                      phone: controller.profileDetails['data']['phoneNumber'].toString(),
+                                      email: snapshot.data['emailAddress'].toString(),
+                                      token: user.token,
+                                      userID: user.id,
                                     ),
                                   );
                                 }
@@ -282,8 +243,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                             ),
                             SizedBox(height: controller.size.height * 0.02),
                             GestureDetector(
-                              onTap: () =>
-                                  Get.to(() => NotificationSettingsView()),
+                              onTap: () => Get.to(() => NotificationSettingsView()),
                               child: Tile(
                                 size: controller.size,
                                 text: 'Notifications Settings',
@@ -293,14 +253,10 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                             SizedBox(height: controller.size.height * 0.02),
                             GestureDetector(
                               onTap: () async {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-
+                                User user = await UserState.get();
                                 Get.to(() => SupportScreenView(
-                                      token: prefs.get(preftoken).toString(),
-                                      userID: prefs.get(prefuserid).toString(),
-                                      email:
-                                          prefs.get(prefuseremail).toString(),
+                                      token: user.token,
+                                      email: user.email,
                                     ));
                               },
                               child: Tile(

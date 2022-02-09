@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/app/values/strings.dart';
+import 'package:plug/app/services/UserState.dart';
 import 'package:plug/screens/waiting_connection_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
 
 Widget waitingConnectionCard({
   required dynamic data,
-  required dynamic prefs,
+  required Rx<User> user,
 }) {
   RxBool responded = false.obs;
-  bool _isRequester = prefs.getString(prefuseremail) != null
-      ? prefs.getString(prefuseremail) == data["requester"]["contact"]
-      : prefs.getString(prefuserphone) == data["requester"]["contact"];
+  bool _isRequester =
+      user.value.compareEmail(data["requester"]["contact"]) || user.value.comparePhone(data["requester"]["contact"]);
 
-  if (_isRequester) {
-    responded.value = data["isRequesterAccepted"];
-  } else {
-    responded.value = data["isContactAccepted"];
-  }
+  responded.value = _isRequester ? data["isRequesterAccepted"] : data["isContactAccepted"];
 
   var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
       .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data["created_at"])
       .toLocal();
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
+
   return Obx(() => GestureDetector(
       onTap: () {
         Get.to(() => WaitingConnectionScreen(data: data));
@@ -46,9 +42,7 @@ Widget waitingConnectionCard({
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(blurRadius: 40, color: Colors.black12)
-                      ]),
+                      boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)]),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -58,33 +52,23 @@ Widget waitingConnectionCard({
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Container(
-                                height:
-                                    Get.size.height < 812 ? 138.72.h : 120.h,
+                                height: Get.size.height < 812 ? 138.72.h : 120.h,
                                 width: 87.2.w,
                                 padding: EdgeInsets.all(8.0),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black12, blurRadius: 20)
-                                    ]),
-                                child: card(
-                                    Get.context!, data["requester"]["refId"])),
+                                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
+                                child: card(Get.context!, data["requester"]["refId"])),
                             Container(
-                                height:
-                                    Get.size.height < 812 ? 142.72.h : 120.h,
+                                height: Get.size.height < 812 ? 142.72.h : 120.h,
                                 width: 87.2.w,
                                 padding: EdgeInsets.all(8.0),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(15),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black12, blurRadius: 20)
-                                    ]),
-                                child: card(
-                                    Get.context!, data["contact"]["refId"])),
+                                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 20)]),
+                                child: card(Get.context!, data["contact"]["refId"])),
                           ],
                         ),
                       ),
@@ -114,7 +98,7 @@ Widget waitingConnectionCard({
                                       ),
                                     ),
                                     onTap: () async {
-                                      _callApi(data, prefs, responded, true);
+                                      _callApi(data, responded, true);
                                     },
                                   ),
                                   SizedBox(
@@ -139,7 +123,7 @@ Widget waitingConnectionCard({
                                       ),
                                     ),
                                     onTap: () async {
-                                      _callApi(data, prefs, responded, false);
+                                      _callApi(data, responded, false);
                                     },
                                   ),
                                 ],
@@ -153,9 +137,8 @@ Widget waitingConnectionCard({
                 width: 12.w,
               ),
               PlugByWidgetCard(
-                  userName: data['userId']["userName"] == null
-                      ? data['userId']["name"]
-                      : "@" + data['userId']["userName"],
+                  userName:
+                      data['userId']["userName"] == null ? data['userId']["name"] : "@" + data['userId']["userName"],
                   date: formattedDate),
               Container(
                 width: 8.w,
@@ -173,20 +156,17 @@ Widget waitingConnectionCard({
           ))));
 }
 
-void _callApi(var data, dynamic prefs, responded, bool activeDecline) async {
+void _callApi(var data, RxBool responded, bool activeDecline) async {
   APICALLS apicalls = APICALLS();
+  User user = await UserState.get();
+
   responded.value = await apicalls.respondToConnectionRequest(
-      connectionID: data["_id"],
-      contact: prefs.getString(prefuseremail),
-      context: Get.context!,
-      isContact: data["contact"]["refId"]["_id"].toString() ==
-              prefs.getString(prefuserid)
-          ? true
-          : false,
-      plugID: data["userId"]["_id"],
-      isAccepting: activeDecline,
-      isRequester: data["requester"]["refId"]["_id"].toString() ==
-              prefs.getString(prefuserid)
-          ? true
-          : false);
+    connectionID: data["_id"],
+    contact: user.email,
+    context: Get.context!,
+    plugID: data["userId"]["_id"],
+    isAccepting: activeDecline,
+    isContact: user.compareId(data["contact"]["refId"]["_id"].toString()),
+    isRequester: user.compareId(data["requester"]["refId"]["_id"].toString()),
+  );
 }
