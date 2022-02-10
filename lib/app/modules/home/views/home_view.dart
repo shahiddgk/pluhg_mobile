@@ -55,9 +55,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.index.value == null) {
-      widget.index.value = 0;
-    }
+    print("[HomeView] build: ${widget.index.value}");
     return WillPopScope(
       onWillPop: () => controller.onWillPop(),
       child: Scaffold(

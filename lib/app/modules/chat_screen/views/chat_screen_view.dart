@@ -15,6 +15,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
 
   @override
   Widget build(BuildContext context) {
+    print("[ChatScreenView] build");
     return Obx(() => Scaffold(
           appBar: SearchAppBar(
             searchController,
@@ -37,8 +38,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                   ),
                 ),
                 SizedBox(height: controller.size.height * 0.02),
-                if (controller.users.length == 0)
-                  Center(child: Text('No message yet!')),
+                if (controller.users.length == 0) Center(child: Text('No message yet!')),
                 if (controller.users.length != 0)
                   ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
@@ -50,8 +50,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                         Get.to(() => ChatScreen(
                             username_receiver: controller.users[i].userName,
                             name_receiver: controller.users[i].name,
-                            profile_receiver: APICALLS.imageBaseUrl +
-                                controller.users[i].profileImage!,
+                            profile_receiver: APICALLS.imageBaseUrl + controller.users[i].profileImage!,
                             senderId: controller.users[i].senderId,
                             recevierId: controller.users[i].recevierId));
                       }, // get last message item

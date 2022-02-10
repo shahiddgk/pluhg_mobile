@@ -156,7 +156,7 @@ Widget waitingConnectionCard({
           ))));
 }
 
-void _callApi(var data, RxBool responded, bool activeDecline) async {
+Future<void> _callApi(var data, RxBool responded, bool activeDecline) async {
   APICALLS apicalls = APICALLS();
   User user = await UserState.get();
 

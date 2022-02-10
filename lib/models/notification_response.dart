@@ -8,22 +8,30 @@ class NotificationResponse {
   late final String message;
   late final List<Data> data;
 
-  NotificationResponse.fromJson(Map<String, dynamic> json){
+  NotificationResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = List.from(json['data']).map((e)=>Data.fromJson(e)).toList();
+    data = List.from(json['data']).map((e) => Data.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['status'] = status;
     _data['message'] = message;
-    _data['data'] = data.map((e)=>e.toJson()).toList();
+    _data['data'] = data.map((e) => e.toJson()).toList();
     return _data;
   }
 }
 
 class Data {
+  int status;
+  String id;
+  UserId userId;
+  NotificationMsg notificationMsg;
+  String type;
+  String createdAt;
+  String updatedAt;
+
   Data({
     required this.status,
     required this.id,
@@ -33,22 +41,17 @@ class Data {
     required this.createdAt,
     required this.updatedAt,
   });
-  late final int status;
-  late final String id;
-  late final UserId userId;
-  late final NotificationMsg notificationMsg;
-  late final String type;
-  late final String createdAt;
-  late final String updatedAt;
 
-  Data.fromJson(Map<String, dynamic> json){
-    status =  json['status']==null?0:json['status'];
-    id = json['_id'];
-    userId = UserId.fromJson(json['userId']);
-    notificationMsg = NotificationMsg.fromJson(json['notificationMsg']);
-    type = json['type'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return new Data(
+      id: json['_id'],
+      status: json['status'] == null ? 0 : json['status'],
+      userId: UserId.fromJson(json['userId']),
+      notificationMsg: NotificationMsg.fromJson(json['notificationMsg']),
+      type: json['type'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -68,7 +71,7 @@ class UserId {
   UserId({
     required this.emailAddress,
     required this.phoneNumber,
-  //  required this.lastLogin,
+    //  required this.lastLogin,
     required this.numberOfConnections,
     this.name,
     required this.userName,
@@ -83,7 +86,7 @@ class UserId {
   });
   late final String emailAddress;
   late final String phoneNumber;
- // late final String lastLogin;
+  // late final String lastLogin;
   late final int numberOfConnections;
   late final Null name;
   late final String userName;
@@ -96,10 +99,10 @@ class UserId {
   late final int v;
   late final Null deviceToken;
 
-  UserId.fromJson(Map<String, dynamic> json){
+  UserId.fromJson(Map<String, dynamic> json) {
     emailAddress = json['emailAddress'];
     phoneNumber = json['phoneNumber'];
-   // lastLogin = json['lastLogin'];
+    // lastLogin = json['lastLogin'];
     numberOfConnections = json['numberOfConnections'];
     name = null;
     userName = json['userName'];
@@ -117,7 +120,7 @@ class UserId {
     final _data = <String, dynamic>{};
     _data['emailAddress'] = emailAddress;
     _data['phoneNumber'] = phoneNumber;
-  //  _data['lastLogin'] = lastLogin;
+    //  _data['lastLogin'] = lastLogin;
     _data['numberOfConnections'] = numberOfConnections;
     _data['name'] = name;
     _data['userName'] = userName;
@@ -149,7 +152,7 @@ class NotificationMsg {
   late final String sound;
   late final int badge;
 
-  NotificationMsg.fromJson(Map<String, dynamic> json){
+  NotificationMsg.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     body = json['body'];
     contentAvailable = json['content_available'];
