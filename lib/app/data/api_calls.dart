@@ -598,7 +598,8 @@ class APICALLS with ValidationMixin {
     required bool isContact,
     required String connectionID,
   }) async {
-    print("contact: $contact");
+    print("[API:respondToConnectionRequest] contact: $contact");
+
     var uri = Uri.parse("$url/api/connect/acceptOrRejectConnection");
     User user = await UserState.get();
 
@@ -615,7 +616,8 @@ class APICALLS with ValidationMixin {
       "connectionId": connectionID,
       "action": isAccepting ? "accept" : "reject",
     };
-    print(body);
+
+    print("[API:respondToConnectionRequest] send request: $body");
     var response = await http.post(uri,
         headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
@@ -639,26 +641,27 @@ class APICALLS with ValidationMixin {
     //   parsedResponse = jsonDecode(response.body);
     // }
 
+    print("[API:respondToConnectionRequest] response: ${parsedResponse.toString()}");
+
     if (parsedResponse["status"] == true) {
       pd.close();
       print(parsedResponse);
       showPluhgDailog2(
-          context, "Success", "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
-          onCLosed: () {
-        Get.off(HomeView(
-          index: 2.obs,
-        ));
-      });
+        context,
+        "Success",
+        "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+        onCLosed: () {
+          print("[Dialogue:OnClose] go to HomeView [2]");
+          Get.offAll(() => HomeView(index: 2.obs));
+        },
+      );
 
       //all good
       return false;
     } else {
       // error
       pd.close();
-
       pluhgSnackBar("So sorry", parsedResponse["message"]);
-
-      print("Error");
       return false;
     }
   }
@@ -694,13 +697,19 @@ class APICALLS with ValidationMixin {
 
     Map body = {"contacts": contacts.map((item) => item.toCleanedJson()).toList()};
     User user = await UserState.get();
+    print("[checkPluhgUsers] send request: ${body.toString()}");
     var response = await http.post(
       uri,
       headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
       body: jsonEncode(body),
     );
     Map parsedResponse = jsonDecode(response.body);
-    print(parsedResponse);
+
+    print("[checkPluhgUsers] response: ${parsedResponse.toString()}");
+    if (parsedResponse["status"] == false) {
+      pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
+      return contacts;
+    }
 
     List data = parsedResponse['data'];
     for (int i = 0; i < data.length; i++) {
@@ -721,14 +730,13 @@ class APICALLS with ValidationMixin {
 
   markAsRead(body) async {
     //to mark notification as read
-
     User user = await UserState.get();
     var uri = Uri.parse("$url/api/readNotification");
 
-    var response = await http.post(uri, headers: {"Authorization": "Bearer ${user.token}"}, body: body);
-    var parsedResponse = jsonDecode(response.body);
-
-    print(parsedResponse);
+    print("[API:markAsRead] send request: $body");
+    String requestBody = jsonEncode(body);
+    var response = await http.post(uri, headers: {"Authorization": "Bearer ${user.token}"}, body: requestBody);
+    print("[API:markAsRead] response: ${response.body}");
   }
 
   // get notification list
@@ -737,9 +745,9 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/getNotificationList");
 
     var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
-    print("NOTIFICATIONS: ${response.body}");
     var parsedResponse = jsonDecode(response.body);
-    print(parsedResponse["data"]);
+    print("[API:getNotifications] response: ${parsedResponse.toString()}");
+
     return NotificationResponse.fromJson(parsedResponse);
   }
 

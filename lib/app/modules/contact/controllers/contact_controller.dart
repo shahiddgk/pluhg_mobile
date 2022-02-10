@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,16 +67,18 @@ class ContactController extends GetxController with ValidationMixin {
 
   void getContactList() async {
     if (contactsFuture.isCompleted) {
+      print("[getContactList] contactsFuture.isCompleted -> exit");
       return;
     }
 
     //Request access contact permission
     final perm = await Permission.contacts.request();
 
-    print(perm.isDenied);
     if (perm.isDenied) {
       permissionDenied.value = true;
-      return;
+      print("[getContactList] permissionDenied -> exit");
+      pluhgSnackBar("So sorry", "Permission denied");
+      return contactsFuture.complete([]);
     }
 
     //get list contact from phone
@@ -86,15 +89,20 @@ class ContactController extends GetxController with ValidationMixin {
     List<PluhgContact> pluhgContacts = [];
     try {
       pluhgContacts = contacts.map<PluhgContact>((contact) => PluhgContact.fromContact(contact)).toList();
-
-      print("----------------------------------------------");
       for (PluhgContact p in pluhgContacts) {
-        print(p.phoneNumbers);
+        print("[getContactList] contact: ${p.phoneNumbers}");
       }
     } catch (ex) {
       print(ex);
     }
 
+    if (pluhgContacts.isEmpty) {
+      print("[getContactList] pluhg contacts is empty -> exit");
+      pluhgSnackBar("So sorry", "Not found Pluhg contacts");
+      return contactsFuture.complete([]);
+    }
+
+    print("[getContactList] Pluhg contacts: ${pluhgContacts.toString()}");
     _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
     //remove users phone number
     User user = await UserState.get();
@@ -102,6 +110,7 @@ class ContactController extends GetxController with ValidationMixin {
     PluhgContact? contactToRemove;
     _allContacts.forEach((element) {
       if (comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email)) {
+        print("[getContactList] remove contact: $element");
         contactToRemove = element;
       }
     });

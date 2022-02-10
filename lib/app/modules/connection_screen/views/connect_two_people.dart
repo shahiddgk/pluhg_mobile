@@ -19,6 +19,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
 
   @override
   Widget build(BuildContext context) {
+    print("[ConnectScreenView] build");
     return FutureBuilder(
         future: controller.getInfo(),
         builder: (context, snapshot) {
