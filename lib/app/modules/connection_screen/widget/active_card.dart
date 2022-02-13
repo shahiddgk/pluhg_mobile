@@ -43,156 +43,161 @@ Widget activeConnectionCard({
           BoxShadow(blurRadius: 40, color: Colors.black12),
         ],
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 40,
-                    color: Color.fromARGB(5, 0, 0, 0),
-                  )
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        width: 87.2.w,
-                        padding: EdgeInsets.all(6.0.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(color: Colors.black12, blurRadius: 20)
-                          ],
-                        ),
-                        child: card(
-                          Get.context!,
-                          data["requester"]["refId"],
-                        ),
-                      ),
-                      Container(
-                        width: 87.2.w,
-                        padding: EdgeInsets.all(6.0.w),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(color: Colors.black12, blurRadius: 20)
-                          ],
-                        ),
-                        child: card(
-                          Get.context!,
-                          data["contact"]["refId"],
-                        ),
-                      ),
-                      /*  Container(
-                            width: 84.w,
-                            padding: EdgeInsets.all(8.0),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 40,
+                      color: Color.fromARGB(5, 0, 0, 0),
+                    )
+                  ],
+                ),
+                child: Align(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            width: 87.2.w,
+                            padding: EdgeInsets.all(6.0.w),
                             decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(color: Colors.black12, blurRadius: 20)
-                                ]),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  height: 64,
-                                  width: 64,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12)),
-                                  child: data == null ||
-                                          !data["contact"]["refId"]
-                                              .containsKey("profileImage") ||
-                                          data["contact"]["refId"]
-                                                  ["profileImage"] ==
-                                              null
-                                      ? ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: pluhgColour,
-                                            ),
-                                            child: SvgPicture.asset(
-                                                "resources/svg/profile.svg"),
-                                          ),
-                                        )
-                                      : ClipRRect(
-                                          borderRadius: BorderRadius.circular(12.r),
-                                          child: Image.network(
-                                            APICALLS.imageBaseUrl +
-                                                "${data["contact"]["refId"]['profileImage'].toString()}",
-                                            height: 64.h,
-                                            width: 64.w,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                ),
-                                SizedBox(
-                                  height: 4.0,
-                                ),
-                                data != null &&
-                                        data["contact"].containsKey("userName") &&
-                                        data["contact"]["userName"] != null
-                                    ? Text("@${data["contact"]["userName"]}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: Color(0xff8D8D8D),
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center)
-                                    : Text(
-                                        data == null
-                                            ? "Contact"
-                                            : "@${data["contact"]["name"]}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            color: Color(0xff8D8D8D),
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(color: Colors.black12, blurRadius: 20)
                               ],
-                            )),*/
-                    ],
+                            ),
+                            child: card(
+                              Get.context!,
+                              data["requester"]["refId"],
+                            ),
+                          ),
+                          Container(
+                            width: 87.2.w,
+                            padding: EdgeInsets.all(6.0.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(color: Colors.black12, blurRadius: 20)
+                              ],
+                            ),
+                            child: card(
+                              Get.context!,
+                              data["contact"]["refId"],
+                            ),
+                          ),
+                          /*  Container(
+                                width: 84.w,
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.black12, blurRadius: 20)
+                                    ]),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      height: 64,
+                                      width: 64,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12)),
+                                      child: data == null ||
+                                              !data["contact"]["refId"]
+                                                  .containsKey("profileImage") ||
+                                              data["contact"]["refId"]
+                                                      ["profileImage"] ==
+                                                  null
+                                          ? ClipRRect(
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: pluhgColour,
+                                                ),
+                                                child: SvgPicture.asset(
+                                                    "resources/svg/profile.svg"),
+                                              ),
+                                            )
+                                          : ClipRRect(
+                                              borderRadius: BorderRadius.circular(12.r),
+                                              child: Image.network(
+                                                APICALLS.imageBaseUrl +
+                                                    "${data["contact"]["refId"]['profileImage'].toString()}",
+                                                height: 64.h,
+                                                width: 64.w,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                    ),
+                                    SizedBox(
+                                      height: 4.0,
+                                    ),
+                                    data != null &&
+                                            data["contact"].containsKey("userName") &&
+                                            data["contact"]["userName"] != null
+                                        ? Text("@${data["contact"]["userName"]}",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Color(0xff8D8D8D),
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w400),
+                                            textAlign: TextAlign.center)
+                                        : Text(
+                                            data == null
+                                                ? "Contact"
+                                                : "@${data["contact"]["name"]}",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Color(0xff8D8D8D),
+                                                fontSize: 12.sp,
+                                                fontWeight: FontWeight.w400),
+                                            textAlign: TextAlign.center),
+                                  ],
+                                )),*/
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Container(
-            width: 12.w,
-          ),
-          PlugByWidgetCard(
-            userName: data['userId']["userName"] == null
-                ? data['userId']["name"]
-                : "@" + data['userId']["userName"],
-            date: formattedDate,
-          ),
-          Container(
-            width: 8.w,
-          ),
-          Center(
-            child: Icon(
-              Icons.arrow_forward_ios_outlined,
-              color: Color(0xff575858),
+            Container(
+              width: 12.w,
             ),
-          ),
-          SizedBox(
-            width: 12,
-          )
-        ],
+            PlugByWidgetCard(
+              userName: data['userId']["userName"] == null
+                  ? data['userId']["name"]
+                  : "@" + data['userId']["userName"],
+              date: formattedDate,
+            ),
+            Container(
+              width: 8.w,
+            ),
+            Center(
+              child: Icon(
+                Icons.arrow_forward_ios_outlined,
+                color: Color(0xff575858),
+              ),
+            ),
+            SizedBox(
+              width: 12,
+            )
+          ],
+        ),
       ),
     ),
   );

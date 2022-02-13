@@ -10,11 +10,13 @@ class PlugByWidgetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
+    return Container(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.height < 812 ? 76.w : 100.w,
       ),
-      // width:
+      padding: EdgeInsets.symmetric(
+        vertical: 9.45.h,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
