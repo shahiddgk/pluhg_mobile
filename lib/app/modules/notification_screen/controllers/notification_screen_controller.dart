@@ -1,14 +1,13 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
+import 'package:plug/models/notification_response.dart';
 
 class NotificationScreenController extends GetxController {
   //TODO: Implement NotificationScreenController
   dynamic data = {};
-  RxBool read = false.obs;
+  RxMap<String, bool> read = <String, bool>{}.obs;
   final count = 0.obs;
   APICALLS apicalls = APICALLS();
   final notificationController = Get.put(NotificationController());
@@ -31,11 +30,16 @@ class NotificationScreenController extends GetxController {
     return await apicalls.getNotifications();
   }
 
-  markas_read(body) async{
-    read.value = true;
-    await apicalls.markAsRead(body);
-  }
+  Future<bool> markAsRead(NotificationData notification) async {
+    final body = {
+      "notificationId": [notification.id]
+    };
 
+    final isRead = await apicalls.markAsRead(body);
+    read[notification.id] = isRead;
+
+    return isRead;
+  }
 
   getTimeDifference(String date) {
     DateTime time = new DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
@@ -49,6 +53,4 @@ class NotificationScreenController extends GetxController {
       return "${DateTime.now().difference(time).inDays} days";
     }
   }
-
-
 }
