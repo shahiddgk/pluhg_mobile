@@ -203,61 +203,53 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                   SizedBox(
                     height: 21,
                   ),
-                  this.user != null && !_responded
-                      ? Visibility(
-                          // visible:
-                          // isRequester
-                          //     ? !data["isRequesterAccepted"]
-                          //     : !data["isContactAccepted"],
-                          visible: _responded ? false : true,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                child: button3("Accept", pluhgGreenColour),
-                                onTap: () async {
-                                  bool _isSuccessful = await APICALLS().respondToConnectionRequest(
-                                    connectionID: data["_id"],
-                                    contact: this.user!.email,
-                                    context: context,
-                                    plugID: data["userId"]["_id"],
-                                    isAccepting: true,
-                                    isContact: this.user!.compareId(data["contact"]["refId"]["_id"]),
-                                    isRequester: this.user!.compareId(data["requester"]["refId"]["_id"]),
-                                  );
-                                  setState(() {
-                                    _responded = _isSuccessful;
-                                  });
-                                },
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                child: button3("Decline", Colors.red),
-                                onTap: () async {
-                                  APICALLS apicalls = APICALLS();
-                                  bool _isSuccessful = await apicalls.respondToConnectionRequest(
-                                    connectionID: data["_id"],
-                                    contact: this.user!.email,
-                                    context: context,
-                                    plugID: data["userId"]["_id"],
-                                    isAccepting: false,
-                                    isContact: this.user!.compareId(data["contact"]["refId"]["_id"]),
-                                    isRequester: this.user!.compareId(data["requester"]["refId"]["_id"]),
-                                  );
-                                  setState(() {
-                                    _responded = _isSuccessful;
-                                  });
-                                  // if (_isSuccessful) {
-                                  //   Navigator.pop(context);
-                                  // }
-                                },
-                              ),
-                            ],
-                          ),
-                        )
-                      : SizedBox(),
+                  if (this.user != null && !_responded)
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        child: button3("Accept", pluhgGreenColour),
+                        onTap: () async {
+                          bool _isSuccessful = await APICALLS().respondToConnectionRequest(
+                            connectionID: data["_id"],
+                            contact: this.user!.email,
+                            context: context,
+                            plugID: data["userId"]["_id"],
+                            isAccepting: true,
+                            isContact: this.user!.compareId(data["contact"]["refId"]["_id"]),
+                            isRequester: this.user!.compareId(data["requester"]["refId"]["_id"]),
+                          );
+                          setState(() {
+                            _responded = _isSuccessful;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        child: button3("Decline", Colors.red),
+                        onTap: () async {
+                          APICALLS apicalls = APICALLS();
+                          bool _isSuccessful = await apicalls.respondToConnectionRequest(
+                            connectionID: data["_id"],
+                            contact: this.user!.email,
+                            context: context,
+                            plugID: data["userId"]["_id"],
+                            isAccepting: false,
+                            isContact: this.user!.compareId(data["contact"]["refId"]["_id"]),
+                            isRequester: this.user!.compareId(data["requester"]["refId"]["_id"]),
+                          );
+                          setState(() {
+                            _responded = _isSuccessful;
+                          });
+                          // if (_isSuccessful) {
+                          //   Navigator.pop(context);
+                          // }
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
