@@ -104,23 +104,24 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            if (notificationResponse.data[i].status != 1) {
-                                              notificationResponse.data[i].status = 1;
-                                              controller.read.value = true;
-
-                                              controller.markas_read({
-                                                "notificationId": [notificationResponse.data[i].id]
-                                              });
-                                            }
-                                          },
-                                          child: Text(
-                                            notificationResponse.data[i].status == 1 ? "Seen" : 'Mark as Read',
-                                            style: TextStyle(
-                                              color: pluhgColour,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w400,
+                                        Obx(
+                                          () => GestureDetector(
+                                            onTap: () async {
+                                              if (notificationResponse.data[i].status != 1) {
+                                                final status = await controller.markAsRead({
+                                                  "notificationId": [notificationResponse.data[i].id]
+                                                });
+                                                notificationResponse.data[i].status = status ? 1 : 0;
+                                                // this.controller.update();
+                                              }
+                                            },
+                                            child: Text(
+                                              notificationResponse.data[i].status == 1 ? "Seen" : 'Mark as Read',
+                                              style: TextStyle(
+                                                color: pluhgColour,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
                                           ),
                                         ),
