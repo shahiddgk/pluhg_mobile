@@ -6,12 +6,12 @@ class NotificationResponse {
   });
   late final bool status;
   late final String message;
-  late final List<Data> data;
+  late final List<NotificationData> data;
 
   NotificationResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = List.from(json['data']).map((e) => Data.fromJson(e)).toList();
+    data = List.from(json['data']).map((e) => NotificationData.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -23,7 +23,7 @@ class NotificationResponse {
   }
 }
 
-class Data {
+class NotificationData {
   int status;
   String id;
   UserId userId;
@@ -32,7 +32,7 @@ class Data {
   String createdAt;
   String updatedAt;
 
-  Data({
+  NotificationData({
     required this.status,
     required this.id,
     required this.userId,
@@ -42,8 +42,8 @@ class Data {
     required this.updatedAt,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return new Data(
+  factory NotificationData.fromJson(Map<String, dynamic> json) {
+    return new NotificationData(
       id: json['_id'],
       status: json['status'] == null ? 0 : json['status'],
       userId: UserId.fromJson(json['userId']),
