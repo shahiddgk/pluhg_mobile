@@ -118,9 +118,7 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                                 notificationResponse.data[i];
                                             final isRead = controller
                                                     .read[notification.id] ??
-                                                notificationResponse
-                                                        .data[i].status ==
-                                                    1;
+                                                notification.status == 1;
 
                                             return GestureDetector(
                                               onTap: () async {
