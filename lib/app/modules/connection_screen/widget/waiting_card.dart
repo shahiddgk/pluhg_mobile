@@ -12,6 +12,7 @@ Widget waitingConnectionCard({
   required dynamic data,
   required Rx<User> user,
 }) {
+  APICALLS api = APICALLS();
   RxBool responded = false.obs;
   bool _isRequester =
       user.value.compareEmail(data["requester"]["contact"]) || user.value.comparePhone(data["requester"]["contact"]);
@@ -98,7 +99,10 @@ Widget waitingConnectionCard({
                                       ),
                                     ),
                                     onTap: () async {
-                                      _callApi(data, responded, true);
+                                      responded.value = await api.acceptConnectionRequest(
+                                        connectionID: data["_id"],
+                                        context: Get.context!,
+                                      );
                                     },
                                   ),
                                   SizedBox(
@@ -123,7 +127,11 @@ Widget waitingConnectionCard({
                                       ),
                                     ),
                                     onTap: () async {
-                                      _callApi(data, responded, false);
+                                      responded.value = await api.declineConnectionRequest(
+                                        connectionID: data["_id"],
+                                        context: Get.context!,
+                                        reason: 'Unknown ??',
+                                      );
                                     },
                                   ),
                                 ],
@@ -154,19 +162,4 @@ Widget waitingConnectionCard({
               )
             ],
           ))));
-}
-
-Future<void> _callApi(var data, RxBool responded, bool activeDecline) async {
-  APICALLS apicalls = APICALLS();
-  User user = await UserState.get();
-
-  responded.value = await apicalls.respondToConnectionRequest(
-    connectionID: data["_id"],
-    contact: user.email,
-    context: Get.context!,
-    plugID: data["userId"]["_id"],
-    isAccepting: activeDecline,
-    isContact: user.compareId(data["contact"]["refId"]["_id"].toString()),
-    isRequester: user.compareId(data["requester"]["refId"]["_id"].toString()),
-  );
 }

@@ -27,6 +27,9 @@ class APICALLS with ValidationMixin {
   static const url = "https://api.pluhg.com";
   static const ws_url = "ws://api.pluhg.com";
 
+  //static const url = "http://localhost:3001";
+  //static const ws_url = "ws://localhost:3001";
+
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
 
@@ -540,24 +543,19 @@ class APICALLS with ValidationMixin {
         headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
       );
     } catch (e) {
-      print("API has Error");
-      print("Error: ");
-      print(e);
+      print("[API:getActiveConnections] error: ${e.toString()}");
       return null;
     }
 
     var parsedResponse = jsonDecode(response.body);
+    print("[API:getActiveConnections] response: ${parsedResponse.toString()}");
 
     if (parsedResponse["status"] == true) {
       return parsedResponse;
-      //All okay
-    } else {
-      print("Ran into Error");
-      print(parsedResponse);
-      pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
-      return null;
-      // pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
     }
+
+    pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
+    return null;
   }
 
   // Get waiting connections
@@ -666,6 +664,99 @@ class APICALLS with ValidationMixin {
     }
   }
 
+  Future<bool> acceptConnectionRequest({
+    required BuildContext context,
+    required String connectionID,
+  }) async {
+    var uri = Uri.parse("$url/api/connect/accept");
+    User user = await UserState.get();
+    print("[API:acceptConnectionRequest] user: ${user.toString()}");
+
+    ProgressDialog pd = ProgressDialog(context: context);
+    var parsedResponse;
+    pd.show(
+      max: 100,
+      msg: 'Please wait...',
+      progressType: ProgressType.normal,
+      progressBgColor: Colors.transparent,
+    );
+    var body = {"connectionId": connectionID};
+
+    print("[API:acceptConnectionRequest] send request: $body");
+    var response = await http.post(uri,
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    parsedResponse = jsonDecode(response.body);
+
+    print("[API:acceptConnectionRequest] response: ${parsedResponse.toString()}");
+
+    pd.close();
+    if (parsedResponse["status"] == true) {
+      // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+      showPluhgDailog2(
+        context,
+        "Success",
+        parsedResponse["message"],
+        onCLosed: () {
+          print("[Dialogue:OnClose] go to HomeView [2]");
+          Get.offAll(() => HomeView(index: 2.obs));
+        },
+      );
+
+      return false;
+    }
+
+    // error
+    pluhgSnackBar("So sorry", parsedResponse["message"]);
+    return false;
+  }
+
+  Future<bool> declineConnectionRequest({
+    required BuildContext context,
+    required String connectionID,
+    required String reason,
+  }) async {
+    var uri = Uri.parse("$url/api/connect/decline");
+    User user = await UserState.get();
+    print("[API:declineConnectionRequest] user: ${user.toString()}");
+
+    ProgressDialog pd = ProgressDialog(context: context);
+    var parsedResponse;
+    pd.show(
+      max: 100,
+      msg: 'Please wait...',
+      progressType: ProgressType.normal,
+      progressBgColor: Colors.transparent,
+    );
+    var body = {"connectionId": connectionID};
+
+    print("[API:declineConnectionRequest] send request: $body");
+    var response = await http.post(uri,
+        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    parsedResponse = jsonDecode(response.body);
+
+    print("[API:declineConnectionRequest] response: ${parsedResponse.toString()}");
+
+    pd.close();
+    if (parsedResponse["status"] == true) {
+      // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+      showPluhgDailog2(
+        context,
+        "Success",
+        parsedResponse["message"],
+        onCLosed: () {
+          print("[Dialogue:OnClose] go to HomeView [2]");
+          Get.offAll(() => HomeView(index: 2.obs));
+        },
+      );
+
+      return false;
+    }
+
+    // error
+    pluhgSnackBar("So sorry", parsedResponse["message"]);
+    return false;
+  }
+
   //Close connection
   Future<bool> closeConnection(
       {required String connectionID, required BuildContext context, required String rating}) async {
@@ -682,13 +773,9 @@ class APICALLS with ValidationMixin {
       ),
     );
     parsedResponse = jsonDecode(response.body);
-    print("Close Response $parsedResponse");
-    if (parsedResponse["status"] == true) {
-      return true; //all good
-    } else {
-      // error
-      return false;
-    }
+    print("[closeConnection] response: $parsedResponse");
+
+    return parsedResponse["status"] == true;
   }
 
   //Check if user is a Pluhg user or not
