@@ -29,12 +29,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
     with SingleTickerProviderStateMixin {
   late var data;
 
-  // String? userID;
-  // String? email;
-  // String? phone;
-  // late bool isRequester;
   User? user;
   bool _responded = false;
+  final APICALLS api = APICALLS();
 
   Future<void> getUserID() async {
     User currentUser = await UserState.get();
@@ -256,19 +253,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                         GestureDetector(
                           child: button3("Accept", pluhgGreenColour),
                           onTap: () async {
-                            bool _isSuccessful =
-                                await APICALLS().respondToConnectionRequest(
-                              connectionID: data["_id"],
-                              contact: this.user!.email,
+                            bool _isSuccessful = await this.api.acceptConnectionRequest(
                               context: context,
-                              plugID: data["userId"]["_id"],
-                              isAccepting: true,
-                              isContact: this
-                                  .user!
-                                  .compareId(data["contact"]["refId"]["_id"]),
-                              isRequester: this
-                                  .user!
-                                  .compareId(data["requester"]["refId"]["_id"]),
+                              connectionID: data["_id"],
                             );
                             setState(() {
                               _responded = _isSuccessful;
@@ -281,20 +268,10 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                         GestureDetector(
                           child: button3("Decline", Colors.red),
                           onTap: () async {
-                            APICALLS apicalls = APICALLS();
-                            bool _isSuccessful =
-                                await apicalls.respondToConnectionRequest(
-                              connectionID: data["_id"],
-                              contact: this.user!.email,
+                            bool _isSuccessful = await this.api.declineConnectionRequest(
                               context: context,
-                              plugID: data["userId"]["_id"],
-                              isAccepting: false,
-                              isContact: this
-                                  .user!
-                                  .compareId(data["contact"]["refId"]["_id"]),
-                              isRequester: this
-                                  .user!
-                                  .compareId(data["requester"]["refId"]["_id"]),
+                              connectionID: data["_id"],
+                              reason: "Unknown ??",
                             );
                             setState(() {
                               _responded = _isSuccessful;

@@ -44,12 +44,12 @@ class ChatScreenController extends GetxController {
     // if the web socketis connected
     socket.onConnect((data) {
       //get last messages
+      print("[Socket:onConnect] data: ${data.toString()}");
       getMessages(userID.toString());
     });
 
     socket.onConnectError((data) {
-      print("error");
-      print(data);
+      print("[Socket:onConnectError] data: ${data.toString()}");
     });
   }
 
