@@ -49,8 +49,8 @@ Widget card(BuildContext context, var data) {
 Widget cardProfile2(BuildContext context, var data, String text) {
   if (data == null) return SizedBox();
 
-  // Size size = MediaQuery.of(context).size;
-  final isUserNameExists = data.containsKey("userName") && data["userName"] != null;
+  final isUserNameExists =
+      data.containsKey("userName") && data["userName"] != null && data["userName"].toString().isNotEmpty;
   final userName = isUserNameExists ? data["userName"] : data["name"];
 
   return Column(
