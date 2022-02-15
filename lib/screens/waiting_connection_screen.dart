@@ -25,8 +25,6 @@ class WaitingConnectionScreen extends StatefulWidget {
 }
 
 class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with SingleTickerProviderStateMixin {
-  late var data;
-
   User? user;
   bool _responded = false;
   final APICALLS api = APICALLS();
@@ -41,7 +39,6 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
   @override
   void initState() {
     _responded = false;
-    data = widget.data;
     super.initState();
 
     getUserID();
@@ -49,7 +46,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
 
   @override
   Widget build(BuildContext context) {
-    var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ").parseUTC(data["created_at"]).toLocal();
+    var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ").parseUTC(widget.data["created_at"]).toLocal();
     String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -95,7 +92,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                                             color: Colors.white,
                                             borderRadius: BorderRadius.circular(15),
                                             boxShadow: [BoxShadow(color: Color.fromARGB(5, 0, 0, 0), blurRadius: 20)]),
-                                        child: cardProfile2(context, data["requester"]["refId"], "Requester")),
+                                        child: cardProfile2(context, widget.data["requester"]["refId"], "Requester")),
                                     SizedBox(
                                       width: 16,
                                     ),
@@ -111,7 +108,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                                               blurRadius: 20,
                                             )
                                           ]),
-                                      child: cardProfile2(context, data["contact"]["refId"], "Contact"),
+                                      child: cardProfile2(context, widget.data["contact"]["refId"], "Contact"),
                                     ),
                                   ],
                                 ),
@@ -120,9 +117,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                             Container(width: 20.w),
                             Expanded(
                                 child: PlugByWidgetCard(
-                                    userName: data['userId']["userName"] == null
-                                        ? data['userId']["name"]
-                                        : "@" + data['userId']["userName"],
+                                    userName: widget.data['userId']["userName"] == null
+                                        ? widget.data['userId']["name"]
+                                        : "@" + widget.data['userId']["userName"],
                                     date: formattedDate))
                           ],
                         ),
@@ -135,17 +132,17 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                               width: 39,
                               height: 45,
                               child: CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(APICALLS.imageBaseUrl + data['userId']['profileImage'].toString())),
+                                  backgroundImage: NetworkImage(
+                                      APICALLS.imageBaseUrl + widget.data['userId']['profileImage'].toString())),
                             ),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "Message From \n" +
-                                  (data['userId']["userName"] == null
-                                      ? data['userId']["name"]
-                                      : "@" + data['userId']["userName"]),
+                                  (widget.data['userId']["userName"] == null
+                                      ? widget.data['userId']["name"]
+                                      : "@" + widget.data['userId']["userName"]),
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff575858)),
                             ),
                           ],
@@ -155,9 +152,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                           child: Text(
-                            data["requester"]["message"] == "" || data["requester"]["message"] == null
+                            widget.data["requester"]["message"] == "" || widget.data["requester"]["message"] == null
                                 ? "Hi!! You have been connected, please check the app"
-                                : "${data["requester"]["message"]}",
+                                : "${widget.data["requester"]["message"]}",
                             textAlign: TextAlign.justify,
                             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                           ),
@@ -187,11 +184,11 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                               onTap: () {
                                 //ADD HERE
                               },
-                              child: smallCard(data["requester"]["refId"], data["isRequesterAccepted"]),
+                              child: smallCard(widget.data["requester"]["refId"], widget.data["isRequesterAccepted"]),
                             ),
                             GestureDetector(
                               onTap: () {},
-                              child: smallCard(data["contact"]["refId"], data["isContactAccepted"]),
+                              child: smallCard(widget.data["contact"]["refId"], widget.data["isContactAccepted"]),
                             ),
                           ],
                         ),
@@ -205,8 +202,8 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                       ? Visibility(
                           // visible:
                           // isRequester
-                          //     ? !data["isRequesterAccepted"]
-                          //     : !data["isContactAccepted"],
+                          //     ? !widget.data["isRequesterAccepted"]
+                          //     : !widget.data["isContactAccepted"],
                           visible: _responded ? false : true,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -216,7 +213,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                                 onTap: () async {
                                   bool _isSuccessful = await this.api.acceptConnectionRequest(
                                         context: context,
-                                        connectionID: data["_id"],
+                                        connectionID: widget.data["_id"],
                                       );
                                   setState(() {
                                     _responded = _isSuccessful;
@@ -231,7 +228,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                                 onTap: () async {
                                   bool _isSuccessful = await this.api.declineConnectionRequest(
                                         context: context,
-                                        connectionID: data["_id"],
+                                        connectionID: widget.data["_id"],
                                         reason: "Unknown ??",
                                       );
                                   setState(() {

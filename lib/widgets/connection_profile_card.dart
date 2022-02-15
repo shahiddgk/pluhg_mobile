@@ -9,6 +9,9 @@ import 'colours.dart';
 
 Widget card(BuildContext context, var data) {
   if (data == null) return SizedBox();
+
+  final isUserNameExists = data.containsKey("userName") && data["userName"] != null;
+  final userName = isUserNameExists ? data["userName"] : data["name"];
   return Column(
     children: [
       Container(
@@ -32,23 +35,24 @@ Widget card(BuildContext context, var data) {
                 )),
       ),
       Container(height: 2.h),
-      data.containsKey("userName") && data["userName"] != null
-          ? Text("@${data["userName"]}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Color(0xff8D8D8D), fontSize: 11.sp, height: 0.9, fontWeight: FontWeight.w400),
-              textAlign: TextAlign.center)
-          : Text("@${data["name"]}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Color(0xff8D8D8D), fontSize: 11.sp, fontWeight: FontWeight.w400),
-              textAlign: TextAlign.center),
+      Text(
+        "@$userName",
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: Color(0xff8D8D8D), fontSize: 11.sp, fontWeight: FontWeight.w400),
+        textAlign: TextAlign.center,
+      ),
     ],
   );
 }
 
 Widget cardProfile2(BuildContext context, var data, String text) {
+  if (data == null) return SizedBox();
+
   // Size size = MediaQuery.of(context).size;
+  final isUserNameExists = data.containsKey("userName") && data["userName"] != null;
+  final userName = isUserNameExists ? data["userName"] : data["name"];
+
   return Column(
     children: [
       SizedBox(
@@ -82,19 +86,13 @@ Widget cardProfile2(BuildContext context, var data, String text) {
       Container(
         height: 6.h,
       ),
-      data.containsKey("userName") && data["userName"] != null
-          ? Expanded(
-              child: Text("@${data["userName"]}",
-                  style: TextStyle(color: Color(0xff8D8D8D), fontSize: 13.5.sp, fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center),
-            )
-          : Expanded(
-              child: Text("@${data["name"]}",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Color(0xff8D8D8D), fontSize: 12.5.sp, fontWeight: FontWeight.w400),
-                  maxLines: 2,
-                  textAlign: TextAlign.center),
-            ),
+      Expanded(
+        child: Text("@$userName",
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: Color(0xff8D8D8D), fontSize: 12.5.sp, fontWeight: FontWeight.w400),
+            maxLines: 2,
+            textAlign: TextAlign.center),
+      ),
       Text(
         text,
         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black),
@@ -107,6 +105,10 @@ Widget cardProfile2(BuildContext context, var data, String text) {
 }
 
 Widget smallCard(var data, var accepted) {
+  if (data == null) return SizedBox();
+
+  final isUserNameExists = data.containsKey("userName") && data["userName"] != null;
+  final userName = isUserNameExists ? data["userName"] : data["name"];
   return Container(
     height: 41.03,
     width: 150,
@@ -143,9 +145,7 @@ Widget smallCard(var data, var accepted) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                data.containsKey("userName") && data["userName"] != null
-                    ? "@" + data["userName"].toString()
-                    : "@" + data["name"].toString(),
+                "@$userName",
                 maxLines: 1,
                 overflow: TextOverflow.fade,
                 style: TextStyle(fontWeight: FontWeight.w400, color: Colors.black, fontSize: 12),

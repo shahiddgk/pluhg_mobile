@@ -394,7 +394,7 @@ class APICALLS with ValidationMixin {
 
     if (parsedResponse["status"] == true) {
       // All okay
-      Get.offAll(HomeView(index: 3.obs));
+      Get.offAll(() => HomeView(index: 3.obs));
       pluhgSnackBar("Great", "You have changed your profile details");
       return false;
     } else {
@@ -437,7 +437,7 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
-        Get.offAll(HomeView(index: 3.obs));
+        Get.offAll(() => HomeView(index: 3.obs));
         pluhgSnackBar("Great", "You have changed your picture");
       });
 
