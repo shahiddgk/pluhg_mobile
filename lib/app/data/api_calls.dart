@@ -847,12 +847,12 @@ class APICALLS with ValidationMixin {
   Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
     User user = await UserState.get();
 
-    var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
-    print('uri ${uri.toString()}');
+    var uri = Uri.parse("$url/api/connect/getConnectionsDetails/$connectionID");
     var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
-    print(response.body);
-    Map<String, dynamic> map = jsonDecode(response.body);
-    return RecommendationResponse.fromJson(map);
+    var parsedResponse = jsonDecode(response.body);
+    print("[API:getNotifications] response: ${parsedResponse.toString()}");
+
+    return RecommendationResponse.fromJson(parsedResponse);
   }
 
   // Upload file (document / image(s))

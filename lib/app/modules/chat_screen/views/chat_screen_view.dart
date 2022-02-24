@@ -19,7 +19,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
     return Obx(() => Scaffold(
           appBar: SearchAppBar(
             searchController,
-            controller.serachMessages,
+            controller.searchMessages,
             messages_page: true,
           ),
           body: SingleChildScrollView(

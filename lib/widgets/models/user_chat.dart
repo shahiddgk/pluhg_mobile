@@ -29,21 +29,21 @@ class UserChat {
     required this.time,
   });
 
-  factory UserChat.fromJson(Map message) => UserChat(
-        userName:
-            message["chatMaster"]['receiverDetails']['userName'].toString(),
-        unReadCount: message["chatMaster"]["unReadCount"],
-        name: message["chatMaster"]['receiverDetails']['name'].toString(),
-        profileImage: message["chatMaster"]['receiverDetails']['profileImage'],
-        senderId: message["chatMaster"]['senderDetails']['_id'],
-        recevierId: message["chatMaster"]['receiverDetails']['_id'],
-        id: "" /*message['_id']*/,
-        messageType: "",
-        message: message['message'],
-        time: DateFormat('hh:mm a')
-            .format(DateTime.parse(message['timeStamp']))
-            .toString(),
-        isRead: message['isRead'] == null ? false : message['isRead'],
-        isDeleted: false /*message['isDeleted']*/,
-      );
+  factory UserChat.fromJson(Map message) {
+    var chatMaster = message["chatMaster"];
+    return UserChat(
+      userName: chatMaster['receiverDetails']['userName'].toString(),
+      unReadCount: chatMaster["unReadCount"],
+      name: chatMaster['receiverDetails']['name'].toString(),
+      profileImage: chatMaster['receiverDetails']['profileImage'],
+      senderId: chatMaster['senderDetails']['_id'],
+      recevierId: chatMaster['receiverDetails']['_id'],
+      id: message['_id'],
+      messageType: "",
+      message: message['message'],
+      time: DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
+      isRead: message['isRead'] == null ? false : message['isRead'],
+      isDeleted: false /*message['isDeleted']*/,
+    );
+  }
 }

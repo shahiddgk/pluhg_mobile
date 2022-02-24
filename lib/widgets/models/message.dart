@@ -1,5 +1,8 @@
 import 'package:intl/intl.dart';
 
+const MESSAGE_TYPE_SOURCE = 'source';
+const MESSAGE_TYPE_DESTINATION = 'destination';
+
 class Message {
   String? id;
   String type;
@@ -24,45 +27,49 @@ class Message {
   });
 
   factory Message.fromJson2(Map message, myid, senderId) {
-
+    print("[Message:fromJson2] create ${message.toString()}");
     return Message(
       id: message['_id'].toString(),
       senderId: senderId,
-      messageType:
-          message['messageType'] == null ? "text" : message['messageType'],
-      message: message['messageType'] == null ? "" : message['message'],
+      messageType: message['messageType'] == null ? "text" : message['messageType'],
+      message: message['message'] == null ? "" : message['message'],
       time: message['createdAt'] == null
           ? ""
-          : DateFormat('hh:mm a')
-              .format(DateTime.parse(message['createdAt']))
-              .toString(),
+          : DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
       date: DateFormat('dd MMMM, yyyy').format(DateTime.now()).toString(),
-      type: senderId == myid ? 'source' : 'destination',
-      isRead: /*message['senderId'] == myid ? true :*/ message['isRead'],
+      type: senderId == myid ? MESSAGE_TYPE_SOURCE : MESSAGE_TYPE_DESTINATION,
+      isRead: message['isRead'],
       isDeleted: false /*message['isDeleted']*/,
     );
   }
 
   factory Message.fromJson(Map message, myid) {
+    print("[Message:fromJson] create ${message.toString()}");
+    var chatMaster = message["chatId"];
     return Message(
       id: message['_id'].toString(),
-      senderId: message["chatId"]["senderId"]['_id'],
-      messageType:
-          message['messageType'] == null ? "text" : message['messageType'],
-      message: message['messageType'] == null ? "" : message['message'],
+      senderId: chatMaster["senderId"]['_id'],
+      messageType: message['messageType'] == null ? "text" : message['messageType'],
+      message: message['message'] == null ? "" : message['message'],
       time: message['createdAt'] == null
           ? ""
-          : DateFormat('hh:mm a')
-              .format(DateTime.parse(message['createdAt']))
-              .toString(),
-      date: DateFormat('dd MMMM, yyyy')
-          .format(DateTime.parse(message['createdAt']))
-          .toString(),
-      type: message["chatId"]["senderId"]['_id'] == myid
-          ? 'source'
-          : 'destination',
-      isRead: message['receiverId'] == myid ? true : message['isRead'],
+          : DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
+      date: DateFormat('dd MMMM, yyyy').format(DateTime.parse(message['createdAt'])).toString(),
+      type: message['creatorId'] == myid ? MESSAGE_TYPE_SOURCE : MESSAGE_TYPE_DESTINATION,
+      isRead: chatMaster['recevierId']['_id'] == myid ? true : message['isRead'],
       isDeleted: message['isDeleted'],
     );
+  }
+
+  bool isMine() {
+    return isSource();
+  }
+
+  bool isSource() {
+    return this.type == MESSAGE_TYPE_SOURCE;
+  }
+
+  bool isDestination() {
+    return this.type == MESSAGE_TYPE_SOURCE;
   }
 }
