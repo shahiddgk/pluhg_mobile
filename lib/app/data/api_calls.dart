@@ -728,15 +728,20 @@ class APICALLS with ValidationMixin {
     return contacts;
   }
 
-  markAsRead(body) async {
+  Future<bool> markAsRead(body) async {
     //to mark notification as read
     User user = await UserState.get();
     var uri = Uri.parse("$url/api/readNotification");
 
     print("[API:markAsRead] send request: $body");
-    String requestBody = jsonEncode(body);
-    var response = await http.post(uri, headers: {"Authorization": "Bearer ${user.token}"}, body: requestBody);
-    print("[API:markAsRead] response: ${response.body}");
+    final headers = {
+      'Authorization': "Bearer ${user.token}",
+      'Content-type': 'application/json',
+    };
+    var response = await http.post(uri, headers: headers, body: jsonEncode(body));
+    final Map<String, dynamic> responseBody = jsonDecode(response.body);
+    print("[API:markAsRead] response: ${responseBody.toString()}");
+    return responseBody["status"] == true;
   }
 
   // get notification list

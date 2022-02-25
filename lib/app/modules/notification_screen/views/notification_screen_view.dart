@@ -69,10 +69,13 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                           children: [
                             CircleAvatar(
                               radius: 50 / 2,
-                              backgroundImage: notificationResponse.data[i].userId.profileImage.isEmpty
-                                  ? SvgPicture.asset("resources/svg/profile.svg") as ImageProvider
-                                  : NetworkImage(
-                                      APICALLS.imageBaseUrl + '${notificationResponse.data[i].userId.profileImage}'),
+                              backgroundImage: notificationResponse
+                                      .data[i].userId.profileImage.isEmpty
+                                  ? SvgPicture.asset(
+                                          "resources/svg/profile.svg")
+                                      as ImageProvider
+                                  : NetworkImage(APICALLS.imageBaseUrl +
+                                      '${notificationResponse.data[i].userId.profileImage}'),
                             ),
                             SizedBox(width: 10),
                             Expanded(
@@ -83,7 +86,9 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                     Container(
                                       width: size.width - 36 - 45,
                                       child: Text(
-                                        notificationResponse.data[i].notificationMsg.body.toString(),
+                                        notificationResponse
+                                            .data[i].notificationMsg.body
+                                            .toString(),
                                         maxLines: 2,
                                         style: TextStyle(
                                           color: Colors.black,
@@ -94,35 +99,51 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                                     ),
                                     Row(
                                       mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          controller.getTimeDifference(notificationResponse.data[i].createdAt),
+                                          controller.getTimeDifference(
+                                              notificationResponse
+                                                  .data[i].createdAt),
                                           style: TextStyle(
                                             color: Color(0xFF8E8E93),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                           ),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            if (notificationResponse.data[i].status != 1) {
-                                              notificationResponse.data[i].status = 1;
-                                              controller.read.value = true;
+                                        Obx(
+                                          () {
+                                            final notification =
+                                                notificationResponse.data[i];
+                                            final isRead = controller
+                                                    .read[notification.id] ??
+                                                notification.status == 1;
 
-                                              controller.markas_read({
-                                                "notificationId": [notificationResponse.data[i].id]
-                                              });
-                                            }
+                                            return GestureDetector(
+                                              onTap: () async {
+                                                if (!isRead) {
+                                                  final status =
+                                                      await controller
+                                                          .markAsRead(
+                                                              notification);
+                                                  notificationResponse.data[i]
+                                                      .status = status ? 1 : 0;
+                                                  // this.controller.update();
+                                                }
+                                              },
+                                              child: Text(
+                                                isRead
+                                                    ? "Seen"
+                                                    : 'Mark as Read',
+                                                style: TextStyle(
+                                                  color: pluhgColour,
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            );
                                           },
-                                          child: Text(
-                                            notificationResponse.data[i].status == 1 ? "Seen" : 'Mark as Read',
-                                            style: TextStyle(
-                                              color: pluhgColour,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
                                         ),
                                       ],
                                     ),
