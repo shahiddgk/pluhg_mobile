@@ -12,7 +12,7 @@ mixin ValidationMixin {
 
 class PhoneValidator {
   static bool validate(String data) {
-    String pattern = r'(^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)';
+    String pattern = r'(^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,8}$)';
     RegExp regExp = new RegExp(pattern);
     return regExp.hasMatch(data);
   }
