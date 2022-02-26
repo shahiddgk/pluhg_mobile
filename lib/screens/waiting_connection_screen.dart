@@ -25,10 +25,7 @@ class WaitingConnectionScreen extends StatefulWidget {
       _WaitingConnectionScreenState();
 }
 
-class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
-    with SingleTickerProviderStateMixin {
-  late var data;
-
+class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with SingleTickerProviderStateMixin {
   User? user;
   bool _responded = false;
   final APICALLS api = APICALLS();
@@ -42,6 +39,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
 
   @override
   void initState() {
+    _responded = false;
     super.initState();
 
     data = widget.data;
@@ -65,9 +63,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
 
   @override
   Widget build(BuildContext context) {
-    var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
-        .parseUTC(data["created_at"])
-        .toLocal();
+    var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ").parseUTC(widget.data["created_at"]).toLocal();
     String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -112,18 +108,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                         width: 87.2,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Color.fromARGB(
-                                                      5, 0, 0, 0),
-                                                  blurRadius: 20)
-                                            ]),
-                                        child: cardProfile2(
-                                            context,
-                                            data["requester"]["refId"],
-                                            "Requester")),
+                                            borderRadius: BorderRadius.circular(15),
+                                            boxShadow: [BoxShadow(color: Color.fromARGB(5, 0, 0, 0), blurRadius: 20)]),
+                                        child: cardProfile2(context, widget.data["requester"]["refId"], "Requester")),
                                     SizedBox(
                                       width: 16,
                                     ),
@@ -140,8 +127,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                               blurRadius: 20,
                                             )
                                           ]),
-                                      child: cardProfile2(context,
-                                          data["contact"]["refId"], "Contact"),
+                                      child: cardProfile2(context, widget.data["contact"]["refId"], "Contact"),
                                     ),
                                   ],
                                 ),
@@ -150,9 +136,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                             Container(width: 20.w),
                             Expanded(
                                 child: PlugByWidgetCard(
-                                    userName: data['userId']["userName"] == null
-                                        ? data['userId']["name"]
-                                        : "@" + data['userId']["userName"],
+                                    userName: widget.data['userId']["userName"] == null
+                                        ? widget.data['userId']["name"]
+                                        : "@" + widget.data['userId']["userName"],
                                     date: formattedDate))
                           ],
                         ),
@@ -166,22 +152,17 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                               height: 45,
                               child: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                      APICALLS.imageBaseUrl +
-                                          data['userId']['profileImage']
-                                              .toString())),
+                                      APICALLS.imageBaseUrl + widget.data['userId']['profileImage'].toString())),
                             ),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "Message From \n" +
-                                  (data['userId']["userName"] == null
-                                      ? data['userId']["name"]
-                                      : "@" + data['userId']["userName"]),
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xff575858)),
+                                  (widget.data['userId']["userName"] == null
+                                      ? widget.data['userId']["name"]
+                                      : "@" + widget.data['userId']["userName"]),
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff575858)),
                             ),
                           ],
                         ),
@@ -192,10 +173,9 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.white),
                           child: Text(
-                            data["requester"]["message"] == "" ||
-                                    data["requester"]["message"] == null
+                            widget.data["requester"]["message"] == "" || widget.data["requester"]["message"] == null
                                 ? "Hi!! You have been connected, please check the app"
-                                : "${data["requester"]["message"]}",
+                                : "${widget.data["requester"]["message"]}",
                             textAlign: TextAlign.justify,
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w400),
@@ -230,13 +210,11 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                               onTap: () {
                                 //ADD HERE
                               },
-                              child: smallCard(data["requester"]["refId"],
-                                  data["isRequesterAccepted"]),
+                              child: smallCard(widget.data["requester"]["refId"], widget.data["isRequesterAccepted"]),
                             ),
                             GestureDetector(
                               onTap: () {},
-                              child: smallCard(data["contact"]["refId"],
-                                  data["isContactAccepted"]),
+                              child: smallCard(widget.data["contact"]["refId"], widget.data["isContactAccepted"]),
                             ),
                           ],
                         ),
@@ -246,43 +224,51 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                   SizedBox(
                     height: 21,
                   ),
-                  if (this.user != null && !_responded)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          child: button3("Accept", pluhgGreenColour),
-                          onTap: () async {
-                            bool _isSuccessful = await this.api.acceptConnectionRequest(
-                              context: context,
-                              connectionID: data["_id"],
-                            );
-                            setState(() {
-                              _responded = _isSuccessful;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          child: button3("Decline", Colors.red),
-                          onTap: () async {
-                            bool _isSuccessful = await this.api.declineConnectionRequest(
-                              context: context,
-                              connectionID: data["_id"],
-                              reason: "Unknown ??",
-                            );
-                            setState(() {
-                              _responded = _isSuccessful;
-                            });
-                            // if (_isSuccessful) {
-                            //   Navigator.pop(context);
-                            // }
-                          },
-                        ),
-                      ],
-                    ),
+                  this.user != null && !_responded
+                      ? Visibility(
+                          // visible:
+                          // isRequester
+                          //     ? !widget.data["isRequesterAccepted"]
+                          //     : !widget.data["isContactAccepted"],
+                          visible: _responded ? false : true,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                child: button3("Accept", pluhgGreenColour),
+                                onTap: () async {
+                                  bool _isSuccessful = await this.api.acceptConnectionRequest(
+                                        context: context,
+                                        connectionID: widget.data["_id"],
+                                      );
+                                  setState(() {
+                                    _responded = _isSuccessful;
+                                  });
+                                },
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                child: button3("Decline", Colors.red),
+                                onTap: () async {
+                                  bool _isSuccessful = await this.api.declineConnectionRequest(
+                                        context: context,
+                                        connectionID: widget.data["_id"],
+                                        reason: "Unknown ??",
+                                      );
+                                  setState(() {
+                                    _responded = _isSuccessful;
+                                  });
+                                  // if (_isSuccessful) {
+                                  //   Navigator.pop(context);
+                                  // }
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                      : SizedBox(),
                 ],
               ),
             ),

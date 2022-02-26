@@ -113,7 +113,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                             text: controller.currentIndex.value == 3 ? 'Sign Up' : 'Next',
                             onPressed: () {
                               if (controller.currentIndex.value == 3) {
-                                Get.offAll(AuthScreenView());
+                                Get.offAll(() => AuthScreenView());
                               } else {
                                 controller.currentIndex.value += 1;
                               }

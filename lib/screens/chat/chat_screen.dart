@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/progressbar.dart';
@@ -15,6 +14,7 @@ import 'package:plug/screens/chat/media_options/dialog_options_android.dart';
 import 'package:plug/screens/chat/media_options/multi_document_picker.dart';
 import 'package:plug/screens/chat/media_options/multi_image_picker.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 import '../../../widgets/models/message.dart';
 
@@ -56,8 +56,8 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    connect();
     getMyId();
+    connect();
   }
 
   @override
@@ -66,11 +66,25 @@ class _ChatScreenState extends State<ChatScreen> {
     // socket.close();
   }
 
-  void connect() {
-    socket = IO.io(APICALLS.ws_url, <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': true,
+  void setMessageResponse(dynamic message) {
+    if (!this.mounted) return;
+
+    setState(() {
+      messages.insert(0, Message.fromJson2(message["data"], myid, message["data"]["senderDetails"]["_id"]));
     });
+  }
+
+  void connect() {
+    socket = IO.io(
+        "${APICALLS.ws_url}",
+        OptionBuilder()
+            .setTransports(['websocket'])
+            // .enableAutoConnect()
+            // .enableForceNewConnection()
+            .enableForceNewConnection()
+            .disableAutoConnect()
+            .setQuery(<String, dynamic>{'room': 'test'})
+            .build());
 
     if (socket.connected == true) {
       socket.disconnect();
@@ -81,44 +95,37 @@ class _ChatScreenState extends State<ChatScreen> {
     socket.onConnect((data1) {
       getMessages(widget.senderId, widget.recevierId);
       socket.on('sendMessageResponse', (msg) {
-        print('**************');
-        print(msg);
+        print('[sendMessageResponse] new message: ${msg.toString()}');
         setMessageResponse(msg);
       });
+
       socket.on('readMessageResponse', (data) {
-        print('**************');
-        print(data);
+        print('[readMessageResponse] read message: ${data.toString()}');
 
-        /* messages.forEach((element) {
-
-          print(data["data"]["senderId"] );
-          if (element.id == data['data']['_id']) {
-            var message = data['data'];
-            setState(() {
-              element = Message(
-                senderId:message["senderId"] ,
-                image: "${APICALLS.url}/uploads/" +
-                    message["senderId"]["profileImage"],
-                id: message['_id'].toString(),
-                messageType: message['messageType'],
-                message: message['message'],
-                time: DateFormat('hh:mm a')
-                    .format(message['createdAt'])
-                    .toString(),
-                date: DateFormat('dd MMMM, yyyy')
-                    .format(message['createdAt'])
-                    .toString(),
-                type: message['senderId'] == myid ? 'source' : 'destination',
-                isRead: message['isRead'],
-                isDeleted: message['isDeleted'],
-              );
-            });
+        messages.forEach((element) {
+          print("[readMessageResponse] element ID [${element.id.toString()}] ");
+          if (element.id == data['_id']) {
+            // var message = data['data'];
+            // setState(() {
+            //   element = Message(
+            //     senderId: message["senderId"],
+            //     // image: "${APICALLS.url}/uploads/" + message["senderId"]["profileImage"],
+            //     id: message['_id'].toString(),
+            //     messageType: message['messageType'],
+            //     message: message['message'],
+            //     time: DateFormat('hh:mm a').format(message['createdAt']).toString(),
+            //     date: DateFormat('dd MMMM, yyyy').format(message['createdAt']).toString(),
+            //     type: message['senderId'] == myid ? 'source' : 'destination',
+            //     isRead: message['isRead'],
+            //     isDeleted: message['isDeleted'],
+            //   );
+            // });
           }
-        });*/
+        });
       });
     });
     socket.onConnectError((data) {
-      print("error");
+      print("[onConnectError] error");
       print(data);
     });
   }
@@ -138,9 +145,8 @@ class _ChatScreenState extends State<ChatScreen> {
       res_files_name.add(f.fileName);
     }
 
-    // try {
-    setMessage('source', messageType == "text" ? text : json.encode(res_files_name), messageType,
-        files: res_files_name);
+    // setMessage('source', messageType == "text" ? text : json.encode(res_files_name), messageType,
+    //     files: res_files_name);
 
     socket.emit('sendMessage', {
       'message': messageType == "text" ? text : json.encode(res_files_name),
@@ -153,49 +159,27 @@ class _ChatScreenState extends State<ChatScreen> {
     FocusScope.of(context).unfocus();
   }
 
-  void setMessage(String type, dynamic message, String messageType, {List<String>? files}) {
-    Message messageModel = Message(
-      senderId: myid,
-      type: type,
-      message: message,
-      time: DateFormat('hh:mm a').format(DateTime.now()).toString(),
-      date: DateFormat('dd MMMM, yyyy').format(DateTime.now()).toString(),
-      isRead: false,
-      isDeleted: false,
-      messageType: messageType,
-    );
-    /*setState(() {
-      messages.insert(0, messageModel);
-    });*/
-  }
-
-  void setMessageResponse(dynamic message) {
-    if (!this.mounted) return;
-
-    setState(() {
-      messages.insert(0, Message.fromJson2(message["data"], myid, message["data"]["senderDetails"]["_id"]));
-    });
-  }
-
-  void getMessages(String userId, String oppUserId) {
+  void getMessages(String userId, String receiverId) {
     socket.emit('getUserMessage', {
       'userId': userId,
-      'oppUserId': oppUserId,
+      'receiverId': receiverId,
     });
     socket.on('getUserMessageResponse', (data) {
       if (!this.mounted) return;
       var messagesArr = data['data'];
 
-      print(messagesArr);
+      print("[ChatScreen:Socket:getUserMessageResponse] data: ${data.toString()}");
 
-      for (int i = 0; i < messagesArr.length; i++) {
-        if (messagesArr[i]['recevierId'] == myid) {
-          socket.emit('/readMessage', {
-            'userId': myid,
-            'messageId': messagesArr[i]['_id'],
-          });
-        }
-      }
+      // for (int i = 0; i < messagesArr.length; i++) {
+      //   print(
+      //       "[ChatScreen:Socket:getUserMessageResponse] readMessage: ${messagesArr[i]["chatId"]['recevierId'].toString()}");
+      //   if (messagesArr[i]["chatId"]['recevierId']["_id"] == myid) {
+      //     socket.emit('/readMessage', {
+      //       'userId': myid,
+      //       'messageId': messagesArr[i]['_id'],
+      //     });
+      //   }
+      // }
 
       setState(() {
         messages = List<Message>.from(messagesArr.map((e) => Message.fromJson(e, myid)).toList()).reversed.toList();
@@ -296,7 +280,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         controller: _controller_s,
                         itemCount: messages.length,
                         itemBuilder: (ctx, i) {
-                          return BubbleChat(messages[i], isMe: myid == messages[i].senderId ? true : false);
+                          return BubbleChat(messages[i]);
                         },
                       ),
                     ),

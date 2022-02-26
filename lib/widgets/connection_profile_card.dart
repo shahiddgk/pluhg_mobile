@@ -7,12 +7,9 @@ import 'package:plug/app/data/api_calls.dart';
 import 'colours.dart';
 
 Widget card(BuildContext context, var data) {
-  if (data == null)
-    return Container(
-      width: 64.w,
-      height: 64.w,
-    );
+  if (data == null) return SizedBox();
 
+  final userName = extractUserName(data);
   return Column(
     children: [
       Container(
@@ -41,37 +38,39 @@ Widget card(BuildContext context, var data) {
                 ),
               ),
       ),
-      SizedBox(height: 6.27.h),
-      data.containsKey("userName") && data["userName"] != null
-          ? Text(
-              "@${data["userName"]}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(0xff8D8D8D),
-                fontSize: 11.sp,
-                height: 0.9,
-                fontWeight: FontWeight.w400,
-              ),
-              textAlign: TextAlign.center,
-            )
-          : Text(
-              "@${data["name"]}",
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(0xff8D8D8D),
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w400,
-              ),
-              textAlign: TextAlign.center,
-            ),
+      Container(height: 2.h),
+      Text(
+        "$userName",
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: Color(0xff8D8D8D), fontSize: 11.sp, fontWeight: FontWeight.w400),
+        textAlign: TextAlign.center,
+      ),
     ],
   );
 }
 
+//@todo should be a part of DTO/Model
+String extractUserName(Map data) {
+  final userName = data["userName"];
+  final name = data["name"];
+
+  final isUserNameExists = userName != null && userName?.isNotEmpty;
+  final isContactNameExists = name != null && name?.isNotEmpty;
+  if (isUserNameExists) {
+    return "@$userName";
+  }
+  if (isContactNameExists) {
+    return name;
+  }
+
+  return "unknown";
+}
+
 Widget cardProfile2(BuildContext context, var data, String text) {
-  // Size size = MediaQuery.of(context).size;
+  if (data == null) return SizedBox();
+
+  final userName = extractUserName(data);
   return Column(
     children: [
       SizedBox(
@@ -90,9 +89,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
           : Container(
               width: 68.73.w,
               height: 65.65.h,
-              // padding: EdgeInsets.all(10),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(15)),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(Get.size.width * 0.042),
@@ -107,25 +104,13 @@ Widget cardProfile2(BuildContext context, var data, String text) {
       Container(
         height: 6.h,
       ),
-      data.containsKey("userName") && data["userName"] != null
-          ? Expanded(
-              child: Text("@${data["userName"]}",
-                  style: TextStyle(
-                      color: Color(0xff8D8D8D),
-                      fontSize: 13.5.sp,
-                      fontWeight: FontWeight.w400),
-                  textAlign: TextAlign.center),
-            )
-          : Expanded(
-              child: Text("@${data["name"]}",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: Color(0xff8D8D8D),
-                      fontSize: 12.5.sp,
-                      fontWeight: FontWeight.w400),
-                  maxLines: 2,
-                  textAlign: TextAlign.center),
-            ),
+      Expanded(
+        child: Text("$userName",
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: Color(0xff8D8D8D), fontSize: 12.5.sp, fontWeight: FontWeight.w400),
+            maxLines: 2,
+            textAlign: TextAlign.center),
+      ),
       Text(
         text,
         style: TextStyle(
@@ -139,6 +124,9 @@ Widget cardProfile2(BuildContext context, var data, String text) {
 }
 
 Widget smallCard(var data, var accepted) {
+  if (data == null) return SizedBox();
+
+  final userName = extractUserName(data);
   return Container(
     height: 41.03,
     width: 150,
@@ -180,9 +168,7 @@ Widget smallCard(var data, var accepted) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                data.containsKey("userName") && data["userName"] != null
-                    ? "@" + data["userName"].toString()
-                    : "@" + data["name"].toString(),
+                "$userName",
                 maxLines: 1,
                 overflow: TextOverflow.fade,
                 style: TextStyle(

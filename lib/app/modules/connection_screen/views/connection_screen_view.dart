@@ -103,12 +103,8 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Column(
                         children: [
-                          SizedBox(
-                            height: 40.h,
-                          ),
-                          Center(
-                            child: pluhgProgress(),
-                          ),
+                          SizedBox(height: 40.h),
+                          Center(child: pluhgProgress()),
                         ],
                       );
                     } else if (snapshot.hasError) {

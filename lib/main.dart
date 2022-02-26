@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:get/get.dart';
 import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.dart';
 import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
@@ -68,8 +67,7 @@ void _configureFirebase() async {
     controller.fcmNotificationReceived();
     print('Message data: ${message.data}');
     if (message.notification != null) {
-      print(
-          'Message also contained a notification: ${message.notification!.body.toString()}');
+      print('Message also contained a notification: ${message.notification!.body.toString()}');
     }
   });
 }

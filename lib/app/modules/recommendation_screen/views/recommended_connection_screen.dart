@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:intl/intl.dart';
@@ -10,11 +11,9 @@ import 'package:plug/models/recommendation_response.dart';
 import 'package:plug/widgets/button.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/dialog_box.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
 
-class RecommendedScreenView
-    extends GetView<RecommendedConnectionScreenController> {
+class RecommendedScreenView extends GetView<RecommendedConnectionScreenController> {
   String? connectionID;
 
   RecommendedScreenView({this.connectionID});
@@ -38,11 +37,8 @@ class RecommendedScreenView
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData && snapshot.data!.status == true) {
                 ResponseData responseData = snapshot.data!.data;
-                var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
-                    .parseUTC(responseData.createdAt)
-                    .toLocal();
-                String formattedDate =
-                    DateFormat("dd MMM yyyy hh:mm").format(dateValue);
+                var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ").parseUTC(responseData.createdAt).toLocal();
+                String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
                 return CustomScrollView(
                   physics: BouncingScrollPhysics(),
                   slivers: [
@@ -55,10 +51,8 @@ class RecommendedScreenView
                       child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: size.width * 0.026),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: size.width * 0.04),
+                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: size.width * 0.026),
+                            margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
                             decoration: BoxDecoration(
                               color: Color(0xffEBEBEB),
                               borderRadius: BorderRadius.circular(15),
@@ -83,22 +77,12 @@ class RecommendedScreenView
                                                   width: 87.2,
                                                   decoration: BoxDecoration(
                                                       color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
+                                                      borderRadius: BorderRadius.circular(15),
                                                       boxShadow: [
-                                                        BoxShadow(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    5, 0, 0, 0),
-                                                            blurRadius: 20)
+                                                        BoxShadow(color: Color.fromARGB(5, 0, 0, 0), blurRadius: 20)
                                                       ]),
                                                   child: cardProfile2(
-                                                      context,
-                                                      responseData
-                                                          .requester.refId
-                                                          .toJson(),
-                                                      "Requester")),
+                                                      context, responseData.requester.refId.toJson(), "Requester")),
                                               SizedBox(
                                                 width: 16,
                                               ),
@@ -107,21 +91,12 @@ class RecommendedScreenView
                                                   width: 87.2,
                                                   decoration: BoxDecoration(
                                                       color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
+                                                      borderRadius: BorderRadius.circular(15),
                                                       boxShadow: [
-                                                        BoxShadow(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    5, 0, 0, 0),
-                                                            blurRadius: 20)
+                                                        BoxShadow(color: Color.fromARGB(5, 0, 0, 0), blurRadius: 20)
                                                       ]),
                                                   child: cardProfile2(
-                                                      context,
-                                                      responseData.contact.refId
-                                                          .toJson(),
-                                                      "Contact")),
+                                                      context, responseData.contact.refId.toJson(), "Contact")),
                                             ],
                                           ),
                                         ],
@@ -129,58 +104,46 @@ class RecommendedScreenView
                                       Container(width: 20.w),
                                       Expanded(
                                           child: PlugByWidgetCard(
-                                              userName: responseData
-                                                          .userId.userName ==
-                                                      null
+                                              userName: responseData.userId.userName == null
                                                   ? "Pluhg user"
-                                                  : "@" +
-                                                      responseData
-                                                          .userId.userName,
+                                                  : "@" + responseData.userId.userName,
                                               date: formattedDate))
                                     ],
                                   ),
                                   SizedBox(
                                     height: 14.79,
                                   ),
-                                  Text(
-                                      "Message to @${responseData.requester.name}"),
+                                  Text("Message to @${responseData.requester.name}"),
                                   SizedBox(
                                     height: 6,
                                   ),
                                   Container(
                                     //  width: 307.22,
                                     padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.white),
+                                    decoration:
+                                        BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                     child: Text(
                                       "${responseData.requester.message}",
                                       textAlign: TextAlign.justify,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400),
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                                     ),
                                   ),
                                   SizedBox(
                                     height: 14.79,
                                   ),
-                                  Text(
-                                      "Message to @${responseData.contact.name}"),
+                                  Text("Message to @${responseData.contact.name}"),
                                   SizedBox(
                                     height: 6,
                                   ),
                                   Container(
                                     //   width: 307.22,
                                     padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.white),
+                                    decoration:
+                                        BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
                                     child: Text(
                                       "${responseData.contact.message}",
                                       textAlign: TextAlign.justify,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400),
+                                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                                     ),
                                   ),
                                 ],
@@ -194,24 +157,17 @@ class RecommendedScreenView
                             width: 339,
                             height: 89.06,
                             padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Color(0xffEBEBEB),
-                                borderRadius: BorderRadius.circular(14)),
+                            decoration:
+                                BoxDecoration(color: Color(0xffEBEBEB), borderRadius: BorderRadius.circular(14)),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Connection Status:",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600)),
+                                Text("Connection Status:", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    smallCard(responseData.requester.toJson(),
-                                        responseData.isRequesterAccepted),
-                                    smallCard(responseData.contact.toJson(),
-                                        responseData.isContactAccepted),
+                                    smallCard(responseData.requester.toJson(), responseData.isRequesterAccepted),
+                                    smallCard(responseData.contact.toJson(), responseData.isContactAccepted),
                                   ],
                                 ),
                               ],
@@ -221,37 +177,27 @@ class RecommendedScreenView
                             height: 15,
                           ),
                           Visibility(
-                            visible: responseData.isContactAccepted &&
-                                    responseData.isRequesterAccepted
-                                ? false
-                                : true,
+                            visible: responseData.isContactAccepted && responseData.isRequesterAccepted ? false : true,
                             child: Text("Send Reminder To",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black)),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black)),
                           ),
                           SizedBox(
                             height: 10,
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: size.width * 0.03),
+                            padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Visibility(
-                                  visible: responseData.isRequesterAccepted
-                                      ? false
-                                      : true,
+                                  visible: responseData.isRequesterAccepted ? false : true,
                                   child: GestureDetector(
                                     onTap: () {
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return showPluhgDailog4(context,
-                                                responseData.id, 'requester');
+                                            return showPluhgDailog4(context, responseData.id, 'requester');
                                           });
                                     },
                                     child: button2("Requester"),
@@ -261,16 +207,13 @@ class RecommendedScreenView
                                   width: 7.05,
                                 ),
                                 Visibility(
-                                  visible: responseData.isContactAccepted
-                                      ? false
-                                      : true,
+                                  visible: responseData.isContactAccepted ? false : true,
                                   child: GestureDetector(
                                     onTap: () {
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return showPluhgDailog4(context,
-                                                responseData.id, 'contact');
+                                            return showPluhgDailog4(context, responseData.id, 'contact');
                                           });
                                     },
                                     child: button2("Contact"),

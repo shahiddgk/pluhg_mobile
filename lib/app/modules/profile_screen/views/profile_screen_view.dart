@@ -53,7 +53,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                 onTap: () async {
                   await UserState.logout();
                   print("[ProfileScreenView::_logout] user logged out");
-                  Get.offAll(AuthScreenView());
+                  Get.offAll(() => AuthScreenView());
                 },
                 child: Container(
                     width: 47.67,
@@ -91,8 +91,6 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
               child: pluhgProgress(),
             );
           } else {
-            print('victorhez');
-            print(snapshot.data);
             return Scaffold(
               body: SingleChildScrollView(
                 child: Container(

@@ -38,13 +38,12 @@ class ChatScreenController extends GetxController {
       'transports': ['websocket'],
       'autoConnect': false,
     });
-    //Connect websocket
+    //Connect websockets
     socket.connect();
 
-    // if the web socketis connected
+    // if the web socket is connected
     socket.onConnect((data) {
-      //get last messages
-      print("[Socket:onConnect] data: ${data.toString()}");
+      print("[Socket:onConnect] run");
       getMessages(userID.toString());
     });
 
@@ -54,8 +53,11 @@ class ChatScreenController extends GetxController {
   }
 
   void getMessages(String userId) {
+    print("[ChatScreenController:getMessages] for $userId");
+
     socket.emit('getMessageListing', {'userId': userId});
     socket.on('getListingResponse', (data) {
+      print("[ChatScreenController:getMessages] getListingResponse ${data.toString()}");
       var chatsArr = data['data'];
 
       users.value = List<UserChat>.from(chatsArr.map((dynamic message) => UserChat.fromJson(message)).toList());
@@ -65,37 +67,10 @@ class ChatScreenController extends GetxController {
       }
 
       usersTemp = List<UserChat>.from(users.value);
-
-      /*for (int i = 0; i < chatsArr.length; i++) {
-        setMessageResponse(chatsArr[i]);
-      }*/
     });
   }
 
-  void setMessageResponse(dynamic message) {
-    /*users.add(
-      UserChat(
-        name: message['receiverDetails']['name'],
-        profileImage: message['receiverDetails']['profileImage'],
-        senderId: message['senderDetails']['_id'],
-        recevierId: message['receiverDetails']['_id'],
-        id: ""/*message['_id']*/,
-        messageType: "",
-        message: message['message'],
-        // time: message['createdAt'].toString(),
-        // date: message['createdAt'].toString(),
-
-        time: "",//DateFormat('hh:mm a').format(DateTime.parse(message['createdAt'])).toString(),
-        // date:
-        //     DateFormat('dd MMMM, yyyy').format(message['createdAt']).toString(),
-        // type: message['senderId'] == userID ? 'source' : 'destination',
-        isRead: message['isRead'],
-        isDeleted: false/*message['isDeleted']*/,
-      ),
-    );*/
-  }
-
-  serachMessages(String name) {
+  searchMessages(String name) {
     if (name.isEmpty) {
       users.value = usersTemp;
     } else {

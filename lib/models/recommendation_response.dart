@@ -4,14 +4,16 @@ class RecommendationResponse {
     required this.message,
     required this.data,
   });
-  late final bool status;
-  late final String message;
-  late final ResponseData data;
+  final bool status;
+  final String message;
+  final ResponseData data;
 
-  RecommendationResponse.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    message = json['message'];
-    data = ResponseData.fromJson(json['data']);
+  factory RecommendationResponse.fromJson(Map<String, dynamic> json) {
+    return RecommendationResponse(
+      status: json['status'],
+      message: json['message'],
+      data: ResponseData.fromJson(json['data']),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -41,38 +43,41 @@ class ResponseData {
     required this.updatedAt,
     required this.v,
   });
-  late final Requester requester;
-  late final Contact contact;
-  late final bool isRequesterAccepted;
-  late final bool isContactAccepted;
-  late final bool isPending;
-  late final String rejectReason;
-  late final String requesterMessage;
-  late final String contactMessage;
-  late final String both;
-  late final bool closeConnection;
-  late final String id;
-  late final UserId userId;
-  late final String createdAt;
-  late final String updatedAt;
-  late final int v;
 
-  ResponseData.fromJson(Map<String, dynamic> json) {
-    requester = Requester.fromJson(json['requester']);
-    contact = Contact.fromJson(json['contact']);
-    isRequesterAccepted = json['isRequesterAccepted'];
-    isContactAccepted = json['isContactAccepted'];
-    isPending = json['isPending'];
-    rejectReason = json['rejectReason'];
-    requesterMessage = json['requesterMessage'];
-    contactMessage = json['contactMessage'];
-    both = json['both'] ?? "";
-    closeConnection = json['closeConnection'];
-    id = json['_id'];
-    userId = UserId.fromJson(json['userId']);
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    v = json['__v'];
+  final Requester requester;
+  final Contact contact;
+  final bool isRequesterAccepted;
+  final bool isContactAccepted;
+  final bool isPending;
+  final String rejectReason;
+  final String requesterMessage;
+  final String contactMessage;
+  final String both;
+  final bool closeConnection;
+  final String id;
+  final UserId userId;
+  final String createdAt;
+  final String updatedAt;
+  final int v;
+
+  factory ResponseData.fromJson(Map<String, dynamic> json) {
+    return new ResponseData(
+      requester: Requester.fromJson(json['requester']),
+      contact: Contact.fromJson(json['contact']),
+      isRequesterAccepted: json['isRequesterAccepted'],
+      isContactAccepted: json['isContactAccepted'],
+      isPending: json['isPending'],
+      rejectReason: json['rejectReason'],
+      requesterMessage: json['requesterMessage'],
+      contactMessage: json['contactMessage'],
+      both: json['both'] ?? "",
+      closeConnection: json['closeConnection'],
+      id: json['_id'],
+      userId: UserId.fromJson(json['userId']),
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      v: json['__v'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -104,18 +109,20 @@ class Requester {
     required this.message,
     required this.refId,
   });
-  late final String name;
-  late final String contact;
-  late final String contactType;
-  late final String message;
-  late final RefId refId;
+  final String name;
+  final String contact;
+  final String contactType;
+  final String message;
+  final RefId refId;
 
-  Requester.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    contact = json['contact'];
-    contactType = json['contactType'];
-    message = json['message'];
-    refId = RefId.fromJson(json['refId']);
+  factory Requester.fromJson(Map<String, dynamic> json) {
+    return new Requester(
+      name: json['name'],
+      contact: json['contact'],
+      contactType: json['contactType'],
+      message: json['message'],
+      refId: RefId.fromJson(json['refId']),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -132,6 +139,7 @@ class Requester {
 class RefId {
   RefId({
     required this.numberOfConnections,
+    required this.userName,
     required this.name,
     required this.profileImage,
     required this.id,
@@ -139,27 +147,32 @@ class RefId {
     required this.updatedAt,
     required this.v,
   });
-  late final int numberOfConnections;
-  late final String name;
-  late final String profileImage;
-  late final String id;
-  late final String createdAt;
-  late final String updatedAt;
-  late final int v;
+  final int numberOfConnections;
+  final String name;
+  final String userName;
+  final String profileImage;
+  final String id;
+  final String createdAt;
+  final String updatedAt;
+  final int v;
 
-  RefId.fromJson(Map<String, dynamic> json) {
-    numberOfConnections = json['numberOfConnections'];
-    name = json['name'] ?? "";
-    profileImage = json['profileImage'];
-    id = json['_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    v = json['__v'];
+  factory RefId.fromJson(Map<String, dynamic> json) {
+    return RefId(
+      numberOfConnections: json['numberOfConnections'],
+      name: json['name'] ?? "",
+      userName: json['userName'] ?? "",
+      profileImage: json['profileImage'],
+      id: json['_id'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      v: json['__v'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['numberOfConnections'] = numberOfConnections;
+    _data['userName'] = userName;
     _data['name'] = name;
     _data['profileImage'] = profileImage;
     _data['_id'] = id;
@@ -180,16 +193,18 @@ class Contact {
   });
   String? name;
   String? contact;
-  late final String contactType;
-  late final String message;
-  late final RefId refId;
+  final String contactType;
+  final String message;
+  final RefId refId;
 
-  Contact.fromJson(Map<String, dynamic> json) {
-    name = json['name'] ?? "";
-    contact = json['contact'];
-    contactType = json['contactType'];
-    message = json['message'];
-    refId = RefId.fromJson(json['refId']);
+  factory Contact.fromJson(Map<String, dynamic> json) {
+    return Contact(
+      name: json['name'] ?? "",
+      contact: json['contact'],
+      contactType: json['contactType'],
+      message: json['message'],
+      refId: RefId.fromJson(json['refId']),
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -215,26 +230,28 @@ class UserId {
     required this.updatedAt,
     required this.v,
   });
-  late final String emailAddress;
-  late final String phoneNumber;
-  late final int numberOfConnections;
-  late final String userName;
-  late final String profileImage;
-  late final String id;
-  late final String createdAt;
-  late final String updatedAt;
-  late final int v;
+  final String emailAddress;
+  final String phoneNumber;
+  final int numberOfConnections;
+  final String userName;
+  final String profileImage;
+  final String id;
+  final String createdAt;
+  final String updatedAt;
+  final int v;
 
-  UserId.fromJson(Map<String, dynamic> json) {
-    emailAddress = json['emailAddress'];
-    phoneNumber = json['phoneNumber'];
-    numberOfConnections = json['numberOfConnections'];
-    userName = json['userName'];
-    profileImage = json['profileImage'];
-    id = json['_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    v = json['__v'];
+  factory UserId.fromJson(Map<String, dynamic> json) {
+    return UserId(
+      emailAddress: json['emailAddress'],
+      phoneNumber: json['phoneNumber'],
+      numberOfConnections: json['numberOfConnections'],
+      userName: json['userName'],
+      profileImage: json['profileImage'],
+      id: json['_id'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      v: json['__v'],
+    );
   }
 
   Map<String, dynamic> toJson() {

@@ -394,7 +394,7 @@ class APICALLS with ValidationMixin {
 
     if (parsedResponse["status"] == true) {
       // All okay
-      Get.offAll(HomeView(index: 3.obs));
+      Get.offAll(() => HomeView(index: 3.obs));
       pluhgSnackBar("Great", "You have changed your profile details");
       return false;
     } else {
@@ -437,7 +437,7 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
-        Get.offAll(HomeView(index: 3.obs));
+        Get.offAll(() => HomeView(index: 3.obs));
         pluhgSnackBar("Great", "You have changed your picture");
       });
 
@@ -847,12 +847,12 @@ class APICALLS with ValidationMixin {
   Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
     User user = await UserState.get();
 
-    var uri = Uri.parse("$url/api/connect/getconnectionsDetails/$connectionID");
-    print('uri ${uri.toString()}');
+    var uri = Uri.parse("$url/api/connect/getConnectionsDetails/$connectionID");
     var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
-    print(response.body);
-    Map<String, dynamic> map = jsonDecode(response.body);
-    return RecommendationResponse.fromJson(map);
+    var parsedResponse = jsonDecode(response.body);
+    print("[API:getNotifications] response: ${parsedResponse.toString()}");
+
+    return RecommendationResponse.fromJson(parsedResponse);
   }
 
   // Upload file (document / image(s))
