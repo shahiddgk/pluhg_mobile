@@ -21,7 +21,8 @@ class WaitingConnectionScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _WaitingConnectionScreenState createState() => _WaitingConnectionScreenState();
+  _WaitingConnectionScreenState createState() =>
+      _WaitingConnectionScreenState();
 }
 
 class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with SingleTickerProviderStateMixin {
@@ -29,7 +30,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
   bool _responded = false;
   final APICALLS api = APICALLS();
 
-  getUserID() async {
+  Future<void> getUserID() async {
     User currentUser = await UserState.get();
     setState(() {
       user = currentUser;
@@ -41,7 +42,23 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
     _responded = false;
     super.initState();
 
-    getUserID();
+    data = widget.data;
+
+
+    getUserID().then((_) {
+      bool responded = false;
+      final requesterContact = data["requester"]["contact"];
+
+      if (user?.email == requesterContact || user?.phone == requesterContact) {
+        responded = data["isRequesterAccepted"];
+      } else {
+        responded = data["isContactAccepted"];
+      }
+
+      setState(() {
+        _responded = responded;
+      });
+    });
   }
 
   @override
@@ -66,7 +83,8 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: size.width * 0.026),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 16.w, vertical: size.width * 0.026),
                     margin: EdgeInsets.symmetric(horizontal: size.width * 0.04),
                     decoration: BoxDecoration(
                       color: Color(0xffEBEBEB),
@@ -101,7 +119,8 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                                       width: 87.2,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(15),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Color.fromARGB(5, 0, 0, 0),
@@ -150,13 +169,16 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                         Container(
                           //width: 307.22,
                           padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white),
                           child: Text(
                             widget.data["requester"]["message"] == "" || widget.data["requester"]["message"] == null
                                 ? "Hi!! You have been connected, please check the app"
                                 : "${widget.data["requester"]["message"]}",
                             textAlign: TextAlign.justify,
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w400),
                           ),
                         ),
                         SizedBox(
@@ -172,11 +194,15 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                     width: 339,
                     height: 89.06,
                     padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: Color(0xffEBEBEB), borderRadius: BorderRadius.circular(14)),
+                    decoration: BoxDecoration(
+                        color: Color(0xffEBEBEB),
+                        borderRadius: BorderRadius.circular(14)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Connection Status:", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                        Text("Connection Status:",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [

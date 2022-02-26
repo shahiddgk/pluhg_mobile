@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,13 +15,18 @@ Widget card(BuildContext context, var data) {
       Container(
         width: 64.w,
         height: 64.w,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
         child: !data.containsKey("profileImage") || data["profileImage"] == null
             ? Container(
                 child: Center(
                   child: SvgPicture.asset("resources/svg/profile.svg"),
                 ),
-                decoration: BoxDecoration(color: pluhgColour, borderRadius: BorderRadius.circular(12.r)),
+                decoration: BoxDecoration(
+                  color: pluhgColour,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
               )
             : ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
@@ -31,7 +35,8 @@ Widget card(BuildContext context, var data) {
                   height: 64.w,
                   width: 64.w,
                   fit: BoxFit.cover,
-                )),
+                ),
+              ),
       ),
       Container(height: 2.h),
       Text(
@@ -78,7 +83,8 @@ Widget cardProfile2(BuildContext context, var data, String text) {
               child: Center(
                 child: SvgPicture.asset("resources/svg/profile.svg"),
               ),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
             )
           : Container(
               width: 68.73.w,
@@ -107,7 +113,8 @@ Widget cardProfile2(BuildContext context, var data, String text) {
       ),
       Text(
         text,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black),
+        style: TextStyle(
+            fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black),
       ),
       SizedBox(
         height: 8.h,
@@ -124,7 +131,9 @@ Widget smallCard(var data, var accepted) {
     height: 41.03,
     width: 150,
     decoration: BoxDecoration(
-        color: accepted ? Color.fromARGB(17, 9, 206, 53) : Color.fromARGB(24, 191, 161, 36),
+        color: accepted
+            ? Color.fromARGB(17, 9, 206, 53)
+            : Color.fromARGB(24, 191, 161, 36),
         borderRadius: BorderRadius.circular(14)),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -136,12 +145,15 @@ Widget smallCard(var data, var accepted) {
                 ),
                 height: 28.82,
                 width: 30.17,
-                decoration: BoxDecoration(color: pluhgColour, borderRadius: BorderRadius.circular(16)),
+                decoration: BoxDecoration(
+                    color: pluhgColour,
+                    borderRadius: BorderRadius.circular(16)),
               )
             : Container(
                 height: 28.82,
                 width: 30.17,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(16)),
                 child: Center(
                     child: CircleAvatar(
                   backgroundImage: NetworkImage(
@@ -159,7 +171,10 @@ Widget smallCard(var data, var accepted) {
                 "$userName",
                 maxLines: 1,
                 overflow: TextOverflow.fade,
-                style: TextStyle(fontWeight: FontWeight.w400, color: Colors.black, fontSize: 12),
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                    fontSize: 12),
               ),
               Row(
                 children: [
@@ -167,7 +182,9 @@ Widget smallCard(var data, var accepted) {
                       ? Container(
                           width: 10,
                           height: 10,
-                          decoration: BoxDecoration(color: Color(0xff09CE35), borderRadius: BorderRadius.circular(2)),
+                          decoration: BoxDecoration(
+                              color: Color(0xff09CE35),
+                              borderRadius: BorderRadius.circular(2)),
                           child: Center(
                             child: Icon(
                               Icons.check,
@@ -183,7 +200,10 @@ Widget smallCard(var data, var accepted) {
                   Text(accepted ? "Accepted connect" : "Waiting to accept",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 10))
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 10))
                 ],
               )
             ],

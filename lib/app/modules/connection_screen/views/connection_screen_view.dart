@@ -47,33 +47,49 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                   width: Get.width,
                   margin: EdgeInsets.symmetric(horizontal: 12.0.w),
                   height: 42,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(53), color: Color(0xffEBEBEB)),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(53),
+                      color: Color(0xffEBEBEB)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       InkWell(
-                          onTap: () {
-                            controller.currentIndex.value = 0;
-                          },
-                          child: Container(
-                            width: (MediaQuery.of(context).size.width - 4.w) / 4,
-                            child: connectionTab("Accepted", controller.currentIndex.value == 0 ? true : false),
-                          )),
+                        onTap: () {
+                          controller.currentIndex.value = 0;
+                        },
+                        child: Container(
+                          width: (MediaQuery.of(context).size.width - 4.w) / 4,
+                          child: connectionTab(
+                            "Accepted",
+                            controller.currentIndex.value == 0,
+                          ),
+                        ),
+                      ),
                       InkWell(
-                          onTap: () {
-                            controller.currentIndex.value = 1;
-                          },
-                          child: Container(
-                              width: (MediaQuery.of(context).size.width - 4.w) / 4,
-                              child: connectionTab("Waiting", controller.currentIndex.value == 1 ? true : false))),
+                        onTap: () {
+                          controller.currentIndex.value = 1;
+                        },
+                        child: Container(
+                          width: (MediaQuery.of(context).size.width - 4.w) / 4,
+                          child: connectionTab(
+                            "Waiting",
+                            controller.currentIndex.value == 1,
+                          ),
+                        ),
+                      ),
                       InkWell(
-                          onTap: () {
-                            controller.currentIndex.value = 2;
-                          },
-                          child: Container(
-                              width: (MediaQuery.of(context).size.width - 4.w) / 2.5,
-                              child:
-                                  connectionTab("Who I Connected", controller.currentIndex.value == 2 ? true : false)))
+                        onTap: () {
+                          controller.currentIndex.value = 2;
+                        },
+                        child: Container(
+                          width:
+                              (MediaQuery.of(context).size.width - 4.w) / 2.5,
+                          child: connectionTab(
+                            "Who I Connected",
+                            controller.currentIndex.value == 2,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -105,50 +121,62 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                       );
                     } else if (snapshot.hasData) {
                       return Expanded(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: controller.currentIndex.value == 0
-                                  ? snapshot.hasData != false
-                                      ? controller.activeList.value
-                                      : 0
-                                  : controller.currentIndex.value == 1
-                                      ? snapshot.hasData != false
-                                          ? controller.waitingList.value
-                                          : 0
-                                      : snapshot.hasData != false
-                                          ? controller.connectedList.value
-                                          : 0,
-                              itemBuilder: (context, index) {
-                                dynamic data = snapshot.data;
-                                return controller.currentIndex.value == 0
-                                    ? snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
-                                        ? Center(
-                                            child: Text(
-                                            " ",
-                                            style: TextStyle(color: Colors.black),
-                                          ))
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: controller.currentIndex.value == 0
+                              ? controller.activeList.value
+                              : controller.currentIndex.value == 1
+                                  ? controller.waitingList.value
+                                  : controller.connectedList.value,
+                          itemBuilder: (context, index) {
+                            dynamic data = snapshot.data;
+                            return controller.currentIndex.value == 0
+                                ? snapshot.hasData == false ||
+                                        snapshot.connectionState !=
+                                            ConnectionState.done
+                                    ? Center(
+                                        child: Text(
+                                          " ",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: activeConnectionCard(
+                                          data: data[index],
+                                          user: controller.user,
+                                        ),
+                                      )
+                                : controller.currentIndex.value == 1
+                                    ?
+                                    // controller.waitingList.value == 0 ||
+                                    snapshot.hasData == false ||
+                                            snapshot.connectionState !=
+                                                ConnectionState.done
+                                        ? Center(child: Text(" "))
                                         : Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: activeConnectionCard(data: data[index], user: controller.user),
+                                            child: waitingConnectionCard(
+                                              data: data[index],
+                                              user: controller.user,
+                                            ),
                                           )
-                                    : controller.currentIndex.value == 1
-                                        ?
-                                        // controller.waitingList.value == 0 ||
-                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
-                                            ? Center(child: Text(" "))
-                                            : Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: waitingConnectionCard(data: data[index], user: controller.user),
-                                              )
-                                        :
-                                        // controller.connectedList.value == 0 ||
-                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
-                                            ? Center(child: Text(" "))
-                                            : Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: whoIConnectedCard(data: data[index], user: controller.user),
-                                              );
-                              }));
+                                    :
+                                    // controller.connectedList.value == 0 ||
+                                    snapshot.hasData == false ||
+                                            snapshot.connectionState !=
+                                                ConnectionState.done
+                                        ? Center(child: Text(" "))
+                                        : Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: whoIConnectedCard(
+                                              data: data[index],
+                                              user: controller.user,
+                                            ),
+                                          );
+                          },
+                        ),
+                      );
                     } else {
                       return Column(
                         children: [
