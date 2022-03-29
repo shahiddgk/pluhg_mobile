@@ -221,7 +221,8 @@ class ContactView extends GetView<ContactController> {
                             ],
                           ),
                         );
-                      } else {
+                      }
+                      else {
                         return Column(
                           children: [
                             SizedBox(height: 20.h),
@@ -229,32 +230,32 @@ class ContactView extends GetView<ContactController> {
                               child: ListView.builder(
                                 itemCount: contacts.length,
                                 itemBuilder: (context, index) {
-                                  if (contacts[index].phoneNumber.isNotEmpty ||
-                                      contacts[index].emailAddress.isNotEmpty) {
+                                  if (contacts[index].phoneNumber.isNotEmpty || contacts[index].emailAddress.isNotEmpty) {
+
                                     return contactItem(contacts[index], () async {
-                                      if (controller.requesterName.value.isEmpty ||
-                                          controller.contactName.value.isEmpty) {
+                                      if (controller.requesterName.value.isEmpty || controller.contactName.value.isEmpty) {
                                         Contact? contact = await FlutterContacts.getContact(contacts[index].id!);
 
                                         if (contact != null) {
                                           PluhgContact pluhgContact = PluhgContact.fromContact(contact);
                                           if (controller.requesterName.value.isEmpty) {
                                             onRequesterSelect(pluhgContact, index, context, contacts);
-                                          } else if (controller.contactName.value.isEmpty &&
-                                              controller.requesterName.value.isNotEmpty) {
+                                          } else if (controller.contactName.value.isEmpty && controller.requesterName.value.isNotEmpty) {
                                             onContactSelect(pluhgContact, index, context, contacts);
                                           } else {
                                             showPluhgDailog(
                                                 context, "Info", "So Sorry !  You can select the same person");
                                           }
                                         }
-                                      } else if (controller.contactName.value.isNotEmpty &&
-                                          controller.requesterName.value.isNotEmpty) {
+                                      }
+                                      else if (controller.contactName.value.isNotEmpty && controller.requesterName.value.isNotEmpty) {
+                                        print('ON TAP CALLL ELSE IF');
                                         showPluhgDailog(
                                             context, "Info", "You can't have more than two contacts selected");
                                       }
                                     });
-                                  } else {
+                                  }
+                                  else {
                                     return SizedBox.shrink();
                                   }
                                 },
@@ -314,8 +315,7 @@ class ContactView extends GetView<ContactController> {
     );
   }
 
-  Widget _addContactItem(String requesterName, String requesterContact, Uint8List? image, String buttonText,
-      bool isPluhgUser, Function onTap) {
+  Widget _addContactItem(String requesterName, String requesterContact, Uint8List? image, String buttonText, bool isPluhgUser, Function onTap) {
     return Stack(
       //alignment: Alignment.topRight,
       clipBehavior: Clip.none,

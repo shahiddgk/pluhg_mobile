@@ -20,8 +20,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              _avatar(contact.name.substring(0, 1), contact.photo,
-                  contact.isPlughedUser),
+              _avatar(contact.name.substring(0, 1), contact.photo, contact.isPlughedUser),
               SizedBox(
                 width: 12,
               ),
@@ -47,7 +46,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                         )
                       : Container(
                           child: Column(
-                              children: contact.phoneNumbers
+                              children: contact.phoneNumbers.take(2)
                                   .map((e) => Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
@@ -58,20 +57,12 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                                                 width: 220.w,
                                                 child: RadioListTile(
                                                     title: Text(e),
-                                                    value: contact.phoneNumbers
-                                                        .indexOf(e),
-                                                    groupValue: contact
-                                                        .phoneNumbers
-                                                        .indexOf(contact
-                                                            .phoneNumber),
-                                                    activeColor:
-                                                        AppColors.pluhgColour,
+                                                    value: contact.phoneNumbers.indexOf(e),
+                                                    groupValue: contact.phoneNumbers.indexOf(contact.phoneNumber),
+                                                    activeColor: AppColors.pluhgColour,
                                                     onChanged: (value) async{
-
                                                       print(value);
-                                                      contact.phoneNumber =
-                                                          contact.phoneNumbers[
-                                                              value as int];
+                                                      contact.phoneNumber = contact.phoneNumbers[value as int];
                                                       onTap!();
                                                     }))
                                             /*RadioButton(
@@ -80,17 +71,55 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                                                 groupValue: [],
                                                 onChanged: (val) {})*/
                                           ]))
-                                  .toList())),
+                                  .toList()),
+                  ),
+
                   Text(
-                    (contact.emailAddress.isEmpty ||
-                            contact.phoneNumber.isEmpty)
+                    (contact.emailAddress.isEmpty || contact.phoneNumber.isEmpty)
                         ? ""
                         : contact.emailAddress,
                     style: TextStyle(
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w400,
                         color: AppColors.pluhgMenuGrayColour),
-                  ),
+                  )
+
+                  /*contact.emailAddresses.length <= 1
+                    ?
+                  Text(
+                    (contact.emailAddress.isEmpty || contact.phoneNumber.isEmpty)
+                        ? ""
+                        : contact.emailAddress,
+                    style: TextStyle(
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.pluhgMenuGrayColour),
+                  ) : Container(
+                    child: Column(
+                        children: contact.emailAddresses.take(2)
+                            .map((e) => Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  width: 220.w,
+                                  child: RadioListTile(
+                                      title: Text(e),
+                                      value: contact.emailAddresses.indexOf(e),
+                                      groupValue: contact.emailAddresses.indexOf(contact.emailAddress),
+                                      activeColor:
+                                      AppColors.pluhgColour,
+                                      onChanged: (value) async{
+
+                                        print(value);
+                                        contact.emailAddress = contact.emailAddresses[value as int];
+                                        onTap!();
+                                      }))
+                            ]))
+                            .toList()),
+                  ),*/
                 ],
               ),
             ],
