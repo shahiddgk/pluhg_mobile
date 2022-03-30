@@ -668,7 +668,42 @@ class APICALLS with ValidationMixin {
     required BuildContext context,
     required String connectionID,
   }) async {
-    var uri = Uri.parse("$url/api/connect/accept");
+
+    ProgressDialog pd = ProgressDialog(context: context);
+    var parsedResponse;
+    pd.show(
+      max: 100,
+      msg: 'Please wait...',
+      progressType: ProgressType.normal,
+      progressBgColor: Colors.transparent,
+    );
+
+    pd.close();
+
+    parsedResponse = await Future.delayed(Duration(seconds: 2)).then((value) {
+       return true;
+    });
+
+    if (parsedResponse == true) {
+      // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+      showPluhgDailog2(
+        context,
+        "Success",
+        "MESSAGE CALL",
+        onCLosed: () {
+          print("[Dialogue:OnClose] go to HomeView [2]");
+          Get.offAll(() => HomeView(index: 2.obs));
+        },
+      );
+
+      return false;
+    }
+
+    // error
+    pluhgSnackBar("So sorry", 'ERROR MES');
+    return false;
+
+    /*var uri = Uri.parse("$url/api/connect/accept");
     User user = await UserState.get();
     print("[API:acceptConnectionRequest] user: ${user.toString()}");
 
@@ -707,7 +742,7 @@ class APICALLS with ValidationMixin {
 
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
-    return false;
+    return false;*/
   }
 
   Future<bool> declineConnectionRequest({
@@ -715,6 +750,11 @@ class APICALLS with ValidationMixin {
     required String connectionID,
     required String reason,
   }) async {
+
+    return Future.delayed(Duration(seconds: 2)).then((value) => false);
+
+    return false;
+
     var uri = Uri.parse("$url/api/connect/decline");
     User user = await UserState.get();
     print("[API:declineConnectionRequest] user: ${user.toString()}");
