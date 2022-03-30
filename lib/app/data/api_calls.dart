@@ -668,6 +668,41 @@ class APICALLS with ValidationMixin {
     required BuildContext context,
     required String connectionID,
   }) async {
+
+   /* User user = await UserState.get();
+    ProgressDialog pd = ProgressDialog(context: context);
+    var parsedResponse;
+    pd.show(
+      max: 100,
+      msg: 'Please wait...',
+      progressType: ProgressType.normal,
+      progressBgColor: Colors.transparent,
+    );
+
+    parsedResponse = await Future.delayed(Duration(seconds: 1)).then((value){
+      pd.close();
+      return true;
+    });
+
+    if (parsedResponse == true) {
+      // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+      showPluhgDailog2(
+        context,
+        "Success",
+        'Meesage from db',
+        onCLosed: () {
+          print("[Dialogue:OnClose] go to HomeView [2]");
+          Get.offAll(() => HomeView(index: 2.obs));
+        },
+      );
+
+      return false;
+    }
+
+    // error
+    pluhgSnackBar("So sorry", parsedResponse["message"]);
+    return false;
+*/
     var uri = Uri.parse("$url/api/connect/accept");
     User user = await UserState.get();
     print("[API:acceptConnectionRequest] user: ${user.toString()}");
@@ -708,6 +743,7 @@ class APICALLS with ValidationMixin {
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
     return false;
+
   }
 
   Future<bool> declineConnectionRequest({
