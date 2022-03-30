@@ -50,7 +50,7 @@ class APICALLS with ValidationMixin {
 
 
     var response = await http.post(uri, body: jsonEncode(body), headers: {"Content-Type": "application/json"})
-        .timeout(Duration(milliseconds: 200),onTimeout: (){
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION,onTimeout: (){
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}',400);
     });
     var parsedResponse = jsonDecode(response.body);
