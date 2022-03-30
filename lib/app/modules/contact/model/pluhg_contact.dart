@@ -9,6 +9,7 @@ class PluhgContact {
   String name, phoneNumber, emailAddress;
   List<String> phoneNumbers;
   List<String> emailAddresses;
+  String? selectedContact;
 
   PluhgContact({
     required this.id,
@@ -19,6 +20,7 @@ class PluhgContact {
     required this.emailAddress,
     required this.isPlughedUser,
     required this.emailAddresses,
+    this.selectedContact,
   });
 
   PluhgContact copyWith({
@@ -30,6 +32,7 @@ class PluhgContact {
     String? emailAddress,
     bool? isPlughedUser,
     List<String>? emailAddresses,
+    String? selectedContact,
   }) {
     return PluhgContact(
       phoneNumbers: phoneNumbers!,
@@ -40,6 +43,7 @@ class PluhgContact {
       emailAddress: emailAddress ?? this.emailAddress,
       isPlughedUser: isPlughedUser ?? this.isPlughedUser,
        emailAddresses:  emailAddresses ?? this.emailAddresses,
+      selectedContact:  selectedContact ?? this.selectedContact,
     );
   }
 
