@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -99,7 +100,26 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                     children: [
                       Stack(
                         children: [
+
                           Center(
+                            child: Container(
+                              height: controller.size.height * 0.42,
+                              width: controller.size.width,
+                              child: snapshot.data == null
+                                  ? SvgPicture.asset("resources/svg/profile.svg")
+                              //TODO uncomment
+
+                                  : CachedNetworkImage(
+                                imageUrl: APICALLS.imageBaseUrl + snapshot.data['profileImage'].toString(),
+                                height: controller.size.height * 0.42,
+                                width: controller.size.width,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+
+                          ///OLD Code
+                          /*Center(
                             child: Container(
                               height: controller.size.height * 0.42,
                               width: controller.size.width,
@@ -114,12 +134,14 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                       fit: BoxFit.cover,
                                     ),
                             ),
-                          ),
+                          ),*/
+
                           Container(
                             height: controller.size.height * 0.42,
                             width: controller.size.width,
                             color: Colors.black.withOpacity(0.65),
                           ),
+
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -143,16 +165,33 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                   SizedBox(height: controller.size.height * 0.037),
                                   Row(
                                     children: [
+
                                       snapshot.data == null
+                                          ? SvgPicture.asset("resources/svg/profile.svg")
+                                          : Container(
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(100),
+                                              child: CachedNetworkImage(
+                                                imageUrl: APICALLS.imageBaseUrl + snapshot.data['profileImage'],
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            height: 80.19,
+                                            width: 80.19,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+
+                                      /// OLD Code
+                                      /*snapshot.data == null
                                           ? SvgPicture.asset("resources/svg/profile.svg")
                                           : CircleAvatar(
                                               backgroundColor: pluhgColour,
-                                              backgroundImage:
-                                                  NetworkImage(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
-
+                                              backgroundImage: NetworkImage(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
                                               //TODO uncomment this part
                                               radius: 40.19,
-                                            ),
+                                            ),*/
                                       SizedBox(width: 15),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
