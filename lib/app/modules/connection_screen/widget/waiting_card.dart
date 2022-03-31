@@ -34,7 +34,7 @@ Widget waitingConnectionCard({
         ));
 
        if(returnData){
-         ///TO DO
+         onRemoveCallBack();
        }
 
       },

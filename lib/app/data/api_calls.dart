@@ -791,7 +791,7 @@ class APICALLS with ValidationMixin {
     required String connectionID,
   }) async {
 
-   /* User user = await UserState.get();
+    User user = await UserState.get();
     ProgressDialog pd = ProgressDialog(context: context);
     var parsedResponse;
     pd.show(
@@ -818,14 +818,14 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return false;
+      return parsedResponse;
     }
 
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
     return false;
-*/
-    var uri = Uri.parse("$url/api/connect/accept");
+
+    /*var uri = Uri.parse("$url/api/connect/accept");
     User user = await UserState.get();
     print("[API:acceptConnectionRequest] user: ${user.toString()}");
 
@@ -869,13 +869,13 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return false;
+      return parsedResponse;
     }
 
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
     return false;
-
+*/
   }
 
 
@@ -930,7 +930,7 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return false;
+      return parsedResponse;
     }
 
     // error
