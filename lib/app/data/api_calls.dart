@@ -696,7 +696,7 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return false;
+      return parsedResponse;
     }
 
     // error

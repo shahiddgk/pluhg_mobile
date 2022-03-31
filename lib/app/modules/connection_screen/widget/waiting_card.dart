@@ -27,8 +27,15 @@ Widget waitingConnectionCard({
 
   return Obx(
     () => GestureDetector(
-      onTap: () {
-        Get.to(() => WaitingConnectionScreen(data: data));
+      onTap: () async{
+        var returnData = await Get.to(() => WaitingConnectionScreen(
+            data: data,
+        ));
+
+       if(returnData){
+         ///TO DO
+       }
+
       },
       child: Container(
         margin: EdgeInsets.only(top: 24.h, bottom: 12.h),
