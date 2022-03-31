@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -99,7 +100,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                         )
                                       : CircleAvatar(
                                           backgroundColor: pluhgColour,
-                                          backgroundImage: NetworkImage(APICALLS.imageBaseUrl + pics),
+                                          backgroundImage: CachedNetworkImageProvider(APICALLS.imageBaseUrl + pics),
                                           radius: 40.19,
                                         ),
                               Positioned(

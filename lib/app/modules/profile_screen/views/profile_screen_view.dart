@@ -12,6 +12,7 @@ import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/screens/privacy_policy_screen.dart';
+import 'package:plug/widgets/image.dart';
 
 import '../controllers/profile_screen_controller.dart';
 
@@ -166,22 +167,21 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                   Row(
                                     children: [
 
+                                      /*snapshot.data == null
+                                          ? SvgPicture.asset("resources/svg/profile.svg")
+                                          : CircleAvatar(
+                                              backgroundColor: pluhgColour,
+                                              backgroundImage: CachedNetworkImageProvider(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
+                                               radius: 40.19,
+                                            ),*/
+
                                       snapshot.data == null
                                           ? SvgPicture.asset("resources/svg/profile.svg")
-                                          : Container(
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(100),
-                                              child: CachedNetworkImage(
-                                                imageUrl: APICALLS.imageBaseUrl + snapshot.data['profileImage'],
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            height: 80.19,
-                                            width: 80.19,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
+                                          : cachedNetworkImageWidget(
+                                          imageUrl: APICALLS.imageBaseUrl + snapshot.data['profileImage'],
+                                          height: 80.19,
+                                          width: 80.19,
+                                      ),
 
                                       /// OLD Code
                                       /*snapshot.data == null
