@@ -84,7 +84,29 @@ Widget cardProfile2(BuildContext context, var data, String text) {
       SizedBox(
         height: 10.h,
       ),
+
       !data.containsKey("profileImage") || data["profileImage"] == null
+          ? Container(
+              width: 68.73.w,
+              height: 65.65.h,
+              child: Center(
+                child: SvgPicture.asset("resources/svg/profile.svg"),
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
+            )
+          : Center(
+              child: cachedNetworkImageWidget(
+                imageUrl:
+                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
+                width: 68.73.w,
+                height: 65.65.w,
+                borderRadiusValue: Get.size.width * 0.042,
+              ),
+            ),
+
+      ///OLD CCODE
+      /*!data.containsKey("profileImage") || data["profileImage"] == null
           ? Container(
               width: 68.73.w,
               height: 65.65.h,
@@ -108,7 +130,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                     fit: BoxFit.cover,
                   ),
                 ),
-              )),
+              )),*/
       Container(
         height: 6.h,
       ),
