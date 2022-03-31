@@ -265,6 +265,8 @@ class _ChatScreenState extends State<ChatScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50))),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
               height: 20.h,
