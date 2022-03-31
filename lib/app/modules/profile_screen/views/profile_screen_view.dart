@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/screens/privacy_policy_screen.dart';
+import 'package:plug/widgets/image.dart';
 
 import '../controllers/profile_screen_controller.dart';
 
@@ -99,7 +101,26 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                     children: [
                       Stack(
                         children: [
+
                           Center(
+                            child: Container(
+                              height: controller.size.height * 0.42,
+                              width: controller.size.width,
+                              child: snapshot.data == null
+                                  ? SvgPicture.asset("resources/svg/profile.svg")
+                              //TODO uncomment
+
+                                  : CachedNetworkImage(
+                                imageUrl: APICALLS.imageBaseUrl + snapshot.data['profileImage'].toString(),
+                                height: controller.size.height * 0.42,
+                                width: controller.size.width,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+
+                          ///OLD Code
+                          /*Center(
                             child: Container(
                               height: controller.size.height * 0.42,
                               width: controller.size.width,
@@ -114,12 +135,14 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                       fit: BoxFit.cover,
                                     ),
                             ),
-                          ),
+                          ),*/
+
                           Container(
                             height: controller.size.height * 0.42,
                             width: controller.size.width,
                             color: Colors.black.withOpacity(0.65),
                           ),
+
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -143,16 +166,32 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                   SizedBox(height: controller.size.height * 0.037),
                                   Row(
                                     children: [
-                                      snapshot.data == null
+
+                                      /*snapshot.data == null
                                           ? SvgPicture.asset("resources/svg/profile.svg")
                                           : CircleAvatar(
                                               backgroundColor: pluhgColour,
-                                              backgroundImage:
-                                                  NetworkImage(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
+                                              backgroundImage: CachedNetworkImageProvider(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
+                                               radius: 40.19,
+                                            ),*/
 
+                                      snapshot.data == null
+                                          ? SvgPicture.asset("resources/svg/profile.svg")
+                                          : cachedNetworkImageWidget(
+                                          imageUrl: APICALLS.imageBaseUrl + snapshot.data['profileImage'],
+                                          height: 80.19,
+                                          width: 80.19,
+                                      ),
+
+                                      /// OLD Code
+                                      /*snapshot.data == null
+                                          ? SvgPicture.asset("resources/svg/profile.svg")
+                                          : CircleAvatar(
+                                              backgroundColor: pluhgColour,
+                                              backgroundImage: NetworkImage(APICALLS.imageBaseUrl + snapshot.data['profileImage']),
                                               //TODO uncomment this part
                                               radius: 40.19,
-                                            ),
+                                            ),*/
                                       SizedBox(width: 15),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,

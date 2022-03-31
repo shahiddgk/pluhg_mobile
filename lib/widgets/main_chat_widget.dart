@@ -16,7 +16,19 @@ Widget getMainChatItem(UserChat user_chat) {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
+
         Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: cachedNetworkImageWidget(
+            imageUrl: APICALLS.imageBaseUrl + user_chat.profileImage!,
+              width: 46.w,
+              height: 46.w,
+              borderRadiusValue: 26,
+              ),
+        ),
+
+        ///OLD CODE
+        /*Padding(
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(26.0),
@@ -29,7 +41,7 @@ Widget getMainChatItem(UserChat user_chat) {
                     height: 46.w,
                     fit: BoxFit.cover)),
           ),
-        ),
+        ),*/
         SizedBox(
           width: Get.width - (52 + 8 + 8),
           child: Padding(

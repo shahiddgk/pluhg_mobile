@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
@@ -31,8 +32,7 @@ class ImagesChatWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => FullScreenWrapper(
-                  imageProvider:
-                      NetworkImage(APICALLS.imageBaseUrl + im.toString()),
+                  imageProvider: CachedNetworkImageProvider(APICALLS.imageBaseUrl + im.toString()),
                   backgroundColor: Colors.black,
                 ),
               ));

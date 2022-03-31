@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -149,7 +150,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                               width: 39,
                               height: 45,
                               child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
+                                  backgroundImage: CachedNetworkImageProvider(
                                       APICALLS.imageBaseUrl + widget.data['userId']['profileImage'].toString())),
                             ),
                             SizedBox(
