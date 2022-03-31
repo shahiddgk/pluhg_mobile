@@ -29,15 +29,36 @@ networkImage(String imageUrl, {double sideSize = 0}) {
     height: size,
     child: Padding(
       padding: EdgeInsets.all(6.w),
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        fit: BoxFit.fill,
-        placeholder: (context, url) => Padding(
-          padding: EdgeInsets.all(12.w),
-          child: pluhgProgress(),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12.r),
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.fill,
+          placeholder: (context, url) => Padding(
+            padding: EdgeInsets.all(12.w),
+            child: pluhgProgress(),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
-        errorWidget: (context, url, error) => Icon(Icons.error),
       ),
+    ),
+  );
+}
+
+cachedNetworkImageWidget({
+  required String imageUrl,
+  required double height,
+  required double width,
+  double borderRadiusValue = 100,
+}){
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadiusValue),
+    child: CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => pluhgProgress(),
+      height: height,
+      width: width,
     ),
   );
 }

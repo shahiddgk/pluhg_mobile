@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -103,6 +104,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                         ],
                       ),
                     ),
+
                     Center(
                       child: controller.isLoading.value || controller.profileDetails['data'] == null
                           ? defaultImage()

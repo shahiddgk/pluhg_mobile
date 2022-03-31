@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/widgets/image.dart';
 
 import 'colours.dart';
 
@@ -28,15 +30,21 @@ Widget card(BuildContext context, var data) {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
               )
-            : ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
+            : cachedNetworkImageWidget(
+                imageUrl: APICALLS.imageBaseUrl + data['profileImage'].toString(),
+                height: 64.w,
+                width: 64.w,
+                borderRadiusValue: 12.r,
+              )/*ClipRRect(
+                borderRadius: BorderRadius.circular(12.r)
+                ,
                 child: Image.network(
                   APICALLS.imageBaseUrl + data['profileImage'].toString(),
                   height: 64.w,
                   width: 64.w,
                   fit: BoxFit.cover,
                 ),
-              ),
+              )*/,
       ),
       Container(height: 2.h),
       Text(
@@ -76,7 +84,29 @@ Widget cardProfile2(BuildContext context, var data, String text) {
       SizedBox(
         height: 10.h,
       ),
+
       !data.containsKey("profileImage") || data["profileImage"] == null
+          ? Container(
+              width: 68.73.w,
+              height: 65.65.h,
+              child: Center(
+                child: SvgPicture.asset("resources/svg/profile.svg"),
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
+            )
+          : Center(
+              child: cachedNetworkImageWidget(
+                imageUrl:
+                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
+                width: 68.73.w,
+                height: 65.65.w,
+                borderRadiusValue: Get.size.width * 0.042,
+              ),
+            ),
+
+      ///OLD CCODE
+      /*!data.containsKey("profileImage") || data["profileImage"] == null
           ? Container(
               width: 68.73.w,
               height: 65.65.h,
@@ -100,7 +130,7 @@ Widget cardProfile2(BuildContext context, var data, String text) {
                     fit: BoxFit.cover,
                   ),
                 ),
-              )),
+              )),*/
       Container(
         height: 6.h,
       ),
@@ -156,7 +186,7 @@ Widget smallCard(var data, var accepted) {
                     BoxDecoration(borderRadius: BorderRadius.circular(16)),
                 child: Center(
                     child: CircleAvatar(
-                  backgroundImage: NetworkImage(
+                  backgroundImage: CachedNetworkImageProvider(
                     APICALLS.imageBaseUrl + data['profileImage'].toString(),
                   ),
                 ))),

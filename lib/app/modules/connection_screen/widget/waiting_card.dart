@@ -11,6 +11,7 @@ import 'package:plug/widgets/pluhg_by_widget.dart';
 Widget waitingConnectionCard({
   required dynamic data,
   required Rx<User> user,
+  required VoidCallback onRemoveCallBack,
 }) {
   APICALLS api = APICALLS();
   RxBool responded = false.obs;
@@ -156,6 +157,7 @@ Widget waitingConnectionCard({
                                       connectionID: data["_id"],
                                       context: Get.context!,
                                     );
+                                    onRemoveCallBack();
                                   },
                                 ),
                                 SizedBox(
@@ -185,6 +187,7 @@ Widget waitingConnectionCard({
                                       context: Get.context!,
                                       reason: 'Unknown ??',
                                     );
+                                    onRemoveCallBack();
                                   },
                                 ),
                               ],
