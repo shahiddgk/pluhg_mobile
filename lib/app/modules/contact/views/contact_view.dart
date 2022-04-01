@@ -165,6 +165,7 @@ class ContactView extends GetView<ContactController> {
                     }
                   },
                 ),
+
                 Center(
                   child: SvgPicture.asset("resources/svg/middle.svg"),
                 ),
