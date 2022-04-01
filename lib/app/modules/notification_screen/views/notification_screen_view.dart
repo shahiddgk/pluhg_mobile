@@ -40,7 +40,9 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
             return Center(
               child: Text("Error Encountered, Sorry"),
             );
-          } else {
+          }
+
+          else {
             NotificationResponse notificationResponse = snapshot.data;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -72,13 +74,11 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                             ///OLD code
                             /*CircleAvatar(
                               radius: 50 / 2,
-                              backgroundImage: notificationResponse
-                                      .data[i].userId.profileImage.isEmpty
+                              backgroundImage: notificationResponse.data[i].userId.profileImage.isEmpty
                                   ? SvgPicture.asset(
                                           "resources/svg/profile.svg")
                                       as ImageProvider
-                                  : NetworkImage(APICALLS.imageBaseUrl +
-                                      '${notificationResponse.data[i].userId.profileImage}'),
+                                  : NetworkImage(APICALLS.imageBaseUrl + '${notificationResponse.data[i].userId.profileImage}'),
                             ),*/
 
                             CircleAvatar(
