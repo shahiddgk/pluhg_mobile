@@ -125,18 +125,17 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                           SvgPicture.asset('assets/svg/inactive_messages.svg'),
                           //waiting for backend api changes
                           Positioned(
-                            top: -8,
-                            right: -8,
-                            child: controller_chat.total_unread_messages == 0
+                            top: -10,
+                            right: -6,
+                            child: controller_chat.total_unread_messages.value == 0
                                 ? Container()
                                 : Container(
                                     decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Text(controller_chat.total_unread_messages.toString(),
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: Text(controller_chat.  total_unread_messages.toString(),
                                           maxLines: 1,
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
+                                           style: TextStyle(color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
                                           textAlign: TextAlign.center),
                                     ),
                                   ),

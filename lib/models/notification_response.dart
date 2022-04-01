@@ -100,7 +100,7 @@ class UserId {
   late final Null deviceToken;
 
   UserId.fromJson(Map<String, dynamic> json) {
-    emailAddress = json['emailAddress'];
+    emailAddress = json['emailAddress'] ?? '';
     phoneNumber = json['phoneNumber'];
     // lastLogin = json['lastLogin'];
     numberOfConnections = json['numberOfConnections'];
