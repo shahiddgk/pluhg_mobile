@@ -14,7 +14,7 @@ class ChatScreenController extends GetxController {
   final size = Get.size;
   String? userID;
   final count = 0.obs;
-  int total_unread_messages = 0;
+  RxInt total_unread_messages = 0.obs;
   RxString search = "".obs;
 
   @override
@@ -60,10 +60,14 @@ class ChatScreenController extends GetxController {
       print("[ChatScreenController:getMessages] getListingResponse ${data.toString()}");
       var chatsArr = data['data'];
 
+      print("------------------------>AGAIN CALL");
+
       users.value = List<UserChat>.from(chatsArr.map((dynamic message) => UserChat.fromJson(message)).toList());
 
-      for (UserChat user in users) {
-        total_unread_messages = total_unread_messages + user.unReadCount;
+      if(total_unread_messages.value == 0) {
+        for (UserChat user in users) {
+          total_unread_messages.value = total_unread_messages.value + user.unReadCount;
+        }
       }
 
       usersTemp = List<UserChat>.from(users.value);

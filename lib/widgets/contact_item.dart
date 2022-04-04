@@ -10,15 +10,23 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 Widget contactItem(PluhgContact contact, Function()? onTap) {
 
 
-  final List<String> temString = [];
+  final List<ContactItemDataClass> temString = [];
 
 
-  temString.addAll(contact.phoneNumbers.take(2).map((e) => e).toList());
-  temString.addAll(contact.emailAddresses.take(2).map((e) => e).toList());
+  temString.addAll(contact.phoneNumbers.take(2).map((e) => ContactItemDataClass(value: e,type: contactItemType.phone)).toList());
+  temString.addAll(contact.emailAddresses.take(2).map((e) => ContactItemDataClass(value: e,type: contactItemType.email)).toList());
 
 
-  ///int? radioGroupValue = contact.selectedContact != null ? temString.indexOf(contact.selectedContact!): 0;
-  int? radioGroupValue = contact.selectedContact != null ? temString.indexOf(contact.selectedContact!): null;
+  //int? radioGroupValue = contact.selectedContact != null ? temString.indexOf(contact.selectedContact!): null;
+  int? radioGroupValue = contact.selectedContact != null ? temString.indexOf(temString.firstWhere((e) => e.value == contact.selectedContact!)): null;
+
+  ContactItemDataClass? newRadioGroupValue = contact.selectedContact != null ? temString.firstWhere((element) => element.value == contact.selectedContact) : null;
+
+  print('------------------------------------------ START');
+
+  temString.forEach((element) {
+    print('------------------data-------$element');
+  });
 
   return InkWell(
     onTap: onTap,
@@ -43,7 +51,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                         color: Colors.black),
                   ),
 
-                  if(contact.phoneNumbers.length <= 1 && contact.emailAddresses.length <=1)
+                 /* if(contact.phoneNumbers.length <= 1 && contact.emailAddresses.length <=1)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -68,7 +76,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                         ],
                       ),
 
-                  if(contact.phoneNumbers.length > 1 || contact.emailAddresses.length > 1)
+                  if(contact.phoneNumbers.length > 1 || contact.emailAddresses.length > 1)*/
                       Column(
                         children: temString.map((e) => Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -76,22 +84,28 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                           children: [
                             Container(
                               width: 220.w,
-                              child: RadioListTile(
-                                title: Text(e),
+                              child: RadioListTile<ContactItemDataClass?>(
+                                title: Text(e.value),
                                 dense: true,
                                 visualDensity: VisualDensity.compact,
-                                groupValue: radioGroupValue,
-                                value: temString.indexOf(e),
+                                groupValue: newRadioGroupValue,
+                                value: e,
                                 activeColor: AppColors.pluhgColour,
                                 onChanged: (value) async{
-                                  print('NEW VALUE $value' );
-                                  radioGroupValue = value as int;
-                                  if(value == 0 || value == 1){
+                                  print(value);
+                                  newRadioGroupValue = value;
+                                  if(value?.type == contactItemType.phone){
+                                        contact.selectedContact =contact.phoneNumbers.firstWhere((element) => element == e.value);
+                                      } else {
+                                        contact.selectedContact =contact.emailAddresses.firstWhere((element) => element == e.value);
+                                      }
+                                  onTap!();
+                                      /*if(value == 0 || value == 1){
                                     contact.selectedContact = contact.phoneNumbers.firstWhere((element) => element == e);
                                   }else{
                                     contact.selectedContact = contact.emailAddresses.firstWhere((element) => element == e);
                                   }
-                                  onTap!();
+                                  onTap!();*/
                                 },),),
                           ],
                         )).toList(),
@@ -140,4 +154,16 @@ Widget _avatar(String initials, Uint8List? photo, bool isPluhgUser) {
       ],
     ),
   );
+}
+
+enum contactItemType{
+  email,
+  phone,
+}
+
+class ContactItemDataClass{
+  final String value;
+  final contactItemType type;
+
+  ContactItemDataClass({required this.value,required this.type});
 }
