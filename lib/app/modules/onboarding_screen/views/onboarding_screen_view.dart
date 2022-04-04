@@ -39,7 +39,7 @@ class OnboardingScreenView extends GetView<OnboardingScreenController> {
                   height: 1.67,
                   fontWeight: FontWeight.w600,
                 ),
-                children: [TextSpan(text: "( You are the Plugh! )")],
+                children: [TextSpan(text: "( You are the Pluhg! )")],
               ),
             ),
             //SizedBox(height: 80.01.h),
