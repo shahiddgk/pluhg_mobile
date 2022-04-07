@@ -84,11 +84,17 @@ class ChatScreenController extends GetxController {
 
       users.value = List<UserChat>.from(chatsArr.map((dynamic message) => UserChat.fromJson(message)).toList());
 
-      if(total_unread_messages.value == 0) {
+      total_unread_messages.value = 0;
+
+      for (UserChat user in users) {
+        total_unread_messages.value = total_unread_messages.value + user.unReadCount;
+      }
+
+      /*if(total_unread_messages.value == 0) {
         for (UserChat user in users) {
           total_unread_messages.value = total_unread_messages.value + user.unReadCount;
         }
-      }
+      }*/
 
       usersTemp = List<UserChat>.from(users.value);
     });
