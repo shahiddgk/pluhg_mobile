@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/services/UserState.dart';
@@ -28,10 +29,30 @@ class ChatScreenController extends GetxController {
     super.onReady();
   }
 
+  Uri? link;
+
   @override
   void onClose() {}
 
   void connect() async {
+    try {
+      final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://app.pluhg.com/',
+        link: Uri.parse('https://play.google.com/store/apps/details?id=nic.goi.aarogyasetu'),
+        androidParameters: AndroidParameters(
+          packageName: 'com.ximzee.pluhg',
+        ),
+      );
+
+      final dynamicLink = await parameters.buildUrl();
+
+      link = dynamicLink;
+
+      print('DYNAMIC LIKN ${dynamicLink}');
+    } catch (e) {
+      print('ERROR ${e.toString()}');
+    }
+
     User user = await UserState.get();
     userID = user.id;
     socket = IO.io(APICALLS.ws_url, <String, dynamic>{
