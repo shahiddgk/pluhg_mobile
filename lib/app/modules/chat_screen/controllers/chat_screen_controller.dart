@@ -3,6 +3,7 @@ import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/widgets/models/user_chat.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatScreenController extends GetxController {
   //TODO: Implement ChatScreenController
@@ -13,12 +14,14 @@ class ChatScreenController extends GetxController {
 
   final size = Get.size;
   String? userID;
-  final count = 0.obs;
+  RxInt count = 0.obs;
   RxInt total_unread_messages = 0.obs;
   RxString search = "".obs;
 
   @override
   void onInit() {
+
+    print('ON INIT CLLL TO CHECk');
     super.onInit();
     connect();
   }
@@ -32,12 +35,29 @@ class ChatScreenController extends GetxController {
   void onClose() {}
 
   void connect() async {
+    print('CONNECT  CALL AGAIN');
     User user = await UserState.get();
     userID = user.id;
-    socket = IO.io(APICALLS.ws_url, <String, dynamic>{
+
+    /*socket = IO.io(APICALLS.ws_url, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
-    });
+    });*/
+
+    /// LIST VIEW
+    socket = IO.io(
+        "${APICALLS.ws_url}",
+        OptionBuilder()
+            .setTransports(['websocket'])
+            .enableForceNewConnection()
+            .disableAutoConnect()
+            //.setQuery(<String, dynamic>{'room': 'test'})
+            .build());
+
+    if (socket.connected == true) {
+      socket.disconnect();
+    }
+
     //Connect websockets
     socket.connect();
 
