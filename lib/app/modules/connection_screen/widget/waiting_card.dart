@@ -11,6 +11,7 @@ import 'package:plug/widgets/pluhg_by_widget.dart';
 Widget waitingConnectionCard({
   required dynamic data,
   required Rx<User> user,
+  required VoidCallback onRemoveCallBack,
 }) {
   APICALLS api = APICALLS();
   RxBool responded = false.obs;
@@ -27,8 +28,15 @@ Widget waitingConnectionCard({
 
   return Obx(
     () => GestureDetector(
-      onTap: () {
-        Get.to(() => WaitingConnectionScreen(data: data));
+      onTap: () async{
+        var returnData = await Get.to(() => WaitingConnectionScreen(
+            data: data,
+        ));
+
+       if(returnData){
+         onRemoveCallBack();
+       }
+
       },
       child: Container(
         margin: EdgeInsets.only(top: 24.h, bottom: 12.h),
@@ -149,6 +157,7 @@ Widget waitingConnectionCard({
                                       connectionID: data["_id"],
                                       context: Get.context!,
                                     );
+                                    onRemoveCallBack();
                                   },
                                 ),
                                 SizedBox(
@@ -178,6 +187,7 @@ Widget waitingConnectionCard({
                                       context: Get.context!,
                                       reason: 'Unknown ??',
                                     );
+                                    onRemoveCallBack();
                                   },
                                 ),
                               ],

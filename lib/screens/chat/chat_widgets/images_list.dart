@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
@@ -24,7 +25,7 @@ class ImageList extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => FullScreenWrapper(
-                            imageProvider: NetworkImage(
+                            imageProvider: CachedNetworkImageProvider(
                                 APICALLS.imageBaseUrl +
                                     img.toString()),
                             backgroundColor: Colors.black,

@@ -22,10 +22,10 @@ Widget activeConnectionCard({
       Get.to(
         () => ActiveConnectionScreenView(
           data: data,
-          isRequester: user.value
-                  .compareEmail(data["requester"]["refId"]["emailAddress"]) ||
-              user.value
-                  .comparePhone(data["requester"]["refId"]["phoneNumber"]),
+         // isRequester: user.value.compareEmail(data["requester"]["refId"]["emailAddress"]) || user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
+          isRequester: data["requester"]["refId"]["emailAddress"] != null
+              ? user.value.compareEmail(data["requester"]["refId"]["emailAddress"])
+              : user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
           refreshActiveConnection: () {
             Get.put(ConnectionScreenController()).activeData();
           },

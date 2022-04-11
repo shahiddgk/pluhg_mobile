@@ -10,8 +10,10 @@ import 'package:plug/widgets/notif_icon.dart';
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   bool backButton;
   bool notificationButton;
+  final VoidCallback? onPressed;
 
-  SimpleAppBar({this.backButton = false, this.notificationButton = true});
+
+  SimpleAppBar({this.backButton = false, this.notificationButton = true,this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
       // leadingWidth: backButton ? 30 : 0,
       leading: backButton
           ? IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: onPressed != null ? onPressed : () => Navigator.pop(context),
               icon: SvgPicture.asset(
                 "assets/images/back.svg",
                 color: Colors.black,
