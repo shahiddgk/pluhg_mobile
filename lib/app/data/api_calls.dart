@@ -93,13 +93,17 @@ class APICALLS with ValidationMixin {
 
     print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
     final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
+
+    final isUserEmailEmpty = parsedResponse['data']['user']['emailAddress'] == null;
+    final isUserNameEmpty = parsedResponse['data']['user']['userName'] == null;
+
     print("[verifyOTP] user data: ${userData.toString()}");
 
     SharedPreferences storage = await SharedPreferences.getInstance();
     storage.setBool(PREF_IS_FIRST_APP_RUN, false);
     print("[verifyOTP] PREF_IS_FIRST_APP_RUN: false");
 
-    if (isRegistered) {
+    if (isRegistered && !isUserEmailEmpty && !isUserNameEmpty) {
       User user = await UserState.get();
       await UserState.store(
         User.registered(
