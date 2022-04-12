@@ -35,35 +35,6 @@ class ChatScreenController extends GetxController {
   void onClose() {}
 
   void connect() async {
-    try {
-
-      /*domainUriPrefix: 'https://app.pluhg.com',
-    link: `https://app.pluhg.com/?id=${connection._id}`,
-    androidInfo: {
-    androidPackageName: 'com.ximzee.pluhg',
-    },
-    iosInfo: {
-    iosBundleId: 'com.example.plug',
-    },*/
-
-    final DynamicLinkParameters parameters = DynamicLinkParameters(
-        uriPrefix: 'https://app.pluhg.com/',
-        //link: Uri.parse('https://play.google.com/store/apps/details?id=nic.goi.aarogyasetu'),
-        link: Uri.parse('https://app.pluhg.com/?id=YbpzkDH3wrX5cbkA9'),
-        androidParameters: AndroidParameters(
-          packageName: 'com.ximzee.pluhg',
-        ),
-      );
-
-      final dynamicLink = await parameters.buildUrl();
-
-      link = dynamicLink;
-
-      print('DYNAMIC LIKN ${dynamicLink}');
-    } catch (e) {
-      print('ERROR ${e.toString()}');
-    }
-
     User user = await UserState.get();
     userID = user.id;
     socket = IO.io(APICALLS.ws_url, <String, dynamic>{

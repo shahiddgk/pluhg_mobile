@@ -847,7 +847,7 @@ class APICALLS with ValidationMixin {
   Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
     User user = await UserState.get();
 
-    var uri = Uri.parse("$url/api/connect/getConnectionsDetails/6253c499c0c600db6c47c7bc");
+    var uri = Uri.parse("$url/api/connect/getConnectionsDetails/$connectionID");
     var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
     var parsedResponse = jsonDecode(response.body);
     print("[API:getNotifications] response: ${parsedResponse.toString()}");
