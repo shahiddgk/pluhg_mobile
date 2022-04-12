@@ -36,9 +36,20 @@ class ChatScreenController extends GetxController {
 
   void connect() async {
     try {
-      final DynamicLinkParameters parameters = DynamicLinkParameters(
+
+      /*domainUriPrefix: 'https://app.pluhg.com',
+    link: `https://app.pluhg.com/?id=${connection._id}`,
+    androidInfo: {
+    androidPackageName: 'com.ximzee.pluhg',
+    },
+    iosInfo: {
+    iosBundleId: 'com.example.plug',
+    },*/
+
+    final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: 'https://app.pluhg.com/',
-        link: Uri.parse('https://play.google.com/store/apps/details?id=nic.goi.aarogyasetu'),
+        //link: Uri.parse('https://play.google.com/store/apps/details?id=nic.goi.aarogyasetu'),
+        link: Uri.parse('https://app.pluhg.com/?id=YbpzkDH3wrX5cbkA9'),
         androidParameters: AndroidParameters(
           packageName: 'com.ximzee.pluhg',
         ),
