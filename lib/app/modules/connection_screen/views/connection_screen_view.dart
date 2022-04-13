@@ -121,8 +121,20 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                         ],
                       );
                     }
+
                     else if (snapshot.hasData) {
+
                       return Obx(() {
+                        if(controller.currentIndex.value == 1 && controller.waitingList.value <= 0){
+                          return Column (
+                            children: [
+                              SizedBox(
+                                height: 40.h,
+                              ),
+                              Center(child: Text('No Connection data yet')),
+                            ],
+                          );
+                        }
                           return Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
@@ -153,10 +165,8 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                                     : controller.currentIndex.value == 1
                                         ?
                                         // controller.waitingList.value == 0 ||
-                                        snapshot.hasData == false ||
-                                                snapshot.connectionState !=
-                                                    ConnectionState.done
-                                            ? Center(child: Text(" "))
+                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done || data.length <= 0
+                                            ? Center(child: Text('No Connection data yet'))
                                             : Padding(
                                                 padding: const EdgeInsets.all(8.0),
                                                 child: waitingConnectionCard(
@@ -171,9 +181,7 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                                               )
                                         :
                                         // controller.connectedList.value == 0 ||
-                                        snapshot.hasData == false ||
-                                                snapshot.connectionState !=
-                                                    ConnectionState.done
+                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
                                             ? Center(child: Text(" "))
                                             : Padding(
                                                 padding: const EdgeInsets.all(8.0),
@@ -189,7 +197,7 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                       );
                     }
                     else {
-                      return Column(
+                      return Column (
                         children: [
                           SizedBox(
                             height: 40.h,
