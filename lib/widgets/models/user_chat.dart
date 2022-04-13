@@ -9,7 +9,7 @@ class UserChat {
   String senderId;
   String recevierId;
   String? profileImage;
-  String name;
+  String? name;
   String time;
   int unReadCount;
   String userName;
@@ -34,7 +34,7 @@ class UserChat {
     return UserChat(
       userName: chatMaster['receiverDetails']['userName'].toString(),
       unReadCount: chatMaster["unReadCount"],
-      name: chatMaster['receiverDetails']['name'].toString(),
+      name: chatMaster['receiverDetails']['name'],
       profileImage: chatMaster['receiverDetails']['profileImage'],
       senderId: chatMaster['senderDetails']['_id'],
       recevierId: chatMaster['receiverDetails']['_id'],
