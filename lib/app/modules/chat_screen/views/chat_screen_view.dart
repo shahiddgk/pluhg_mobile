@@ -26,6 +26,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Text(

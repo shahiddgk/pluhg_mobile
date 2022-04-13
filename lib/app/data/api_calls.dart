@@ -825,13 +825,13 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return false;
+      return true;
     }
 
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
     return false;
-*/
+    */
 
     var uri = Uri.parse("$url/api/connect/accept");
     User user = await UserState.get();
@@ -877,7 +877,7 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return parsedResponse;
+      return true;
     }
 
     // error
@@ -938,7 +938,7 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return parsedResponse;
+      return true;
     }
 
     // error
