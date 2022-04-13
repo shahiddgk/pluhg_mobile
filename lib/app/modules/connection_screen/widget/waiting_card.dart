@@ -32,8 +32,6 @@ Widget waitingConnectionCard({
         var returnData = await Get.to(() => WaitingConnectionScreen(
             data: data,
         ));
-
-
         if((data["isRequesterAccepted"] || data["isContactAccepted"]) && returnData){
           onRemoveCallBack();
         }else{
@@ -41,13 +39,6 @@ Widget waitingConnectionCard({
             responded.value = returnData;
           }
         }
-
-
-        /* responded.value = returnData;
-
-       if(returnData){
-         onRemoveCallBack();
-       }*/
 
       },
       child: Container(
@@ -119,20 +110,23 @@ Widget waitingConnectionCard({
                     ),
                     responded.value
                         ? Container(
-                      height: 28.h,
                       margin: EdgeInsets.only(
                         top: 12.0.h,
                         left: 24.0.w,
                         right: 24.0.w,
                         bottom: 12.h,
                       ),
+                      padding: EdgeInsets.symmetric(horizontal: 12,vertical: 6),
                       decoration: BoxDecoration(
                         color: Color(0xFFA4A4A4),
                         borderRadius: BorderRadius.circular(28),
                       ),
                       child: Center(
                         child: Text(
-                          "Waiting...",
+                          //"Waiting...",
+                          _isRequester
+                                ? "You've Accepted and Waiting on ${data['contact']['refId']['userName']}"
+                                : "Waiting on You and ${data['requester']['refId']['userName']} has Accepted",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 12.sp,
