@@ -28,7 +28,7 @@ class RecommendedScreenView extends GetView<RecommendedConnectionScreenControlle
       body: FutureBuilder<RecommendationResponse>(
           future: controller.getWaitingConnection(connectionID!),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot. connectionState == ConnectionState.waiting) {
               return Center(child: pluhgProgress());
             } else if (snapshot.hasError) {
               return Center(

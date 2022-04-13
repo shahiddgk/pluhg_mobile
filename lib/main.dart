@@ -10,6 +10,7 @@ import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.da
 import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
 import 'package:plug/app/widgets/colors.dart';
 
+import 'app/modules/chat_screen/controllers/chat_screen_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/widgets/snack_bar.dart';
 
@@ -65,6 +66,9 @@ void _configureFirebase() async {
     print('Got a message whilst in the foreground!');
     pluhgSnackBar('Notification', "Received Message".toString());
     controller.fcmNotificationReceived();
+
+    final tempCtx = Get.find<ChatScreenController>().connect();
+
     print('Message data: ${message.data}');
     if (message.notification != null) {
       print('Message also contained a notification: ${message.notification!.body.toString()}');

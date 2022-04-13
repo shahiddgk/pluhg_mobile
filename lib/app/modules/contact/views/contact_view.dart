@@ -156,11 +156,19 @@ class ContactView extends GetView<ContactController> {
                     final fullContact = await FlutterContacts.getContact(controller.requesterId.value);
 
                     if (fullContact != null) {
+
+                      controller.contacts_.forEach((element) {
+                        if(element.selectedContact == controller.requesterContact.value) {
+                          element.selectedContact = null;
+                        }
+                      });
+
                       controller.requesterImage = null;
                       controller.requesterName.value = "";
                       controller.requesterContact.value = "";
-                      // controller.contacts_
-                      //     .add(PluhgContact.fromContact(fullContact));
+
+
+                      // controller.contacts_.add(PluhgContact.fromContact(fullContact));
                       controller.getContactList();
                     }
                   },
@@ -179,11 +187,17 @@ class ContactView extends GetView<ContactController> {
                     final fullContact = await FlutterContacts.getContact(controller.contactId.value);
 
                     if (fullContact != null) {
+
+                      controller.contacts_.forEach((element) {
+                        if(element.selectedContact == controller.contactContact.value) {
+                          element.selectedContact = null;
+                        }
+                      });
+
                       controller.contactImage = null;
                       controller.contactContact.value = "";
                       controller.contactName.value = "";
-                      // controller.contacts_
-                      //     .add(PluhgContact.fromContact(fullContact));
+                      // controller.contacts_.add(PluhgContact.fromContact(fullContact));
                       controller.getContactList();
                     }
                   },
@@ -232,7 +246,9 @@ class ContactView extends GetView<ContactController> {
                                 itemBuilder: (context, index) {
                                   if (contacts[index].phoneNumber.isNotEmpty || contacts[index].emailAddress.isNotEmpty) {
 
-                                    return contactItem(contacts[index], () async {
+                                    return contactItem(contacts[index],
+                                            controller.requesterContact.value.isNotEmpty && controller.contactContact.value.isNotEmpty,
+                                            () async {
 
 
                                       if (controller.requesterName.value.isEmpty || controller.contactName.value.isEmpty) {

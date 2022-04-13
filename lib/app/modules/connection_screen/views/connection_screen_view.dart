@@ -163,6 +163,7 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                                                   data: data[index],
                                                   user: controller.user,
                                                   onRemoveCallBack: (){
+                                                    //controller.waitingData();
                                                     controller.data['data'].removeAt(index);
                                                     controller.waitingList.value = controller.data['data'].length;
                                                   }

@@ -105,13 +105,20 @@ class APICALLS with ValidationMixin {
 
     print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
     final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
+
+    final isUserEmailEmpty = userData['emailAddress'] == null;
+    final isUserNameEmpty = userData['userName'] == null;
+
     print("[verifyOTP] user data: ${userData.toString()}");
 
     SharedPreferences storage = await SharedPreferences.getInstance();
     storage.setBool(PREF_IS_FIRST_APP_RUN, false);
     print("[verifyOTP] PREF_IS_FIRST_APP_RUN: false");
 
-    if (isRegistered) {
+    /*if(isUserEmailEmpty && isUserNameEmpty){
+
+    }*/
+    if (isRegistered && !isUserEmailEmpty && !isUserNameEmpty) {
       User user = await UserState.get();
       await UserState.store(
         User.registered(
@@ -818,13 +825,13 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return false;
+      return true;
     }
 
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
     return false;
-*/
+    */
 
     var uri = Uri.parse("$url/api/connect/accept");
     User user = await UserState.get();
@@ -870,7 +877,7 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return parsedResponse;
+      return true;
     }
 
     // error
@@ -931,7 +938,7 @@ class APICALLS with ValidationMixin {
         },
       );
 
-      return parsedResponse;
+      return true;
     }
 
     // error

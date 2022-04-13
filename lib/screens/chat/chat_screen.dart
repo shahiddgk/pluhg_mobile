@@ -25,7 +25,8 @@ class ChatScreen extends StatefulWidget {
       required this.profile_receiver,
       required this.username_receiver,
       required this.senderId,
-      required this.recevierId})
+      required this.recevierId, this.clearUnReadMessageCount,
+      })
       : super(key: key);
   final String username_receiver;
 
@@ -33,6 +34,7 @@ class ChatScreen extends StatefulWidget {
   final String profile_receiver;
   final String senderId;
   final String recevierId;
+  final VoidCallback? clearUnReadMessageCount;
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -100,6 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
       });
 
       socket.on('readMessageResponse', (data) {
+
         print('[readMessageResponse] read message: ${data.toString()}');
 
         messages.forEach((element) {
@@ -123,6 +126,10 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         });
       });
+
+      if(widget.clearUnReadMessageCount != null) {
+        widget.clearUnReadMessageCount!();
+      }
     });
     socket.onConnectError((data) {
       print("[onConnectError] error");
