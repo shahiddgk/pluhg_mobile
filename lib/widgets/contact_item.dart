@@ -44,33 +44,6 @@ Widget contactItem(PluhgContact contact, isRequestAndContactSelectionDone, Funct
                     ),
                   ),
 
-                 /* if(contact.phoneNumbers.length <= 1 && contact.emailAddresses.length <=1)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            contact.phoneNumber.isEmpty
-                                ? contact.emailAddress
-                                : contact.phoneNumber,
-                            style: TextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black),
-                          ),
-                          Text(
-                            (contact.emailAddress.isEmpty || contact.phoneNumber.isEmpty)
-                                ? ""
-                                : contact.emailAddress,
-                            style: TextStyle(
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.pluhgMenuGrayColour),
-                          ),
-                        ],
-                      ),
-
-                  if(contact.phoneNumbers.length > 1 || contact.emailAddresses.length > 1)*/
-
                   Column(
                     children: temString.map((e) => RadioListTitleComponent<ContactItemDataClass?>(
                       label: e.value,
