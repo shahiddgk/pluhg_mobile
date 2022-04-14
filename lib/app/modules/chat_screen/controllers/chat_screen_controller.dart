@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/services/UserState.dart';
@@ -30,6 +31,8 @@ class ChatScreenController extends GetxController {
   void onReady() {
     super.onReady();
   }
+
+  Uri? link;
 
   @override
   void onClose() {}
@@ -104,7 +107,7 @@ class ChatScreenController extends GetxController {
     if (name.isEmpty) {
       users.value = usersTemp;
     } else {
-      users.value = usersTemp.where((element) => element.name.toLowerCase().contains(name.toLowerCase())).toList();
+      users.value = usersTemp.where((element) => element.name != null ? element.name!.toLowerCase().contains(name.toLowerCase()) : element.userName.toLowerCase().contains(name.toLowerCase())).toList();
     }
   }
 }

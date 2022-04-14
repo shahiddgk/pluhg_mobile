@@ -55,7 +55,8 @@ Widget getMainChatItem(UserChat user_chat) {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(user_chat.name,
+                        child: Text(
+                            user_chat.name ?? user_chat.userName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,
@@ -95,11 +96,11 @@ Widget getMainChatItem(UserChat user_chat) {
                       ),
                     ),
                     Container(
-                      decoration: BoxDecoration(
-                          color: AppColors.pluhgColour, shape: BoxShape.circle),
-                      child: user_chat.unReadCount==0?Container(): Padding(
+                      decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
+                      child: user_chat.unReadCount == 0 ? Container(): Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Text(user_chat.unReadCount.toString(),
+                        child: Text(
+                            user_chat.unReadCount.toString(),
                             maxLines: 1,
                             style: TextStyle(
                                 color: Colors.white,

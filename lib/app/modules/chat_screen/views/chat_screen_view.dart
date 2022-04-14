@@ -26,6 +26,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Text(
@@ -49,7 +50,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                         //Gi to chat screen
                         Get.to(() => ChatScreen(
                             username_receiver: controller.users[i].userName,
-                            name_receiver: controller.users[i].name,
+                            name_receiver: controller.users[i].name ?? '',
                             profile_receiver: APICALLS.imageBaseUrl + controller.users[i].profileImage!,
                             senderId: controller.users[i].senderId,
                             recevierId: controller.users[i].recevierId,
