@@ -11,6 +11,9 @@ class NotificationScreenController extends GetxController {
   final count = 0.obs;
   APICALLS apicalls = APICALLS();
   final notificationController = Get.put(NotificationController());
+
+
+
   @override
   void onInit() {
     super.onInit();
@@ -24,6 +27,7 @@ class NotificationScreenController extends GetxController {
 
   @override
   void onClose() {}
+
 
   getNotificationList() async {
     notificationController.fcmNotificationReset();

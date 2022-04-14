@@ -43,7 +43,8 @@ class APICALLS with ValidationMixin {
       'type': contact.contains("@") ? 'email' : 'phone'
     };
 
-    var response = await http.post(uri, body: jsonEncode(body), headers: {"Content-Type": "application/json"});
+    var response = await http.post(uri,
+        body: jsonEncode(body), headers: {"Content-Type": "application/json"});
     var parsedResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print("[signUpSignIn] success: ${parsedResponse['message']}");
@@ -69,12 +70,15 @@ class APICALLS with ValidationMixin {
       "emailAddress": EmailValidator.validate(contact) ? contact : "",
       "phoneNumber": PhoneValidator.validate(contact) ? contact : "",
       "code": code,
-      "type": EmailValidator.validate(contact) ? User.EMAIL_CONTACT_TYPE : User.PHONE_CONTACT_TYPE,
+      "type": EmailValidator.validate(contact)
+          ? User.EMAIL_CONTACT_TYPE
+          : User.PHONE_CONTACT_TYPE,
       "deviceToken": fcmToken.toString()
     };
 
     var uri = Uri.parse("$url/api/verifyOTP");
-    var response = await http.post(uri, headers: {"Content-Type": "application/json"}, body: jsonEncode(body));
+    var response = await http.post(uri,
+        headers: {"Content-Type": "application/json"}, body: jsonEncode(body));
     var parsedResponse = jsonDecode(response.body);
 
     if (response.statusCode != 200) {
@@ -91,7 +95,8 @@ class APICALLS with ValidationMixin {
     final token = parsedResponse['data']['token'].toString();
     final userData = parsedResponse['data']['user']['data'];
 
-    print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
+    print(
+        "[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
     final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
     print("[verifyOTP] user data: ${userData.toString()}");
 
@@ -108,7 +113,9 @@ class APICALLS with ValidationMixin {
           name: userData['userName'].toString(),
           phone: userData['phoneNumber'].toString(),
           email: userData['emailAddress'].toString(),
-          countryCode: user.countryCode.isNotEmpty ? user.countryCode : User.DEFAULT_COUNTRY_CODE,
+          countryCode: user.countryCode.isNotEmpty
+              ? user.countryCode
+              : User.DEFAULT_COUNTRY_CODE,
         ),
       );
 
@@ -148,7 +155,10 @@ class APICALLS with ValidationMixin {
     print("[Api:createProfile] send request [$requestBody]");
     var response = await http.post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer $token"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
       body: requestBody,
     );
 
@@ -158,7 +168,11 @@ class APICALLS with ValidationMixin {
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Your profile Has been set');
       User user = await UserState.get();
-      await UserState.storeNewProfile(token: token, name: username, contact: contact, countryCode: user.countryCode);
+      await UserState.storeNewProfile(
+          token: token,
+          name: username,
+          contact: contact,
+          countryCode: user.countryCode);
 
       Get.offAll(() => HomeView(index: 1.obs));
       return false;
@@ -179,22 +193,32 @@ class APICALLS with ValidationMixin {
       required String emailContent,
       required BuildContext context}) async {
     var uri = Uri.parse("$url/api/sendSupportEmail");
-    var body = {"emailAddress": emailAddress, "subject": subject, "emailContent": emailContent};
+    var body = {
+      "emailAddress": emailAddress,
+      "subject": subject,
+      "emailContent": emailContent
+    };
 
     /// Set options
     /// Max and msg required
     User user = await UserState.get();
     var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
 
     if (parsedResponse["status"] == true) {
-      showPluhgDailog(context, "Great", "Your message has been sent successfully");
+      showPluhgDailog(
+          context, "Great", "Your message has been sent successfully");
       //all good
     } else {
       // error
-      showPluhgDailog(context, "So Sorry", "Couldn't send your message, try again letter");
+      showPluhgDailog(
+          context, "So Sorry", "Couldn't send your message, try again letter");
       print("Error");
     }
   }
@@ -233,12 +257,18 @@ class APICALLS with ValidationMixin {
     };
 
     var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body));
     var parsedResponse = jsonDecode(response.body);
 
     // print(parsedResponse["data"]["_id"].toString());
-    bool bothemail = requesterContact.contains("@") && contactContact.contains("@");
-    bool bothphone = !requesterContact.contains("@") && !contactContact.contains("@");
+    bool bothemail =
+        requesterContact.contains("@") && contactContact.contains("@");
+    bool bothphone =
+        !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
       pluhgSnackBar("Great", "You have connected them, about to send message");
 
@@ -284,10 +314,18 @@ class APICALLS with ValidationMixin {
       progressBgColor: Colors.transparent,
     );
 
-    var body = {'connectionId': connectionID, 'message': message, 'party': party};
+    var body = {
+      'connectionId': connectionID,
+      'message': message,
+      'party': party
+    };
 
     var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
 
     /// Set options
@@ -309,7 +347,8 @@ class APICALLS with ValidationMixin {
   Future getProfile() async {
     User user = await UserState.get();
     var uri = Uri.parse("$url/api/profileDetails");
-    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
 
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse);
@@ -319,7 +358,8 @@ class APICALLS with ValidationMixin {
       // all good, details in parsedResponse
     }
 
-    print("[Api:getProfile] error: status code [${response.statusCode}]; body [${response.body}]");
+    print(
+        "[Api:getProfile] error: status code [${response.statusCode}]; body [${response.body}]");
     if (response.statusCode == 401) {
       pluhgSnackBar("So sorry", "You have to login again, session expired");
     } else {
@@ -333,7 +373,8 @@ class APICALLS with ValidationMixin {
   }
 
   //Update user's details API
-  void setProfile({required String token, String name = "", String address = ""}) async {
+  void setProfile(
+      {required String token, String name = "", String address = ""}) async {
     var uri = Uri.parse("$url/api/updateProfileDetails");
 
     var body = {};
@@ -346,7 +387,8 @@ class APICALLS with ValidationMixin {
       body["address"] = address;
     }
 
-    var response = await http.post(uri, headers: {"Authorization": "Bearer $token"}, body: body);
+    var response = await http.post(uri,
+        headers: {"Authorization": "Bearer $token"}, body: body);
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -388,7 +430,8 @@ class APICALLS with ValidationMixin {
       body["phoneNumber"] = phone;
     }
 
-    var response = await http.post(uri, headers: {"Authorization": "Bearer $token"}, body: body);
+    var response = await http.post(uri,
+        headers: {"Authorization": "Bearer $token"}, body: body);
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -424,7 +467,8 @@ class APICALLS with ValidationMixin {
       // ..fields["emailAddress"] = emailAddress + "7y"
       // ..fields["phoneNumber"] = phoneNumber + "29"
       ..files.add(http.MultipartFile('profileImage', stream, length,
-          filename: basename(imageFile.path), contentType: MediaType('image', 'png')))
+          filename: basename(imageFile.path),
+          contentType: MediaType('image', 'png')))
       ..headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
@@ -454,7 +498,8 @@ class APICALLS with ValidationMixin {
   }) async {
     var uri = Uri.parse("$url/api/notification/settings");
     // NotificationSettings settingz;
-    var response = await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer $token"});
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -484,7 +529,11 @@ class APICALLS with ValidationMixin {
     };
 
     var response = await http.post(uri,
-        headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"}, body: jsonEncode(body));
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(body));
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -508,7 +557,8 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
-      response = await http.get(uri, headers: {"Authorization": "Bearer $token"});
+      response =
+          await http.get(uri, headers: {"Authorization": "Bearer $token"});
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -540,7 +590,10 @@ class APICALLS with ValidationMixin {
     try {
       response = await http.get(
         uri,
-        headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
       );
     } catch (e) {
       print("[API:getActiveConnections] error: ${e.toString()}");
@@ -569,7 +622,10 @@ class APICALLS with ValidationMixin {
 
     http.Response response;
 
-    response = await http.get(uri, headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"});
+    response = await http.get(uri, headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json"
+    });
     print('response ${response.body}');
 
     var parsedResponse = jsonDecode(response.body);
@@ -617,7 +673,11 @@ class APICALLS with ValidationMixin {
 
     print("[API:respondToConnectionRequest] send request: $body");
     var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
     // }
     // else if (!contact.contains("@")) {
@@ -639,7 +699,8 @@ class APICALLS with ValidationMixin {
     //   parsedResponse = jsonDecode(response.body);
     // }
 
-    print("[API:respondToConnectionRequest] response: ${parsedResponse.toString()}");
+    print(
+        "[API:respondToConnectionRequest] response: ${parsedResponse.toString()}");
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -684,10 +745,15 @@ class APICALLS with ValidationMixin {
 
     print("[API:acceptConnectionRequest] send request: $body");
     var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
 
-    print("[API:acceptConnectionRequest] response: ${parsedResponse.toString()}");
+    print(
+        "[API:acceptConnectionRequest] response: ${parsedResponse.toString()}");
 
     pd.close();
     if (parsedResponse["status"] == true) {
@@ -731,10 +797,15 @@ class APICALLS with ValidationMixin {
 
     print("[API:declineConnectionRequest] send request: $body");
     var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body));
     parsedResponse = jsonDecode(response.body);
 
-    print("[API:declineConnectionRequest] response: ${parsedResponse.toString()}");
+    print(
+        "[API:declineConnectionRequest] response: ${parsedResponse.toString()}");
 
     pd.close();
     if (parsedResponse["status"] == true) {
@@ -759,7 +830,9 @@ class APICALLS with ValidationMixin {
 
   //Close connection
   Future<bool> closeConnection(
-      {required String connectionID, required BuildContext context, required String rating}) async {
+      {required String connectionID,
+      required BuildContext context,
+      required String rating}) async {
     var uri = Uri.parse("$url/api/connect/closeConnection");
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     User user = await UserState.get();
@@ -767,7 +840,10 @@ class APICALLS with ValidationMixin {
     var parsedResponse;
     var response = await http.post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${user.token}"
+      },
       body: jsonEncode(
         {"connectionId": connectionID, "feedbackRating": rating},
       ),
@@ -779,15 +855,21 @@ class APICALLS with ValidationMixin {
   }
 
   //Check if user is a Pluhg user or not
-  Future<List<PluhgContact>> checkPluhgUsers({required List<PluhgContact> contacts}) async {
+  Future<List<PluhgContact>> checkPluhgUsers(
+      {required List<PluhgContact> contacts}) async {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
 
-    Map body = {"contacts": contacts.map((item) => item.toCleanedJson()).toList()};
+    Map body = {
+      "contacts": contacts.map((item) => item.toCleanedJson()).toList()
+    };
     User user = await UserState.get();
     print("[checkPluhgUsers] send request: ${body.toString()}");
     var response = await http.post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${user.token}"
+      },
       body: jsonEncode(body),
     );
     Map parsedResponse = jsonDecode(response.body);
@@ -825,7 +907,8 @@ class APICALLS with ValidationMixin {
       'Authorization': "Bearer ${user.token}",
       'Content-type': 'application/json',
     };
-    var response = await http.post(uri, headers: headers, body: jsonEncode(body));
+    var response =
+        await http.post(uri, headers: headers, body: jsonEncode(body));
     final Map<String, dynamic> responseBody = jsonDecode(response.body);
     print("[API:markAsRead] response: ${responseBody.toString()}");
     return responseBody["status"] == true;
@@ -836,7 +919,8 @@ class APICALLS with ValidationMixin {
     User user = await UserState.get();
     var uri = Uri.parse("$url/api/getNotificationList");
 
-    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
     var parsedResponse = jsonDecode(response.body);
     print("[API:getNotifications] response: ${parsedResponse.toString()}");
 
@@ -844,11 +928,13 @@ class APICALLS with ValidationMixin {
   }
 
   ///to get connection details used in dynamic for milestone one
-  Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
+  Future<RecommendationResponse> getConnectionDetails(
+      {required String connectionID}) async {
     User user = await UserState.get();
 
     var uri = Uri.parse("$url/api/connect/getConnectionsDetails/$connectionID");
-    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
     var parsedResponse = jsonDecode(response.body);
     print("[API:getNotifications] response: ${parsedResponse.toString()}");
 
@@ -863,13 +949,16 @@ class APICALLS with ValidationMixin {
 
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
-      iterable.add(new http.MultipartFile.fromBytes('files', await File(files[i]).readAsBytes(),
-          filename: basename(files[i].split("/").last), contentType: MediaType(type, subType)));
+      iterable.add(new http.MultipartFile.fromBytes(
+          'files', await File(files[i]).readAsBytes(),
+          filename: basename(files[i].split("/").last),
+          contentType: MediaType(type, subType)));
     }
 
-    var request = http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
-      ..files.addAll(iterable)
-      ..headers.addAll(headers);
+    var request =
+        http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
+          ..files.addAll(iterable)
+          ..headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
 
@@ -880,6 +969,22 @@ class APICALLS with ValidationMixin {
     print(httpResponse.body);
     var data = json.decode(httpResponse.body)["data"];
 
-    return List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
+    return List<FileModel>.from(
+        data.map((e) => FileModel.fromJson(e)).toList());
+  }
+
+
+  Future<int?> getNotificationCount()async{
+    User  user = await UserState.get();
+    var uri = Uri.parse("$url/api/getNotificationCount");
+
+    var response = await http.get(uri,headers: {"Authorization": "Bearer ${user.token}"});
+
+    var parseResponse = jsonDecode(response.body);
+
+    print('[API:getNotificationCount] response : ${parseResponse['data']['unReadCount']}');
+
+    return parseResponse['data']['unReadCount'];
+
   }
 }

@@ -13,6 +13,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   Function onChanged;
   bool messages_page;
 
+
   SearchAppBar(this.searchController, this.onChanged,
       {this.backButton = false, required this.messages_page});
 
