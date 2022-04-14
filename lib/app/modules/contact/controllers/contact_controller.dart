@@ -71,7 +71,7 @@ class ContactController extends GetxController with ValidationMixin {
       return;
     }
 
-    //Request access contact permission
+    ///Request access contact permission
     final perm = await Permission.contacts.request();
 
     if (perm.isDenied) {
@@ -82,9 +82,16 @@ class ContactController extends GetxController with ValidationMixin {
     }
 
     //get list contact from phone
-    final contacts = await FlutterContacts.getContacts(
-        withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true);
+    final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true,);
 
+    contacts.forEach((element) {
+      print('CONTACT NAME ==== ${element.name}');
+
+      element.phones.forEach((phone) {
+        print('Number -->${phone.number}=----------->Normalized number${phone.normalizedNumber}------}');
+      });
+    });
+    
     // check for registered users
     List<PluhgContact> pluhgContacts = [];
     try {
@@ -103,20 +110,14 @@ class ContactController extends GetxController with ValidationMixin {
     }
 
     print("[getContactList] Pluhg contacts: ${pluhgContacts.toString()}");
+
     _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
+
     //remove users phone number
     User user = await UserState.get();
 
-    PluhgContact? contactToRemove;
-    _allContacts.forEach((element) {
-      if (comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email)) {
-        print("[getContactList] remove contact: $element");
-        contactToRemove = element;
-      }
-    });
-    if (contactToRemove != null) {
-      _allContacts.remove(contactToRemove);
-    }
+    _allContacts.removeWhere((element) => comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email));
+
     contactsFuture.complete(_allContacts);
   }
 
