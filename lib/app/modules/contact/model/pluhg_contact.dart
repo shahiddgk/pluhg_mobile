@@ -85,14 +85,13 @@ class PluhgContact {
 
   factory PluhgContact.fromContact(Contact contact) {
     return PluhgContact(
-      phoneNumbers: contact.phones.map((e) => e.number).toList(),
+      phoneNumbers: contact.phones.map((e) => e.normalizedNumber).toList(),
       id: contact.id,
       name: contact.displayName,
       isPlughedUser: false,
       // photo: '',//contact.photo,
-      phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
-      emailAddress:
-          contact.emails.isNotEmpty ? contact.emails.first.address : '',
+      phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.normalizedNumber : '',
+      emailAddress: contact.emails.isNotEmpty ? contact.emails.first.address : '',
     );
   }
 }

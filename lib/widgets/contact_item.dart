@@ -54,7 +54,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                             Container(
+                                            Container(
                                                 width: 220.w,
                                                 child: RadioListTile(
                                                     title: Text(e),
@@ -66,8 +66,7 @@ Widget contactItem(PluhgContact contact, Function()? onTap) {
                                                             .phoneNumber),
                                                     activeColor:
                                                         AppColors.pluhgColour,
-                                                    onChanged: (value) async{
-
+                                                    onChanged: (value) async {
                                                       print(value);
                                                       contact.phoneNumber =
                                                           contact.phoneNumbers[
