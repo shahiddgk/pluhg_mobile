@@ -30,6 +30,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller_chat = Get.put(ChatScreenController());
 
+
   List<Widget> pages = [ConnectionScreenView(), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
 
   final controller = Get.put(HomeController());

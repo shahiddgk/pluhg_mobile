@@ -35,9 +35,6 @@ class APICALLS with ValidationMixin {
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
 
-
-
-
   ///API to login or sign up.
   Future<bool> signUpSignIn({String? contact}) async {
     var uri = Uri.parse("$url/api/login");
@@ -49,7 +46,8 @@ class APICALLS with ValidationMixin {
     };
 
 
-    var response = await http.post(uri, body: jsonEncode(body), headers: {"Content-Type": "application/json"})
+    var response = await http.post(uri,
+        body: jsonEncode(body), headers: {"Content-Type": "application/json"})
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION,onTimeout: (){
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}',400);
     });
@@ -78,12 +76,15 @@ class APICALLS with ValidationMixin {
       "emailAddress": EmailValidator.validate(contact) ? contact : "",
       "phoneNumber": PhoneValidator.validate(contact) ? contact : "",
       "code": code,
-      "type": EmailValidator.validate(contact) ? User.EMAIL_CONTACT_TYPE : User.PHONE_CONTACT_TYPE,
+      "type": EmailValidator.validate(contact)
+          ? User.EMAIL_CONTACT_TYPE
+          : User.PHONE_CONTACT_TYPE,
       "deviceToken": fcmToken.toString()
     };
 
     var uri = Uri.parse("$url/api/verifyOTP");
-    var response = await http.post(uri, headers: {"Content-Type": "application/json"}, body: jsonEncode(body))
+    var response = await http.post(uri,
+        headers: {"Content-Type": "application/json"}, body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION,onTimeout: (){
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}',400);
     });
@@ -103,7 +104,8 @@ class APICALLS with ValidationMixin {
     final token = parsedResponse['data']['token'].toString();
     final userData = parsedResponse['data']['user']['data'];
 
-    print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
+    print(
+        "[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
     final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
 
     final isUserEmailEmpty = userData['emailAddress'] == null;
@@ -127,7 +129,9 @@ class APICALLS with ValidationMixin {
           name: userData['userName'].toString(),
           phone: userData['phoneNumber'].toString(),
           email: userData['emailAddress'].toString(),
-          countryCode: user.countryCode.isNotEmpty ? user.countryCode : User.DEFAULT_COUNTRY_CODE,
+          countryCode: user.countryCode.isNotEmpty
+              ? user.countryCode
+              : User.DEFAULT_COUNTRY_CODE,
         ),
       );
 
@@ -741,7 +745,6 @@ class APICALLS with ValidationMixin {
     });
 
     parsedResponse = jsonDecode(response.body);
-
     // }
     // else if (!contact.contains("@")) {
     //   var body = {
@@ -883,11 +886,7 @@ class APICALLS with ValidationMixin {
     // error
     pluhgSnackBar("So sorry", parsedResponse["message"]);
     return false;
-
   }
-
-
-
 
   Future<bool> declineConnectionRequest({
     required BuildContext context,
@@ -955,7 +954,10 @@ class APICALLS with ValidationMixin {
     var parsedResponse;
     var response = await http.post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${user.token}"
+      },
       body: jsonEncode(
         {"connectionId": connectionID, "feedbackRating": rating},
       ),
@@ -973,19 +975,22 @@ class APICALLS with ValidationMixin {
     return parsedResponse["status"] == true;
   }
 
-
-
-
   //Check if user is a Pluhg user or not
-  Future<List<PluhgContact>> checkPluhgUsers({required List<PluhgContact> contacts}) async {
+  Future<List<PluhgContact>> checkPluhgUsers(
+      {required List<PluhgContact> contacts}) async {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
 
-    Map body = {"contacts": contacts.map((item) => item.toCleanedJson()).toList()};
+    Map body = {
+      "contacts": contacts.map((item) => item.toCleanedJson()).toList()
+    };
     User user = await UserState.get();
     print("[checkPluhgUsers] send request: ${body.toString()}");
     var response = await http.post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${user.token}"
+      },
       body: jsonEncode(body),
     ).timeout(AppConstants.API_TIME_OUT_EXCEPTION,onTimeout: (){
       return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}',400);
@@ -1104,7 +1109,7 @@ class APICALLS with ValidationMixin {
     var request = http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
       ..files.addAll(iterable)
       ..headers.addAll(headers);
-    
+
 
     //contentType: new MediaType('image', 'png'));
 
@@ -1118,6 +1123,22 @@ class APICALLS with ValidationMixin {
     print(httpResponse.body);
     var data = json.decode(httpResponse.body)["data"];
 
-    return List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
+    return List<FileModel>.from(
+        data.map((e) => FileModel.fromJson(e)).toList());
+  }
+
+
+  Future<int?> getNotificationCount()async{
+    User  user = await UserState.get();
+    var uri = Uri.parse("$url/api/getNotificationCount");
+
+    var response = await http.get(uri,headers: {"Authorization": "Bearer ${user.token}"});
+
+    var parseResponse = jsonDecode(response.body);
+
+    print('[API:getNotificationCount] response : ${parseResponse['data']['unReadCount']}');
+
+    return parseResponse['data']['unReadCount'];
+
   }
 }
