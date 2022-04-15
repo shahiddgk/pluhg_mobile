@@ -288,7 +288,7 @@ class APICALLS with ValidationMixin {
           buttonText: "Continue",
           heading: 'Connection Successful',
           iconName: 'success_status',
-          onPressed: () => Get.offAll(HomeView(index: 0.obs)),
+          onPressed: () => Get.offAll(HomeView(index: 0.obs,isDeepLinkCodeExecute: false,)),
           subheading: bothemail
               ? "$requesterName in phone and $contactName in phone will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
               : bothphone
@@ -473,7 +473,7 @@ class APICALLS with ValidationMixin {
 
     if (parsedResponse["status"] == true) {
       // All okay
-      Get.offAll(() => HomeView(index: 3.obs));
+      Get.offAll(() => HomeView(index: 3.obs,isDeepLinkCodeExecute: false));
       pluhgSnackBar("Great", "You have changed your profile details");
       return false;
     }
@@ -520,7 +520,7 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
-        Get.offAll(() => HomeView(index: 3.obs));
+        Get.offAll(() => HomeView(index: 3.obs,isDeepLinkCodeExecute: false));
         pluhgSnackBar("Great", "You have changed your picture");
       });
 
@@ -782,7 +782,7 @@ class APICALLS with ValidationMixin {
         "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
-          Get.offAll(() => HomeView(index: 2.obs));
+          Get.offAll(() => HomeView(index: 2.obs,isDeepLinkCodeExecute: false));
         },
       );
 
@@ -876,7 +876,7 @@ class APICALLS with ValidationMixin {
         parsedResponse["message"],
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
-          Get.offAll(() => HomeView(index: 2.obs));
+          Get.offAll(() => HomeView(index: 2.obs,isDeepLinkCodeExecute:false));
         },
       );
 
@@ -925,7 +925,7 @@ class APICALLS with ValidationMixin {
       return false;
     }
 
-    if (parsedResponse["status"] == true) {
+    if (parsedResponse["status"] == true)   {
       // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
       showPluhgDailog2(
         context,
@@ -933,7 +933,7 @@ class APICALLS with ValidationMixin {
         parsedResponse["message"],
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
-          Get.offAll(() => HomeView(index: 2.obs));
+          Get.offAll(() => HomeView(index: 2.obs,isDeepLinkCodeExecute: false));
         },
       );
 
