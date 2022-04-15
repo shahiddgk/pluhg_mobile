@@ -43,7 +43,7 @@ Widget getMainChatItem(UserChat user_chat) {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: Text(user_chat.name,
+                        child: Text('user_chat.name',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             softWrap: false,

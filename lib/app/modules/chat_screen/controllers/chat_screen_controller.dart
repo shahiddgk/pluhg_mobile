@@ -74,7 +74,7 @@ class ChatScreenController extends GetxController {
     if (name.isEmpty) {
       users.value = usersTemp;
     } else {
-      users.value = usersTemp.where((element) => element.name.toLowerCase().contains(name.toLowerCase())).toList();
+      users.value = usersTemp.where((element) => element.name!.toLowerCase().contains(name.toLowerCase())).toList();
     }
   }
 }
