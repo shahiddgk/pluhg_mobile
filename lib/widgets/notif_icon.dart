@@ -37,17 +37,20 @@ class NotifIcon extends StatelessWidget {
 
             if(homeController.notificationCount.value != 0)
             Positioned(
-              top: 4,
+              top: 0,
               right: 6,
               child:  Container(
                 decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
                 child: Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.all(6.0),
                   child: Text(
                       '${homeController.notificationCount.value}',
                       maxLines: 1,
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
                       textAlign: TextAlign.center,
                   ),
                 ),

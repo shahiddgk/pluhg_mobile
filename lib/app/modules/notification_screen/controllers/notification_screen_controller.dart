@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/home/controllers/home_controller.dart';
 import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
 import 'package:plug/models/notification_response.dart';
 
@@ -31,7 +32,25 @@ class NotificationScreenController extends GetxController {
 
   getNotificationList() async {
     notificationController.fcmNotificationReset();
-    return await apicalls.getNotifications();
+    var result = await apicalls.getNotifications();
+
+    ///Read All notification
+    readAllNotification(result);
+
+    return result;
+  }
+
+  readAllNotification(dynamic result)async {
+    NotificationResponse notificationResponse = result;
+
+    var list = notificationResponse.data.map((e) => e.id).toList();
+
+    final body = {
+      "notificationId": list
+    };
+
+    await apicalls.markAsRead(body);
+    Get.find<HomeController>().notificationCount.value = 0;
   }
 
   Future<bool> markAsRead(NotificationData notification) async {
