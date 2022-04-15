@@ -60,20 +60,5 @@ class NotifIcon extends StatelessWidget {
         ),
       );
     });
-
-    return Obx(
-      () => IconButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (contex) => NotificationScreenView()));
-          },
-          icon: SvgPicture.asset(
-            controller.receivedNotification.value
-                ? "assets/images/ic_red_notification.svg"
-                : "assets/images/notification.svg",
-          )),
-    );
   }
 }
