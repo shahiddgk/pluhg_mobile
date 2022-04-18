@@ -21,8 +21,6 @@ class ChatScreenController extends GetxController {
 
   @override
   void onInit() {
-
-    print('ON INIT CLLL TO CHECk');
     super.onInit();
     connect();
   }
@@ -38,7 +36,6 @@ class ChatScreenController extends GetxController {
   void onClose() {}
 
   void connect() async {
-    print('CONNECT  CALL AGAIN');
     User user = await UserState.get();
     userID = user.id;
 

@@ -24,7 +24,7 @@ class DynamicLinkService {
       // final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = dynamicLink?.link;
 
-      print('---------------------->${deepLink.toString()}');
+      print('FROM LINK---------------------->${deepLink.toString()}');
 
       this._handleDeepLink(context, deepLink, true);
     }, onError: (error) async {

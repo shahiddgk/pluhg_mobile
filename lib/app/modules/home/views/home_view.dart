@@ -17,10 +17,12 @@ import '../controllers/home_controller.dart';
 class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
+  final isDeepLinkCodeExecute;
 
   // final dynamic data;
   HomeView({
     required this.index,
+    this.isDeepLinkCodeExecute = true,
   });
 
   @override
@@ -29,6 +31,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller_chat = Get.put(ChatScreenController());
+
 
   List<Widget> pages = [ConnectionScreenView(), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
 
@@ -40,18 +43,24 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    controller.retrieveDynamicLink();
+
+    print('HOME INIT CALL AGAIN');
+
+    if(widget.isDeepLinkCodeExecute) {
+      controller.retrieveDynamicLink();
+    }
+
     WidgetsBinding.instance!.addObserver(this);
   }
 
-  @override
+ /* @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _timerLink = new Timer(const Duration(milliseconds: 1000), () {
         controller.retrieveDynamicLink();
       });
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

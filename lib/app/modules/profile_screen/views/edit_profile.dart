@@ -49,8 +49,7 @@ class EditProfileView extends GetView<EditProfileController> {
           future: getdata(),
           builder: (context, data) {
             return SingleChildScrollView(
-                child: Obx(
-              () => Padding(
+                child: Obx(() => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,8 +209,11 @@ class EditProfileView extends GetView<EditProfileController> {
                                         user.id,
                                       );
 
-                                      getdata();
-                                    } else if (_username.text.toString().isNotEmpty ||
+                                      print('UPLOAD END---1');
+
+                                      //getdata();
+                                    }
+                                    else if (_username.text.toString().isNotEmpty ||
                                         _address.text.toString().isNotEmpty ||
                                         _email.text.toString().isNotEmpty ||
                                         _phone.text.toString().isNotEmpty ||
@@ -236,12 +238,16 @@ class EditProfileView extends GetView<EditProfileController> {
                                       if (res == false) {
                                         controller.isloading.value = false;
                                       }
-                                      getdata();
+
+                                      print('UPLOAD END-----2');
+
+                                      // getdata();
                                     }
                                     print("object SGS");
                                     print(_name.text.toString());
                                     print(_username.text.toString());
-                                  } else {
+                                  }
+                                  else {
                                     Get.snackbar("So Sorry", "You made no chnages");
                                   }
                                 },
@@ -288,6 +294,9 @@ class EditProfileView extends GetView<EditProfileController> {
         token: token!,
         context: Get.context!,
       );
+
+      print('upload STatis');
+
       if (info == false) {
         controller.isloading.value = false;
       }

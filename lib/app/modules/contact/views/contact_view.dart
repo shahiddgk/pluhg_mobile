@@ -141,7 +141,7 @@ class ContactView extends GetView<ContactController> {
               ),
             ),
             SizedBox(
-              height: 36,
+              height: 26,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -358,6 +358,7 @@ class ContactView extends GetView<ContactController> {
         Container(
           width: 100,
           padding: EdgeInsets.all(8.0),
+          margin: EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
@@ -368,8 +369,7 @@ class ContactView extends GetView<ContactController> {
               contactImage(image, isPluhgUser),
               Text(
                 requesterName.isNotEmpty ? requesterName : 'Add Contact',
-                style:
-                    TextStyle(color: Color(0xff121212), letterSpacing: -0.3, fontSize: 10, fontWeight: FontWeight.w400),
+                style: TextStyle(color: Color(0xff121212), letterSpacing: -0.3, fontSize: 10, fontWeight: FontWeight.w400),
               ),
               SizedBox(
                 height: 4.0,
@@ -411,13 +411,15 @@ class ContactView extends GetView<ContactController> {
         requesterName.isEmpty
             ? Text("")
             : Positioned(
-                top: -10.0,
-                right: -10.0,
+                top: 0.0,
+                right: 0.0,
+                left: 82,
                 child: GestureDetector(
                   onTap: () => onTap(),
                   child: Icon(
                     Icons.cancel,
                     color: Color(0xffF90D46),
+                    size: 28,
                   ),
                 ),
               ),
