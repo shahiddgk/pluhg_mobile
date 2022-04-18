@@ -69,6 +69,10 @@ dependencies:
   open_document:
   dio:
 
+
+dependency_overrides:
+  firebase_messaging_platform_interface: 3.1.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
