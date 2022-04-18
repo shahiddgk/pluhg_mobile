@@ -358,6 +358,7 @@ class ContactView extends GetView<ContactController> {
         Container(
           width: 100,
           padding: EdgeInsets.all(8.0),
+          margin: EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
@@ -412,7 +413,7 @@ class ContactView extends GetView<ContactController> {
             : Positioned(
                 top: 0.0,
                 right: 0.0,
-                left: 70,
+                left: 82,
                 child: GestureDetector(
                   onTap: () => onTap(),
                   child: Icon(
