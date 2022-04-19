@@ -1099,14 +1099,22 @@ class APICALLS with ValidationMixin {
       final user = data[i] as Map<String, dynamic>;
       final userPhoneNumber = formatPhoneNumber(user['phoneNumber'] as String);
 
-      final registeredContacts = contacts.where((c) {
+      contacts.forEach((c) {
+        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
+
+        if(contactPhoneNumber == userPhoneNumber || (user['emailAddress'] != null && c.emailAddress == (user['emailAddress'] as String).trim())){
+          c.isPlughedUser = true;
+        }
+      });
+
+      /*final registeredContacts = contacts.where((c) {
         final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
         return contactPhoneNumber == userPhoneNumber;
       });
 
       registeredContacts.forEach((rc) {
         rc.isPlughedUser = true;
-      });
+      });*/
     }
     return contacts;
   }
