@@ -318,13 +318,13 @@ class APICALLS with ValidationMixin {
           heading: 'Connection Successful',
           iconName: 'success_status',
           onPressed: () => Get.offAll(HomeView(
-            index: 0.obs,
+            index: 2.obs,
             isDeepLinkCodeExecute: false,
           )),
           subheading: bothemail
-              ? "$requesterName in phone and $contactName in phone will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
+              ? "$requesterName and $contactName will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
               : bothphone
-              ? "$requesterName in phone and $contactName in phone will be notified by text of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
+              ? "$requesterName and $contactName will be notified by text of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
               : "$requesterName will be notified by ${requesterContact.contains("@") ? "email" : "phone"} AND $contactName will be notified by ${contactContact.contains("@") ? "email" : "phone"} of your CONNECTION RECOMMENDATIOIN!  Don't worry we will not share any personal contact details between them 🤐 ",
 
           /*subheading: bothemail
