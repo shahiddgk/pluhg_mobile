@@ -67,7 +67,7 @@ class SendMessageView extends GetView<SendMessageController> {
                       width: 88.66.w,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        boxShadow: [BoxShadow(blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))],
+                        boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
                         borderRadius: BorderRadius.circular(15.r),
                       ),
                       child: Column(
@@ -105,7 +105,10 @@ class SendMessageView extends GetView<SendMessageController> {
                           Container(
                               width: 74.62.w,
                               height: 20.86.h,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: pluhgColour),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: pluhgColour,
+                              ),
                               child: Center(
                                 child: Text("Requester",
                                     style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
@@ -113,13 +116,13 @@ class SendMessageView extends GetView<SendMessageController> {
                         ],
                       ),
                     ),
-                    SvgPicture.asset("resources/svg/middle.svg"),
+                    Center(child: SvgPicture.asset("resources/svg/middle.svg")),
                     Container(
                       height: 178.22.h,
                       width: 88.66.w,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [BoxShadow(blurRadius: 40, color: Color.fromARGB(5, 0, 0, 0))],
+                          boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
                           borderRadius: BorderRadius.circular(15.r)),
                       child: Column(
                         children: [
