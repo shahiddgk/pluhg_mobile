@@ -356,7 +356,7 @@ class SendMessageView extends GetView<SendMessageController> {
                             },
                           ),
                           Text(
-                            "Receiver",
+                            "Requester",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16.sp,
