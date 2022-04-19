@@ -18,10 +18,12 @@ class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
   final isDeepLinkCodeExecute;
+  final int connectionTabIndex;
 
   // final dynamic data;
   HomeView({
     required this.index,
+    this.connectionTabIndex = 0,
     this.isDeepLinkCodeExecute = true,
   });
 
@@ -33,7 +35,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller_chat = Get.put(ChatScreenController());
 
 
-  List<Widget> pages = [ConnectionScreenView(), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
+  late List<Widget> pages;
 
   final controller = Get.put(HomeController());
 
@@ -49,6 +51,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     if(widget.isDeepLinkCodeExecute) {
       controller.retrieveDynamicLink();
     }
+
+    pages = [ConnectionScreenView(widget.connectionTabIndex), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
 
     WidgetsBinding.instance!.addObserver(this);
   }

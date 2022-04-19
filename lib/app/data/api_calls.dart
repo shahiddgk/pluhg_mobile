@@ -318,8 +318,9 @@ class APICALLS with ValidationMixin {
           heading: 'Connection Successful',
           iconName: 'success_status',
           onPressed: () => Get.offAll(HomeView(
-            index: 2.obs,
+            index: 0.obs,
             isDeepLinkCodeExecute: false,
+            connectionTabIndex: 2,
           )),
           subheading: bothemail
               ? "$requesterName and $contactName will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
