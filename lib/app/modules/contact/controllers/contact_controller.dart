@@ -84,16 +84,9 @@ class ContactController extends GetxController with ValidationMixin {
     //get list contact from phone
     final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true,);
 
-    contacts.forEach((element) {
-      print('CONTACT NAME ==== ${element.name}');
-
-      element.phones.forEach((phone) {
-        print('Number -->${phone.number}=----------->Normalized number${phone.normalizedNumber}------}');
-      });
-    });
-    
     // check for registered users
     List<PluhgContact> pluhgContacts = [];
+
     try {
       pluhgContacts = contacts.map<PluhgContact>((contact) => PluhgContact.fromContact(contact)).toList();
       for (PluhgContact p in pluhgContacts) {

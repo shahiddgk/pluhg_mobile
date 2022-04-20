@@ -12,9 +12,14 @@ import 'package:plug/app/widgets/search_app_bar.dart';
 
 import '../controllers/connection_screen_controller.dart';
 
-class ConnectionScreenView extends GetView<ConnectionScreenController> {
+class  ConnectionScreenView extends GetView<ConnectionScreenController> {
+  final int connectionTabIndex;
   final controller = Get.put(ConnectionScreenController());
   final TextEditingController searchController = TextEditingController();
+
+  ConnectionScreenView(this.connectionTabIndex){
+   controller.currentIndex.value = connectionTabIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
