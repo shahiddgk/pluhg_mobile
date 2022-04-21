@@ -26,6 +26,20 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {
+              Get.back();
+              Get.back();
+            },
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Color(0xFF263238),
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

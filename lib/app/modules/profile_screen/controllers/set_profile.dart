@@ -33,7 +33,7 @@ class SetProfileScreenController extends GetxController {
       print(
           "[SetProfileScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
     } else {
-      countryCode = await DeviceCountryCode.get();
+      countryCode =  await DeviceCountryCode.get();
       print(
           "[SetProfileScreenController:fetchCountryCode] the code has been fetched from the DeviceCountryCode [$countryCode]");
     }

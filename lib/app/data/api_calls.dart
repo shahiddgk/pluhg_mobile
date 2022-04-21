@@ -140,7 +140,7 @@ class APICALLS with ValidationMixin {
       return true;
     }
 
-    Get.offAll(() => SetProfileScreenView(
+    Get.to(() => SetProfileScreenView(
           token: token,
           userID: userData['_id'].toString(),
           contact: userData['emailAddress'] == null
