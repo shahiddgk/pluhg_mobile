@@ -157,7 +157,7 @@ class ContactView extends GetView<ContactController> {
 
                     if (fullContact != null) {
 
-                      controller.contacts_.forEach((element) {
+                      controller.fetchAllContacts.forEach((element) {
                         if(element.selectedContact == controller.requesterContact.value) {
                           element.selectedContact = null;
                         }
@@ -188,7 +188,7 @@ class ContactView extends GetView<ContactController> {
 
                     if (fullContact != null) {
 
-                      controller.contacts_.forEach((element) {
+                      controller.fetchAllContacts.forEach((element) {
                         if(element.selectedContact == controller.contactContact.value) {
                           element.selectedContact = null;
                         }
@@ -419,7 +419,7 @@ class ContactView extends GetView<ContactController> {
                   child: Icon(
                     Icons.cancel,
                     color: Color(0xffF90D46),
-                    size: 28,
+                    size: 30,
                   ),
                 ),
               ),

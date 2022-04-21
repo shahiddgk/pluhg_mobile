@@ -144,4 +144,6 @@ class ContactController extends GetxController with ValidationMixin {
         final regexp = RegExp(search.value, caseSensitive: false);
         return regexp.hasMatch(contact.name);
       }).toList();
+
+  List<PluhgContact> get fetchAllContacts => _allContacts;
 }
