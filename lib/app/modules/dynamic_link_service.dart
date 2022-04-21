@@ -13,28 +13,7 @@ class DynamicLinkService {
       final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = data?.link;
 
-
-      final DynamicLinkParameters parms = DynamicLinkParameters(
-        uriPrefix: 'https://app.pluhg.com',
-        link: Uri.parse('https://app.pluhg.com/?id=62569d5e384e1f27888173a1'),
-        navigationInfoParameters: NavigationInfoParameters(forcedRedirectEnabled: true),
-        androidParameters: AndroidParameters(
-          packageName: 'com.ximzee.pluhg',
-        ),
-        iosParameters: IosParameters(
-          bundleId: 'com.ximzee.pluhg',
-        ),
-      );
       print('---------------------->${deepLink.toString()}');
-
-      final Uri dynamicUrl = await parms.buildUrl();
-      final ShortDynamicLink  shortDynamicLink  = await parms.buildShortLink();
-      final Uri shortUrl = shortDynamicLink.shortUrl;
-
-
-      print('LONG URL ----------${dynamicUrl.toString()}');
-      print('SHORT URL ----------${shortUrl.toString()}');
-
 
       this._handleDeepLink(context, deepLink);
     } catch (e) {

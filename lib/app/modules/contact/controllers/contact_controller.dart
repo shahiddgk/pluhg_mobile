@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:country_code_picker/country_code.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
@@ -84,6 +85,32 @@ class ContactController extends GetxController with ValidationMixin {
     //get list contact from phone
     final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true,);
 
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var code = prefs.getString('countryCode');
+
+    //prefs.setString("countryCode", controller.currentCountryCode.value);
+
+    //print('AB IS ---->${ab.code}----->${ab.dialCode}');
+
+
+    contacts.forEach((element) {
+      element.phones.forEach((element) {
+
+        final contactPhoneNumber = formatPhoneNumber(element.number);
+        final newPhoneNumber;
+
+
+        if(!contactPhoneNumber.contains('+')){
+          newPhoneNumber = '$code' + contactPhoneNumber;
+        }else{
+          newPhoneNumber = contactPhoneNumber;
+        }
+        element.number = newPhoneNumber;
+        //print('CONTACT NUMER ---${element.number} -----> NORMALIZED---${newPhoneNumber}');
+      });
+    });
+
     // check for registered users
     List<PluhgContact> pluhgContacts = [];
 
@@ -106,9 +133,7 @@ class ContactController extends GetxController with ValidationMixin {
 
     _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
 
-    //remove users phone number
     User user = await UserState.get();
-
     _allContacts.removeWhere((element) => comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email));
 
     contactsFuture.complete(_allContacts);
