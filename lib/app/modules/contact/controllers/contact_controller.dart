@@ -85,9 +85,11 @@ class ContactController extends GetxController with ValidationMixin {
     //get list contact from phone
     final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true,);
 
-    User user = await UserState.get();
 
-    var userCountryCode = CountryCode.fromCountryCode(user.countryCode);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var code = prefs.getString('countryCode');
+
+    //prefs.setString("countryCode", controller.currentCountryCode.value);
 
     //print('AB IS ---->${ab.code}----->${ab.dialCode}');
 
@@ -100,7 +102,7 @@ class ContactController extends GetxController with ValidationMixin {
 
 
         if(!contactPhoneNumber.contains('+')){
-          newPhoneNumber = '${userCountryCode.dialCode}' + contactPhoneNumber;
+          newPhoneNumber = '$code' + contactPhoneNumber;
         }else{
           newPhoneNumber = contactPhoneNumber;
         }
@@ -131,7 +133,7 @@ class ContactController extends GetxController with ValidationMixin {
 
     _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
 
-
+    User user = await UserState.get();
     _allContacts.removeWhere((element) => comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email));
 
     contactsFuture.complete(_allContacts);

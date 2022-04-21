@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
+import 'package:plug/app/modules/auth_screen/controllers/auth_screen_controller.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/auth_screen/views/otp_screen.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
@@ -193,7 +194,8 @@ class APICALLS with ValidationMixin {
           token: token,
           name: username,
           contact: contact,
-          countryCode: user.countryCode);
+          countryCode: user.countryCode,
+      );
 
       Get.offAll(() => HomeView(index: 1.obs));
       return false;
