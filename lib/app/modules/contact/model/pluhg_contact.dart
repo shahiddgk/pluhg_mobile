@@ -97,12 +97,12 @@ class PluhgContact {
 
   factory PluhgContact.fromContact(Contact contact) {
     return PluhgContact(
-      phoneNumbers: contact.phones.map((e) => e.normalizedNumber).toList(),
+      phoneNumbers: contact.phones.map((e) => e.number).toList(),
       id: contact.id,
       name: contact.displayName,
       isPlughedUser: false,
       // photo: '',//contact.photo,
-      phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.normalizedNumber : '',
+      phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
       emailAddress: contact.emails.isNotEmpty ? contact.emails.first.address : '',
       emailAddresses: contact.emails.isNotEmpty ? contact.emails.map((e) => e.address).toList() : [],
     );
