@@ -12,9 +12,14 @@ import 'package:plug/app/widgets/search_app_bar.dart';
 
 import '../controllers/connection_screen_controller.dart';
 
-class ConnectionScreenView extends GetView<ConnectionScreenController> {
+class  ConnectionScreenView extends GetView<ConnectionScreenController> {
+  final int connectionTabIndex;
   final controller = Get.put(ConnectionScreenController());
   final TextEditingController searchController = TextEditingController();
+
+  ConnectionScreenView(this.connectionTabIndex){
+   controller.currentIndex.value = connectionTabIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +112,8 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                           Center(child: pluhgProgress()),
                         ],
                       );
-                    } else if (snapshot.hasError) {
+                    }
+                    else if (snapshot.hasError) {
                       //print('project snapshot data is: ${projectSnap.data}');
                       return Column(
                         children: [
@@ -119,66 +125,84 @@ class ConnectionScreenView extends GetView<ConnectionScreenController> {
                           ),
                         ],
                       );
-                    } else if (snapshot.hasData) {
-                      return Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: controller.currentIndex.value == 0
-                              ? controller.activeList.value
-                              : controller.currentIndex.value == 1
-                                  ? controller.waitingList.value
-                                  : controller.connectedList.value,
-                          itemBuilder: (context, index) {
-                            dynamic data = snapshot.data;
-                            return controller.currentIndex.value == 0
-                                ? snapshot.hasData == false ||
-                                        snapshot.connectionState !=
-                                            ConnectionState.done
-                                    ? Center(
-                                        child: Text(
-                                          " ",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: activeConnectionCard(
-                                          data: data[index],
-                                          user: controller.user,
-                                        ),
-                                      )
-                                : controller.currentIndex.value == 1
-                                    ?
-                                    // controller.waitingList.value == 0 ||
-                                    snapshot.hasData == false ||
+                    }
+
+                    else if (snapshot.hasData) {
+
+                      return Obx(() {
+                        if(controller.currentIndex.value == 1 && controller.waitingList.value <= 0){
+                          return Column (
+                            children: [
+                              SizedBox(
+                                height: 40.h,
+                              ),
+                              Center(child: Text('No Connection data yet')),
+                            ],
+                          );
+                        }
+                          return Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: controller.currentIndex.value == 0
+                                  ? controller.activeList.value
+                                  : controller.currentIndex.value == 1
+                                      ? controller.waitingList.value
+                                      : controller.connectedList.value,
+                              itemBuilder: (context, index) {
+                                dynamic data = snapshot.data;
+                                return controller.currentIndex.value == 0
+                                    ? snapshot.hasData == false ||
                                             snapshot.connectionState !=
                                                 ConnectionState.done
-                                        ? Center(child: Text(" "))
+                                        ? Center(
+                                            child: Text(
+                                              " ",
+                                              style: TextStyle(color: Colors.black),
+                                            ),
+                                          )
                                         : Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: waitingConnectionCard(
+                                            child: activeConnectionCard(
                                               data: data[index],
                                               user: controller.user,
                                             ),
                                           )
-                                    :
-                                    // controller.connectedList.value == 0 ||
-                                    snapshot.hasData == false ||
-                                            snapshot.connectionState !=
-                                                ConnectionState.done
-                                        ? Center(child: Text(" "))
-                                        : Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: whoIConnectedCard(
-                                              data: data[index],
-                                              user: controller.user,
-                                            ),
-                                          );
-                          },
-                        ),
+                                    : controller.currentIndex.value == 1
+                                        ?
+                                        // controller.waitingList.value == 0 ||
+                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done || data.length <= 0
+                                            ? Center(child: Text('No Connection data yet'))
+                                            : Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: waitingConnectionCard(
+                                                  data: data[index],
+                                                  user: controller.user,
+                                                  onRemoveCallBack: (){
+                                                    //controller.waitingData();
+                                                    controller.data['data'].removeAt(index);
+                                                    controller.waitingList.value = controller.data['data'].length;
+                                                  }
+                                                ),
+                                              )
+                                        :
+                                        // controller.connectedList.value == 0 ||
+                                        snapshot.hasData == false || snapshot.connectionState != ConnectionState.done
+                                            ? Center(child: Text(" "))
+                                            : Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: whoIConnectedCard(
+                                                  data: data[index],
+                                                  user: controller.user,
+                                                ),
+                                              );
+                              },
+                            ),
+                          );
+                        }
                       );
-                    } else {
-                      return Column(
+                    }
+                    else {
+                      return Column (
                         children: [
                           SizedBox(
                             height: 40.h,

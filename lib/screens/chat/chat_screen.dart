@@ -25,7 +25,8 @@ class ChatScreen extends StatefulWidget {
       required this.profile_receiver,
       required this.username_receiver,
       required this.senderId,
-      required this.recevierId})
+      required this.recevierId, this.clearUnReadMessageCount,
+      })
       : super(key: key);
   final String username_receiver;
 
@@ -33,6 +34,7 @@ class ChatScreen extends StatefulWidget {
   final String profile_receiver;
   final String senderId;
   final String recevierId;
+  final VoidCallback? clearUnReadMessageCount;
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -100,6 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
       });
 
       socket.on('readMessageResponse', (data) {
+
         print('[readMessageResponse] read message: ${data.toString()}');
 
         messages.forEach((element) {
@@ -123,6 +126,10 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         });
       });
+
+      if(widget.clearUnReadMessageCount != null) {
+        widget.clearUnReadMessageCount!();
+      }
     });
     socket.onConnectError((data) {
       print("[onConnectError] error");
@@ -256,39 +263,47 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver, widget.username_receiver),
-      bottomSheet: InputChatWidget(send_function: send_message, send_doc: send_document),
-      body: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50))),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20.h,
-            ),
-            loading
-                ? Center(child: pluhgProgress())
-                : Expanded(
-                    child: Container(
-                      // height: MediaQuery.of(context).size.height * 0.7,
-                      padding: EdgeInsets.all(15),
-                      child: ListView.builder(
-                        reverse: true,
-                        controller: _controller_s,
-                        itemCount: messages.length,
-                        itemBuilder: (ctx, i) {
-                          return BubbleChat(messages[i]);
-                        },
+
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: ChatAppBar(widget.profile_receiver, widget.name_receiver, widget.username_receiver),
+        bottomSheet: InputChatWidget(
+            send_function: send_message, send_doc: send_document,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50))),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20.h,
+              ),
+              loading
+                  ? Center(child: pluhgProgress())
+                  : Expanded(
+                      child: Container(
+                        // height: MediaQuery.of(context).size.height * 0.7,
+                        padding: EdgeInsets.all(15),
+                        child: ListView.builder(
+                          reverse: true,
+                          controller: _controller_s,
+                          itemCount: messages.length,
+                          itemBuilder: (ctx, i) {
+                            return BubbleChat(messages[i]);
+                          },
+                        ),
                       ),
                     ),
-                  ),
-            Container(
-              height: 56.h,
-            )
-          ],
+              Container(
+                height: 56.h,
+              )
+            ],
+          ),
         ),
       ),
     );

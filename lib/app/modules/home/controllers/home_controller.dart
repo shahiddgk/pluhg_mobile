@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/modules/dynamic_link_service.dart';
 import 'package:plug/app/values/colors.dart';
 
@@ -10,6 +11,10 @@ class HomeController extends GetxController {
   //TODO: Implement HomeController
   RxInt currentIndex = 0.obs;
   DateTime? currentBackPressTime;
+
+  APICALLS apicalls = APICALLS();
+
+  Rx<int> notificationCount = 0.obs;
 
   List<String> iconMenu = [
     "resources/svg/connection_menu.svg",
@@ -28,12 +33,22 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    getNotificationCount();
   }
 
   @override
   void onReady() {
     super.onReady();
   }
+
+  getNotificationCount()async{
+    var result = await apicalls.getNotificationCount();
+
+    if(result != null){
+      notificationCount.value = result;
+    }
+  }
+
 
   @override
   void onClose() {}

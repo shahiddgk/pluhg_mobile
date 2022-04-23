@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/models/notification_response.dart';
+import 'package:plug/widgets/image.dart';
 
 import '../controllers/notification_screen_controller.dart';
 
@@ -38,7 +40,9 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
             return Center(
               child: Text("Error Encountered, Sorry"),
             );
-          } else {
+          }
+
+          else {
             NotificationResponse notificationResponse = snapshot.data;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -67,16 +71,27 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            CircleAvatar(
+                            ///OLD code
+                            /*CircleAvatar(
                               radius: 50 / 2,
-                              backgroundImage: notificationResponse
-                                      .data[i].userId.profileImage.isEmpty
+                              backgroundImage: notificationResponse.data[i].userId.profileImage.isEmpty
                                   ? SvgPicture.asset(
                                           "resources/svg/profile.svg")
                                       as ImageProvider
-                                  : NetworkImage(APICALLS.imageBaseUrl +
-                                      '${notificationResponse.data[i].userId.profileImage}'),
+                                  : NetworkImage(APICALLS.imageBaseUrl + '${notificationResponse.data[i].userId.profileImage}'),
+                            ),*/
+
+                            CircleAvatar(
+                              radius: 50 / 2,
+                              child: notificationResponse.data[i].userId.profileImage.isEmpty
+                                  ? SvgPicture.asset("resources/svg/profile.svg")
+                                  : cachedNetworkImageWidget(
+                                  imageUrl: APICALLS.imageBaseUrl + '${notificationResponse.data[i].userId.profileImage}',
+                                  width: 50,
+                                  height: 50,
+                              ),
                             ),
+
                             SizedBox(width: 10),
                             Expanded(
                               child: Container(

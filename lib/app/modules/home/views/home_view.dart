@@ -17,10 +17,14 @@ import '../controllers/home_controller.dart';
 class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
+  final isDeepLinkCodeExecute;
+  final int connectionTabIndex;
 
   // final dynamic data;
   HomeView({
     required this.index,
+    this.connectionTabIndex = 0,
+    this.isDeepLinkCodeExecute = true,
   });
 
   @override
@@ -30,7 +34,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller_chat = Get.put(ChatScreenController());
 
-  List<Widget> pages = [ConnectionScreenView(), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
+
+  late List<Widget> pages;
 
   final controller = Get.put(HomeController());
 
@@ -40,18 +45,26 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    controller.retrieveDynamicLink();
+
+    print('HOME INIT CALL AGAIN');
+
+    if(widget.isDeepLinkCodeExecute) {
+      controller.retrieveDynamicLink();
+    }
+
+    pages = [ConnectionScreenView(widget.connectionTabIndex), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
+
     WidgetsBinding.instance!.addObserver(this);
   }
 
-  @override
+ /* @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _timerLink = new Timer(const Duration(milliseconds: 1000), () {
         controller.retrieveDynamicLink();
       });
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -125,18 +138,17 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                           SvgPicture.asset('assets/svg/inactive_messages.svg'),
                           //waiting for backend api changes
                           Positioned(
-                            top: -8,
-                            right: -8,
-                            child: controller_chat.total_unread_messages == 0
+                            top: -10,
+                            right: -6,
+                            child: controller_chat.total_unread_messages.value == 0
                                 ? Container()
                                 : Container(
                                     decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
                                     child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Text(controller_chat.total_unread_messages.toString(),
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: Text(controller_chat.  total_unread_messages.toString(),
                                           maxLines: 1,
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
+                                           style: TextStyle(color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
                                           textAlign: TextAlign.center),
                                     ),
                                   ),

@@ -34,8 +34,8 @@ dependencies:
   webview_flutter: any
   flutter_dialogs: ^2.1.1
   image_picker: ^0.8.4+6
-  sn_progress_dialog: ^1.0.3
-  flutter_contacts: any
+  sn_progress_dialog:
+  flutter_contacts: 1.1.1+2
   permission_handler: 8.1.5
   group_radio_button: ^1.2.0
   intl: ^0.17.0
@@ -68,6 +68,10 @@ dependencies:
   photo_view:
   open_document:
   dio:
+
+
+dependency_overrides:
+  firebase_messaging_platform_interface: 3.1.6
 
 dev_dependencies:
   flutter_test:

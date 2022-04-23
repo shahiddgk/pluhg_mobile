@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
+import 'package:plug/app/modules/auth_screen/controllers/auth_screen_controller.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/auth_screen/views/otp_screen.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
@@ -15,6 +17,7 @@ import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/status_screen.dart';
+import 'package:plug/constants/app_constants.dart';
 import 'package:plug/models/file_model.dart';
 import 'package:plug/models/notification_response.dart';
 import 'package:plug/models/recommendation_response.dart';
@@ -43,7 +46,11 @@ class APICALLS with ValidationMixin {
       'type': contact.contains("@") ? 'email' : 'phone'
     };
 
-    var response = await http.post(uri, body: jsonEncode(body), headers: {"Content-Type": "application/json"});
+    var response = await http.post(uri, body: jsonEncode(body), headers: {
+      "Content-Type": "application/json"
+    }).timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
     var parsedResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print("[signUpSignIn] success: ${parsedResponse['message']}");
@@ -69,12 +76,20 @@ class APICALLS with ValidationMixin {
       "emailAddress": EmailValidator.validate(contact) ? contact : "",
       "phoneNumber": PhoneValidator.validate(contact) ? contact : "",
       "code": code,
-      "type": EmailValidator.validate(contact) ? User.EMAIL_CONTACT_TYPE : User.PHONE_CONTACT_TYPE,
+      "type": EmailValidator.validate(contact)
+          ? User.EMAIL_CONTACT_TYPE
+          : User.PHONE_CONTACT_TYPE,
       "deviceToken": fcmToken.toString()
     };
 
     var uri = Uri.parse("$url/api/verifyOTP");
-    var response = await http.post(uri, headers: {"Content-Type": "application/json"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
     var parsedResponse = jsonDecode(response.body);
 
     if (response.statusCode != 200) {
@@ -91,15 +106,23 @@ class APICALLS with ValidationMixin {
     final token = parsedResponse['data']['token'].toString();
     final userData = parsedResponse['data']['user']['data'];
 
-    print("[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
+    print(
+        "[verifyOTP] is registered: ${parsedResponse['data']['user']['isRegistered']}");
     final isRegistered = parsedResponse['data']['user']['isRegistered'] == true;
+
+    final isUserEmailEmpty = userData['emailAddress'] == null;
+    final isUserNameEmpty = userData['userName'] == null;
+
     print("[verifyOTP] user data: ${userData.toString()}");
 
     SharedPreferences storage = await SharedPreferences.getInstance();
     storage.setBool(PREF_IS_FIRST_APP_RUN, false);
     print("[verifyOTP] PREF_IS_FIRST_APP_RUN: false");
 
-    if (isRegistered) {
+    /*if(isUserEmailEmpty && isUserNameEmpty){
+
+    }*/
+    if (isRegistered && !isUserEmailEmpty && !isUserNameEmpty) {
       User user = await UserState.get();
       await UserState.store(
         User.registered(
@@ -108,7 +131,9 @@ class APICALLS with ValidationMixin {
           name: userData['userName'].toString(),
           phone: userData['phoneNumber'].toString(),
           email: userData['emailAddress'].toString(),
-          countryCode: user.countryCode.isNotEmpty ? user.countryCode : User.DEFAULT_COUNTRY_CODE,
+          countryCode: user.countryCode.isNotEmpty
+              ? user.countryCode
+              : User.DEFAULT_COUNTRY_CODE,
         ),
       );
 
@@ -116,7 +141,7 @@ class APICALLS with ValidationMixin {
       return true;
     }
 
-    Get.offAll(() => SetProfileScreenView(
+    Get.to(() => SetProfileScreenView(
           token: token,
           userID: userData['_id'].toString(),
           contact: userData['emailAddress'] == null
@@ -146,11 +171,18 @@ class APICALLS with ValidationMixin {
 
     String requestBody = jsonEncode(body);
     print("[Api:createProfile] send request [$requestBody]");
-    var response = await http.post(
+    var response = await http
+        .post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer $token"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      },
       body: requestBody,
-    );
+    )
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
     print("[Api:createProfile] response [$parsedResponse]");
@@ -158,7 +190,12 @@ class APICALLS with ValidationMixin {
     if (response.statusCode == 200) {
       pluhgSnackBar('Great', 'Your profile Has been set');
       User user = await UserState.get();
-      await UserState.storeNewProfile(token: token, name: username, contact: contact, countryCode: user.countryCode);
+      await UserState.storeNewProfile(
+          token: token,
+          name: username,
+          contact: contact,
+          countryCode: user.countryCode,
+      );
 
       Get.offAll(() => HomeView(index: 1.obs));
       return false;
@@ -179,22 +216,41 @@ class APICALLS with ValidationMixin {
       required String emailContent,
       required BuildContext context}) async {
     var uri = Uri.parse("$url/api/sendSupportEmail");
-    var body = {"emailAddress": emailAddress, "subject": subject, "emailContent": emailContent};
+    var body = {
+      "emailAddress": emailAddress,
+      "subject": subject,
+      "emailContent": emailContent
+    };
 
     /// Set options
     /// Max and msg required
     User user = await UserState.get();
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${user.token}"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
 
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return;
+    }
+
     if (parsedResponse["status"] == true) {
-      showPluhgDailog(context, "Great", "Your message has been sent successfully");
+      showPluhgDailog(
+          context, "Great", "Your message has been sent successfully");
       //all good
     } else {
       // error
-      showPluhgDailog(context, "So Sorry", "Couldn't send your message, try again letter");
+      showPluhgDailog(
+          context, "So Sorry", "Couldn't send your message, try again letter");
       print("Error");
     }
   }
@@ -232,26 +288,55 @@ class APICALLS with ValidationMixin {
       'generalMessage': bothMessage
     };
 
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${user.token}"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     var parsedResponse = jsonDecode(response.body);
 
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return false;
+    }
+
     // print(parsedResponse["data"]["_id"].toString());
-    bool bothemail = requesterContact.contains("@") && contactContact.contains("@");
-    bool bothphone = !requesterContact.contains("@") && !contactContact.contains("@");
+    bool bothemail =
+        requesterContact.contains("@") && contactContact.contains("@");
+    bool bothphone =
+        !requesterContact.contains("@") && !contactContact.contains("@");
     if (parsedResponse["status"] == true) {
       pluhgSnackBar("Great", "You have connected them, about to send message");
 
-      Get.off(StatusScreen(
+      Get.off(
+        StatusScreen(
           buttonText: "Continue",
           heading: 'Connection Successful',
           iconName: 'success_status',
-          onPressed: () => Get.offAll(HomeView(index: 0.obs)),
+          onPressed: () => Get.offAll(HomeView(
+            index: 0.obs,
+            isDeepLinkCodeExecute: false,
+            connectionTabIndex: 2,
+          )),
           subheading: bothemail
+              ? "$requesterName and $contactName will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
+              : bothphone
+              ? "$requesterName and $contactName will be notified by text of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
+              : "$requesterName will be notified by ${requesterContact.contains("@") ? "email" : "phone"} AND $contactName will be notified by ${contactContact.contains("@") ? "email" : "phone"} of your CONNECTION RECOMMENDATIOIN!  Don't worry we will not share any personal contact details between them 🤐 ",
+
+          /*subheading: bothemail
               ? "$requesterName in phone and $contactName in phone will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
               : bothphone
                   ? "$requesterName in phone and $contactName in phone will be notified by text of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
-                  : "$requesterName in Phone will be notified by ${requesterContact.contains("@") ? "email" : "phone"} and $contactName in phone will be notified by ${contactContact.contains("@") ? "email" : "phone"} of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐 "));
+                  : "$requesterName in Phone will be notified by ${requesterContact.contains("@") ? "email" : "phone"} and $contactName in phone will be notified by ${contactContact.contains("@") ? "email" : "phone"} of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐 ",*/
+        ),
+      );
 
       return false;
 
@@ -284,11 +369,29 @@ class APICALLS with ValidationMixin {
       progressBgColor: Colors.transparent,
     );
 
-    var body = {'connectionId': connectionID, 'message': message, 'party': party};
+    var body = {
+      'connectionId': connectionID,
+      'message': message,
+      'party': party
+    };
 
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${user.token}"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     parsedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return false;
+    }
 
     /// Set options
     /// Max and msg required
@@ -309,7 +412,11 @@ class APICALLS with ValidationMixin {
   Future getProfile() async {
     User user = await UserState.get();
     var uri = Uri.parse("$url/api/profileDetails");
-    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    var response = await http
+        .get(uri, headers: {"Authorization": "Bearer ${user.token}"}).timeout(
+            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
     print(parsedResponse);
@@ -319,9 +426,14 @@ class APICALLS with ValidationMixin {
       // all good, details in parsedResponse
     }
 
-    print("[Api:getProfile] error: status code [${response.statusCode}]; body [${response.body}]");
+    print(
+        "[Api:getProfile] error: status code [${response.statusCode}]; body [${response.body}]");
     if (response.statusCode == 401) {
       pluhgSnackBar("So sorry", "You have to login again, session expired");
+    }
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
     } else {
       pluhgSnackBar("So sorry", "Something went wrong");
     }
@@ -333,7 +445,8 @@ class APICALLS with ValidationMixin {
   }
 
   //Update user's details API
-  void setProfile({required String token, String name = "", String address = ""}) async {
+  void setProfile(
+      {required String token, String name = "", String address = ""}) async {
     var uri = Uri.parse("$url/api/updateProfileDetails");
 
     var body = {};
@@ -346,9 +459,17 @@ class APICALLS with ValidationMixin {
       body["address"] = address;
     }
 
-    var response = await http.post(uri, headers: {"Authorization": "Bearer $token"}, body: body);
+    var response = await http
+        .post(uri, headers: {"Authorization": "Bearer $token"}, body: body)
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+    }
 
     if (parsedResponse["hasError"] == false) {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -388,13 +509,22 @@ class APICALLS with ValidationMixin {
       body["phoneNumber"] = phone;
     }
 
-    var response = await http.post(uri, headers: {"Authorization": "Bearer $token"}, body: body);
+    var response = await http
+        .post(uri, headers: {"Authorization": "Bearer $token"}, body: body)
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
 
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return false;
+    }
+
     if (parsedResponse["status"] == true) {
       // All okay
-      Get.offAll(() => HomeView(index: 3.obs));
+      Get.offAll(() => HomeView(index: 3.obs, isDeepLinkCodeExecute: false));
       pluhgSnackBar("Great", "You have changed your profile details");
       return false;
     } else {
@@ -424,12 +554,18 @@ class APICALLS with ValidationMixin {
       // ..fields["emailAddress"] = emailAddress + "7y"
       // ..fields["phoneNumber"] = phoneNumber + "29"
       ..files.add(http.MultipartFile('profileImage', stream, length,
-          filename: basename(imageFile.path), contentType: MediaType('image', 'png')))
+          filename: basename(imageFile.path),
+          contentType: MediaType('image', 'png')))
       ..headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
 
-    var response = await request.send();
+    var response = await request
+        .send()
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      pluhgSnackBar('Sorry', '$TIME_OUT_EXCEPTION');
+      throw '';
+    });
 
     response.stream.transform(utf8.decoder).listen((var value) async {
       response.stream.transform(utf8.decoder);
@@ -437,7 +573,7 @@ class APICALLS with ValidationMixin {
 
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
-        Get.offAll(() => HomeView(index: 3.obs));
+        Get.offAll(() => HomeView(index: 3.obs, isDeepLinkCodeExecute: false));
         pluhgSnackBar("Great", "You have changed your picture");
       });
 
@@ -454,9 +590,18 @@ class APICALLS with ValidationMixin {
   }) async {
     var uri = Uri.parse("$url/api/notification/settings");
     // NotificationSettings settingz;
-    var response = await http.get(uri, headers: {"Authorization": "Bearer $token"});
+    var response = await http
+        .get(uri, headers: {"Authorization": "Bearer $token"}).timeout(
+            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return null;
+    }
 
     if (parsedResponse["status"] == true) {
       return parsedResponse;
@@ -483,8 +628,16 @@ class APICALLS with ValidationMixin {
       "pushNotification": pushNotification
     };
 
-    var response = await http.post(uri,
-        headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Authorization": "Bearer $token",
+              "Content-Type": "application/json"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
 
     var parsedResponse = jsonDecode(response.body);
 
@@ -508,7 +661,11 @@ class APICALLS with ValidationMixin {
     Uri uri = Uri.parse("$url/api/connect/whoIconnected");
     var response;
     try {
-      response = await http.get(uri, headers: {"Authorization": "Bearer $token"});
+      response = await http
+          .get(uri, headers: {"Authorization": "Bearer $token"}).timeout(
+              AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+        return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+      });
     } catch (e) {
       print("API has Error");
       print("Error: ");
@@ -517,6 +674,11 @@ class APICALLS with ValidationMixin {
     }
 
     var parsedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return null;
+    }
 
     if (parsedResponse["status"] == true) {
       print("All Good Here");
@@ -540,8 +702,13 @@ class APICALLS with ValidationMixin {
     try {
       response = await http.get(
         uri,
-        headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"},
-      );
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      ).timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+        return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+      });
     } catch (e) {
       print("[API:getActiveConnections] error: ${e.toString()}");
       return null;
@@ -549,6 +716,11 @@ class APICALLS with ValidationMixin {
 
     var parsedResponse = jsonDecode(response.body);
     print("[API:getActiveConnections] response: ${parsedResponse.toString()}");
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return null;
+    }
 
     if (parsedResponse["status"] == true) {
       return parsedResponse;
@@ -569,10 +741,21 @@ class APICALLS with ValidationMixin {
 
     http.Response response;
 
-    response = await http.get(uri, headers: {"Authorization": "Bearer $token", "Content-Type": "application/json"});
+    response = await http.get(uri, headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json"
+    }).timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     print('response ${response.body}');
 
     var parsedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return null;
+    }
 
     if (parsedResponse["status"] == true) {
       return parsedResponse;
@@ -616,8 +799,17 @@ class APICALLS with ValidationMixin {
     };
 
     print("[API:respondToConnectionRequest] send request: $body");
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${user.token}"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     parsedResponse = jsonDecode(response.body);
     // }
     // else if (!contact.contains("@")) {
@@ -639,7 +831,14 @@ class APICALLS with ValidationMixin {
     //   parsedResponse = jsonDecode(response.body);
     // }
 
-    print("[API:respondToConnectionRequest] response: ${parsedResponse.toString()}");
+    if (response.statusCode == 400) {
+      pd.close();
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return false;
+    }
+
+    print(
+        "[API:respondToConnectionRequest] response: ${parsedResponse.toString()}");
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -650,7 +849,8 @@ class APICALLS with ValidationMixin {
         "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
-          Get.offAll(() => HomeView(index: 2.obs));
+          Get.offAll(
+              () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
         },
       );
 
@@ -668,6 +868,41 @@ class APICALLS with ValidationMixin {
     required BuildContext context,
     required String connectionID,
   }) async {
+    /* User user = await UserState.get();
+    ProgressDialog pd = ProgressDialog(context: context);
+    var parsedResponse;
+    pd.show(
+      max: 100,
+      msg: 'Please wait...',
+      progressType: ProgressType.normal,
+      progressBgColor: Colors.transparent,
+    );
+
+    parsedResponse = await Future.delayed(Duration(seconds: 1)).then((value){
+      pd.close();
+      return true;
+    });
+
+    if (parsedResponse == true) {
+      // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+      showPluhgDailog2(
+        context,
+        "Success",
+        'Meesage from db',
+        onCLosed: () {
+          print("[Dialogue:OnClose] go to HomeView [2]");
+          Get.offAll(() => HomeView(index: 2.obs));
+        },
+      );
+
+      return true;
+    }
+
+    // error
+    pluhgSnackBar("So sorry", parsedResponse["message"]);
+    return false;
+    */
+
     var uri = Uri.parse("$url/api/connect/accept");
     User user = await UserState.get();
     print("[API:acceptConnectionRequest] user: ${user.toString()}");
@@ -683,13 +918,29 @@ class APICALLS with ValidationMixin {
     var body = {"connectionId": connectionID};
 
     print("[API:acceptConnectionRequest] send request: $body");
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${user.token}"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     parsedResponse = jsonDecode(response.body);
 
-    print("[API:acceptConnectionRequest] response: ${parsedResponse.toString()}");
+    print(
+        "[API:acceptConnectionRequest] response: ${parsedResponse.toString()}");
 
     pd.close();
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return false;
+    }
+
     if (parsedResponse["status"] == true) {
       // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
       showPluhgDailog2(
@@ -698,11 +949,12 @@ class APICALLS with ValidationMixin {
         parsedResponse["message"],
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
-          Get.offAll(() => HomeView(index: 2.obs));
+          Get.offAll(
+              () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
         },
       );
 
-      return false;
+      return true;
     }
 
     // error
@@ -730,13 +982,29 @@ class APICALLS with ValidationMixin {
     var body = {"connectionId": connectionID};
 
     print("[API:declineConnectionRequest] send request: $body");
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"}, body: jsonEncode(body));
+    var response = await http
+        .post(uri,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer ${user.token}"
+            },
+            body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     parsedResponse = jsonDecode(response.body);
 
-    print("[API:declineConnectionRequest] response: ${parsedResponse.toString()}");
+    print(
+        "[API:declineConnectionRequest] response: ${parsedResponse.toString()}");
 
     pd.close();
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return false;
+    }
+
     if (parsedResponse["status"] == true) {
       // "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
       showPluhgDailog2(
@@ -745,11 +1013,12 @@ class APICALLS with ValidationMixin {
         parsedResponse["message"],
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
-          Get.offAll(() => HomeView(index: 2.obs));
+          Get.offAll(
+              () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
         },
       );
 
-      return false;
+      return true;
     }
 
     // error
@@ -759,39 +1028,68 @@ class APICALLS with ValidationMixin {
 
   //Close connection
   Future<bool> closeConnection(
-      {required String connectionID, required BuildContext context, required String rating}) async {
+      {required String connectionID,
+      required BuildContext context,
+      required String rating}) async {
     var uri = Uri.parse("$url/api/connect/closeConnection");
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     User user = await UserState.get();
 
     var parsedResponse;
-    var response = await http.post(
+    var response = await http
+        .post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${user.token}"
+      },
       body: jsonEncode(
         {"connectionId": connectionID, "feedbackRating": rating},
       ),
-    );
+    )
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     parsedResponse = jsonDecode(response.body);
     print("[closeConnection] response: $parsedResponse");
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+    }
 
     return parsedResponse["status"] == true;
   }
 
   //Check if user is a Pluhg user or not
-  Future<List<PluhgContact>> checkPluhgUsers({required List<PluhgContact> contacts}) async {
+  Future<List<PluhgContact>> checkPluhgUsers(
+      {required List<PluhgContact> contacts}) async {
     var uri = Uri.parse("$url/api/checkIsPlughedUser");
 
-    Map body = {"contacts": contacts.map((item) => item.toCleanedJson()).toList()};
+    Map body = {
+      "contacts": contacts.map((item) => item.toCleanedJson()).toList()
+    };
     User user = await UserState.get();
     print("[checkPluhgUsers] send request: ${body.toString()}");
-    var response = await http.post(
+    var response = await http
+        .post(
       uri,
-      headers: {"Content-Type": "application/json", "Authorization": "Bearer ${user.token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${user.token}"
+      },
       body: jsonEncode(body),
-    );
+    )
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
+    });
+
     Map parsedResponse = jsonDecode(response.body);
 
+    if (response.statusCode == 400) {
+      pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
+      return [];
+    }
     print("[checkPluhgUsers] response: ${parsedResponse.toString()}");
     if (parsedResponse["status"] == false) {
       pluhgSnackBar("So Sorry", "${parsedResponse['message']}");
@@ -803,14 +1101,22 @@ class APICALLS with ValidationMixin {
       final user = data[i] as Map<String, dynamic>;
       final userPhoneNumber = formatPhoneNumber(user['phoneNumber'] as String);
 
-      final registeredContacts = contacts.where((c) {
+      contacts.forEach((c) {
+        final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
+
+        if(contactPhoneNumber == userPhoneNumber || (user['emailAddress'] != null && c.emailAddress == (user['emailAddress'] as String).trim())){
+          c.isPlughedUser = true;
+        }
+      });
+
+      /*final registeredContacts = contacts.where((c) {
         final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
         return contactPhoneNumber == userPhoneNumber;
       });
 
       registeredContacts.forEach((rc) {
         rc.isPlughedUser = true;
-      });
+      });*/
     }
     return contacts;
   }
@@ -825,9 +1131,19 @@ class APICALLS with ValidationMixin {
       'Authorization': "Bearer ${user.token}",
       'Content-type': 'application/json',
     };
-    var response = await http.post(uri, headers: headers, body: jsonEncode(body));
+    var response = await http
+        .post(uri, headers: headers, body: jsonEncode(body))
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
+    });
     final Map<String, dynamic> responseBody = jsonDecode(response.body);
     print("[API:markAsRead] response: ${responseBody.toString()}");
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', responseBody["message"].toString());
+      return false;
+    }
+
     return responseBody["status"] == true;
   }
 
@@ -836,50 +1152,98 @@ class APICALLS with ValidationMixin {
     User user = await UserState.get();
     var uri = Uri.parse("$url/api/getNotificationList");
 
-    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    var response = await http
+        .get(uri, headers: {"Authorization": "Bearer ${user.token}"}).timeout(
+            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
+    });
     var parsedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      return null;
+    }
+
     print("[API:getNotifications] response: ${parsedResponse.toString()}");
 
     return NotificationResponse.fromJson(parsedResponse);
   }
 
   ///to get connection details used in dynamic for milestone one
-  Future<RecommendationResponse> getConnectionDetails({required String connectionID}) async {
+  Future<RecommendationResponse> getConnectionDetails(
+      {required String connectionID}) async {
     User user = await UserState.get();
 
     var uri = Uri.parse("$url/api/connect/getConnectionsDetails/$connectionID");
-    var response = await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    var response = await http
+        .get(uri, headers: {"Authorization": "Bearer ${user.token}"}).timeout(
+            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      return http.Response('"message" : "$TIME_OUT_EXCEPTION"', 400);
+    });
+
     var parsedResponse = jsonDecode(response.body);
     print("[API:getNotifications] response: ${parsedResponse.toString()}");
 
+    if (response.statusCode == 400) {
+      pluhgSnackBar('Sorry', parsedResponse["message"].toString());
+      throw '';
+    }
     return RecommendationResponse.fromJson(parsedResponse);
   }
 
   // Upload file (document / image(s))
-  Future<dynamic> uploadFile(String senderId, List<String> files, String type, String subType) async {
+  Future<dynamic> uploadFile(
+      String senderId, List<String> files, String type, String subType) async {
     User user = await UserState.get();
     Map<String, String> headers = {"Authorization": "Bearer ${user.token}"};
     print("[uploadFile] user token ${user.token}");
 
     List<http.MultipartFile> iterable = [];
     for (int i = 0; i < files.length; i++) {
-      iterable.add(new http.MultipartFile.fromBytes('files', await File(files[i]).readAsBytes(),
-          filename: basename(files[i].split("/").last), contentType: MediaType(type, subType)));
+      iterable.add(new http.MultipartFile.fromBytes(
+          'files', await File(files[i]).readAsBytes(),
+          filename: basename(files[i].split("/").last),
+          contentType: MediaType(type, subType)));
     }
 
-    var request = http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
-      ..files.addAll(iterable)
-      ..headers.addAll(headers);
+    final client = new HttpClient();
+    client.connectionTimeout = const Duration(seconds: 10);
+
+    var request =
+        http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
+          ..files.addAll(iterable)
+          ..headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
 
-    var response = await request.send();
+    var response = await request
+        .send()
+        .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+      pluhgSnackBar('Sorry', '$TIME_OUT_EXCEPTION');
+      throw '';
+    });
 
     var httpResponse = await http.Response.fromStream(response);
 
     print(httpResponse.body);
     var data = json.decode(httpResponse.body)["data"];
 
-    return List<FileModel>.from(data.map((e) => FileModel.fromJson(e)).toList());
+    return List<FileModel>.from(
+        data.map((e) => FileModel.fromJson(e)).toList());
+  }
+
+  Future<int?> getNotificationCount() async {
+    User user = await UserState.get();
+    var uri = Uri.parse("$url/api/getNotificationCount");
+
+    var response =
+        await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+
+    var parseResponse = jsonDecode(response.body);
+
+    print(
+        '[API:getNotificationCount] response : ${parseResponse['data']['unReadCount']}');
+
+    return parseResponse['data']['unReadCount'];
   }
 }

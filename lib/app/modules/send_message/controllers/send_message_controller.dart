@@ -33,7 +33,7 @@ class SendMessageController extends GetxController {
         text.value = "Contact";
         break;
       case 3 :
-        text.value = "Receiver";
+        text.value = "Requester";
         break;
     }
   }

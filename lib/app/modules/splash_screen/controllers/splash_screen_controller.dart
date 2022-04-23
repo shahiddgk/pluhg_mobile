@@ -41,6 +41,8 @@ class SplashScreenController extends GetxController {
       return AuthScreenView();
     }
 
+    //if((user.email != null  && user.email.isNotEmpty && user.name != null && user.name.isNotEmpty) || (user.phone != null  && user.phone.isNotEmpty && user.name != null && user.name.isNotEmpty))
+
     // registered user
     return HomeView(index: 1.obs);
   }

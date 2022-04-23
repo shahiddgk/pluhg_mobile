@@ -80,8 +80,11 @@ class ConnectionScreenController extends GetxController with SingleGetTickerProv
       return null;
     }
 
-    waitingList.value = data["data"].length;
-    return data["data"];
+    List<dynamic> temp = data['data'];
+    temp.removeWhere((element) => element['userId']['_id'] == user.id);
+    //return data["data"];
+    waitingList.value = temp.length;
+    return temp;
   }
 
   whoIconnectedData() async {

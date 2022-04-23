@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/text_style.dart';
@@ -21,7 +22,7 @@ Widget recieverMessage(
         ),
         child: CircleAvatar(
           radius: 50,
-          backgroundImage: NetworkImage(img),
+          backgroundImage: CachedNetworkImageProvider(img),
         ),
       ),
       SizedBox(

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:country_code_picker/country_code.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
@@ -71,7 +72,7 @@ class ContactController extends GetxController with ValidationMixin {
       return;
     }
 
-    //Request access contact permission
+    ///Request access contact permission
     final perm = await Permission.contacts.request();
 
     if (perm.isDenied) {
@@ -82,11 +83,37 @@ class ContactController extends GetxController with ValidationMixin {
     }
 
     //get list contact from phone
-    final contacts = await FlutterContacts.getContacts(
-        withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true);
+    final contacts = await FlutterContacts.getContacts(withProperties: true, withPhoto: true, withThumbnail: true, withAccounts: true,);
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var code = prefs.getString('countryCode');
+
+    //prefs.setString("countryCode", controller.currentCountryCode.value);
+
+    //print('AB IS ---->${ab.code}----->${ab.dialCode}');
+
+
+    contacts.forEach((element) {
+      element.phones.forEach((element) {
+
+        final contactPhoneNumber = formatPhoneNumber(element.number);
+        final newPhoneNumber;
+
+
+        if(!contactPhoneNumber.contains('+')){
+          newPhoneNumber = '$code' + contactPhoneNumber;
+        }else{
+          newPhoneNumber = contactPhoneNumber;
+        }
+        element.number = newPhoneNumber;
+        //print('CONTACT NUMER ---${element.number} -----> NORMALIZED---${newPhoneNumber}');
+      });
+    });
 
     // check for registered users
     List<PluhgContact> pluhgContacts = [];
+
     try {
       pluhgContacts = contacts.map<PluhgContact>((contact) => PluhgContact.fromContact(contact)).toList();
       for (PluhgContact p in pluhgContacts) {
@@ -103,20 +130,12 @@ class ContactController extends GetxController with ValidationMixin {
     }
 
     print("[getContactList] Pluhg contacts: ${pluhgContacts.toString()}");
-    _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
-    //remove users phone number
-    User user = await UserState.get();
 
-    PluhgContact? contactToRemove;
-    _allContacts.forEach((element) {
-      if (comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email)) {
-        print("[getContactList] remove contact: $element");
-        contactToRemove = element;
-      }
-    });
-    if (contactToRemove != null) {
-      _allContacts.remove(contactToRemove);
-    }
+    _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
+
+    User user = await UserState.get();
+    _allContacts.removeWhere((element) => comparePhoneNumber(element.phoneNumber, user.phone) || comparePhoneNumber(element.emailAddress, user.email));
+
     contactsFuture.complete(_allContacts);
   }
 
@@ -125,4 +144,6 @@ class ContactController extends GetxController with ValidationMixin {
         final regexp = RegExp(search.value, caseSensitive: false);
         return regexp.hasMatch(contact.name);
       }).toList();
+
+  List<PluhgContact> get fetchAllContacts => _allContacts;
 }

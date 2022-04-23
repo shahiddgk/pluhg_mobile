@@ -8,6 +8,8 @@ class PluhgContact {
   Uint8List? photo;
   String name, phoneNumber, emailAddress;
   List<String> phoneNumbers;
+  List<String> emailAddresses;
+  String? selectedContact;
 
   PluhgContact({
     required this.id,
@@ -17,6 +19,8 @@ class PluhgContact {
     this.photo,
     required this.emailAddress,
     required this.isPlughedUser,
+    required this.emailAddresses,
+    this.selectedContact,
   });
 
   PluhgContact copyWith({
@@ -27,6 +31,8 @@ class PluhgContact {
     Uint8List? photo,
     String? emailAddress,
     bool? isPlughedUser,
+    List<String>? emailAddresses,
+    String? selectedContact,
   }) {
     return PluhgContact(
       phoneNumbers: phoneNumbers!,
@@ -36,12 +42,16 @@ class PluhgContact {
       photo: photo ?? this.photo,
       emailAddress: emailAddress ?? this.emailAddress,
       isPlughedUser: isPlughedUser ?? this.isPlughedUser,
+       emailAddresses:  emailAddresses ?? this.emailAddresses,
+      selectedContact:  selectedContact ?? this.selectedContact,
     );
   }
 
   @override
   String toString() {
-    return "{id: ${this.id}, name: ${this.name}, emailAddress: ${this.emailAddress}, isPlughedUser: ${this.isPlughedUser}, phoneNumber: ${this.phoneNumber}, photo: ${this.photo}}";
+    return ""
+        "{id: ${this.id}, name: ${this.name}, emailAddress: ${this.emailAddress}, isPlughedUser: ${this.isPlughedUser}, "
+        "phoneNumber: ${this.phoneNumber}, photo: ${this.photo}, emailAddresses : ${this.emailAddresses}}";
   }
 
   Map toJson() {
@@ -52,6 +62,7 @@ class PluhgContact {
       "isPlughedUser": this.isPlughedUser,
       "phoneNumber": this.phoneNumber,
       "photo": this.photo,
+      "emailAddresses" : this.emailAddresses,
     };
   }
 
@@ -81,6 +92,7 @@ class PluhgContact {
         isPlughedUser: json['isPlughedUser'] ?? false,
         phoneNumber: json['phoneNumber'] ?? '',
         emailAddress: json['emailaddress'] ?? '',
+       emailAddresses: json['emailAddresses'] ?? '',
       );
 
   factory PluhgContact.fromContact(Contact contact) {
@@ -91,8 +103,8 @@ class PluhgContact {
       isPlughedUser: false,
       // photo: '',//contact.photo,
       phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
-      emailAddress:
-          contact.emails.isNotEmpty ? contact.emails.first.address : '',
+      emailAddress: contact.emails.isNotEmpty ? contact.emails.first.address : '',
+      emailAddresses: contact.emails.isNotEmpty ? contact.emails.map((e) => e.address).toList() : [],
     );
   }
 }

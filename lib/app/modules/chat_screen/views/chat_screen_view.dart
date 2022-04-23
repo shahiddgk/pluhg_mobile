@@ -26,6 +26,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Text(
@@ -49,10 +50,35 @@ class ChatScreenView extends GetView<ChatScreenController> {
                         //Gi to chat screen
                         Get.to(() => ChatScreen(
                             username_receiver: controller.users[i].userName,
-                            name_receiver: controller.users[i].name,
+                            name_receiver: controller.users[i].name ?? '',
                             profile_receiver: APICALLS.imageBaseUrl + controller.users[i].profileImage!,
                             senderId: controller.users[i].senderId,
-                            recevierId: controller.users[i].recevierId));
+                            recevierId: controller.users[i].recevierId,
+                            clearUnReadMessageCount: (){
+
+
+                              print('CALL BACK CALL${controller.total_unread_messages.value}');
+
+                              var tempUser = controller.users[i];
+                              var temp = tempUser.unReadCount;
+
+                              tempUser.unReadCount = 0;
+                              var index = controller.users.removeAt(i);
+                              controller.users.insert(i, tempUser);
+                              //controller.users[i].unReadCount = 0;
+                              if(temp > 0) {
+                                controller.total_unread_messages.value = (controller.total_unread_messages.value - temp).toInt();
+                              }
+                              /*controller.users.clear();
+                              controller.socket.close();
+                              controller.connect();*/
+
+
+                              print('CALL BACK END CALL }${controller.total_unread_messages.value}');
+
+
+                            },
+                        ));
                       }, // get last message item
                       child: getMainChatItem(controller.users[i]),
                     ),
