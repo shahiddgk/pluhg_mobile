@@ -12,7 +12,7 @@ class OTPScreenController extends GetxController {
 
   RxBool loading = false.obs;
   Timer? _timer;
-  RxInt start = 40.obs;
+  RxInt start = 30.obs;
   final size = Get.size;
 
 
@@ -27,6 +27,7 @@ class OTPScreenController extends GetxController {
           otp.value = "RESEND";
         } else {
           start.value--;
+          otp.value = "${start.value}";
         }
       },
     );

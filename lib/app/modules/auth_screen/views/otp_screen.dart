@@ -140,14 +140,13 @@ class OTPScreenView extends GetView<OTPScreenController> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            controller.startTimer();
-
-                            controller.str.value = "OTP has been resent\n";
-
-                            controller.start.value = 40;
-                            controller.otp.value = "Sent Successfully";
-
-                            await apicalls.signUpSignIn(contact: contact);
+                            if(controller.start.value==0){
+                              controller.startTimer();
+                              controller.str.value = "OTP has been resent\n";
+                              controller.start.value = 30;
+                              controller.otp.value = "Sent Successfully";
+                              await apicalls.signUpSignIn(contact: contact);
+                            }
                           },
                           child: Align(
                             alignment: Alignment.center,
