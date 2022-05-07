@@ -18,9 +18,9 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: pluhgColour,
+                color: Colors.white,
                 width: double.infinity,
-                height: 548.13.h,
+                height: 500.13.h,
                 child: SafeArea(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -39,7 +39,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.w600,
                                   height: 1.19,
-                                  color: Colors.white,
+                                  color: pluhgColour,
                                 ),
                               ),
                             ),
@@ -48,27 +48,17 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                         SizedBox(
                           height: 24.h,
                         ),
-                        Text(
-                          controller.title[controller.currentIndex.value],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 23.sp,
-                            fontWeight: FontWeight.w600,
-                            height: 1.4,
+
+                        Center(
+                          child: SizedBox(
+                            width: 355.42.w,
+                            height: 355.h,
+                            child: SvgPicture.asset(
+                              controller.imgList[controller.currentIndex.value],
+                            ),
                           ),
                         ),
-                        SizedBox(height: 12.h),
-                        Text(
-                          controller.subTitle[controller.currentIndex.value],
-                          style: TextStyle(color: Colors.white, fontSize: 18.sp, height: 1.56),
-                        ),
-                        SizedBox(
-                          width: 263.42.w,
-                          height: 264.h,
-                          child: SvgPicture.asset(
-                            controller.imgList[controller.currentIndex.value],
-                          ),
-                        )
+
                       ],
                     ),
                   ),
@@ -86,7 +76,24 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                       children: List<Widget>.generate(4, (index) => _indicator(index == controller.currentIndex.value)),
                     ),
                     SizedBox(
-                      height: 70.47.h,
+                      height: 20.47.h,
+                    ),
+                    Text(
+                      controller.title[controller.currentIndex.value],
+                      style: TextStyle(
+                        color: pluhgColour,
+                        fontSize: 23.sp,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      controller.subTitle[controller.currentIndex.value],
+                      style: TextStyle(color: pluhgMenuBlackColour, fontSize: 18.sp, height: 1.56),
+                    ),
+                    SizedBox(
+                      height: 20.47.h,
                     ),
                     Row(
                       children: [
@@ -96,9 +103,10 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                             constraints: BoxConstraints(maxWidth: 115.w),
                             child: PluhgButton(
                               text: 'Previous',
-                              borderWidth: 2,
-                              borderColor: pluhgGrayColour,
-                              textColor: pluhgGrayColour,
+                              borderWidth: 0,
+                              borderRadius: 0,
+                              borderColor: Colors.transparent,
+                              textColor: pluhgColour,
                               color: Colors.transparent,
                               onPressed: () {
                                 controller.currentIndex.value -= 1;
@@ -110,6 +118,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                         ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 115.w),
                           child: PluhgButton(
+                            borderRadius: 15,
                             text: controller.currentIndex.value == 3 ? 'Sign Up' : 'Next',
                             onPressed: () {
                               if (controller.currentIndex.value == 3) {
@@ -125,6 +134,7 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
                   ],
                 ),
               ),
+
             ],
           )),
     );
@@ -133,11 +143,11 @@ class OnboardingScreen2View extends GetView<OnboardingScreenController> {
   Widget _indicator(bool isCurrent) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 250),
-      width: isCurrent ? 25.44.w : 7.79.w,
+      width: isCurrent ? 25.44.w : 20.44.w,
       height: 7.79.h,
       margin: EdgeInsets.only(right: 5.46.w),
       decoration: BoxDecoration(
-        color: pluhgColour,
+        color: isCurrent ? pluhgGreenColour : pluhgMilkColour,
         borderRadius: BorderRadius.circular(50.r),
       ),
     );
