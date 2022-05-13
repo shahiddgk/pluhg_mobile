@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:country_code_picker/country_code.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/utils/location.dart';
@@ -18,7 +19,7 @@ class AuthScreenController extends GetxController {
   RxString deviceTokenString = ''.obs;
 
   double lat = 0, long = 0;
-  RxBool isLoading = false.obs;
+  RxBool isLoading = true.obs;
   final Size size = Get.size;
 
   @override
@@ -47,26 +48,35 @@ class AuthScreenController extends GetxController {
   }
 
   Future<String> fetchCountryCode() async {
-    print("[AuthScreenController:fetchCountryCode] start fetching iso country code");
+    print(
+        "[AuthScreenController:fetchCountryCode] start fetching iso country code");
     User user = await UserState.get();
-    String countryCode;
+    String countryCode = '';
     if (user.countryCode.isNotEmpty) {
       countryCode = user.countryCode;
-      print("[AuthScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
-    } else {
-      countryCode = await DeviceCountryCode.get();
       print(
-          "[AuthScreenController:fetchCountryCode] the code has been fetched from the DeviceCountryCode [$countryCode]");
+          "[AuthScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
+    } else {
+      try {
+        countryCode = await DeviceCountryCode.get();
+        print(
+            "[AuthScreenController:fetchCountryCode] the code has been fetched from the DeviceCountryCode [$countryCode]");
+      } catch (e) {
+        print(e);
+      }
     }
 
-    isoCountryCode.value = countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
+    isoCountryCode.value =
+        countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
+    isLoading.value = false;
     return isoCountryCode.value;
   }
 
   Future<void> updateCountryCode(CountryCode? countryCode) async {
     final isoCode = countryCode!.code ?? User.DEFAULT_COUNTRY_CODE;
     final dialCode = countryCode.dialCode ?? '';
-    print("[AuthScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
+    print(
+        "[AuthScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
 
     isoCountryCode.value = isoCode;
     currentCountryCode.value = dialCode;

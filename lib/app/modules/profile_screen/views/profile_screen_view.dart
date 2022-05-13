@@ -240,6 +240,25 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                               ],
                                             ),
                                           ),
+                                          SizedBox(height: 8),
+                                          RichText(
+                                            text: TextSpan(
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                              text: "Plugh Score ",
+                                              children: [
+                                                TextSpan(
+                                                  text: snapshot.data == null
+                                                      ? ".."
+                                                      : snapshot.data['numberOfConnections'].toString(),
+                                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],

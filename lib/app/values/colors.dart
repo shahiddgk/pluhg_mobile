@@ -20,4 +20,12 @@ class AppColors {
   static const Color pluhgRedColour = Color(0xffFF5652);
   static const Color pluhgGreyColour = Color(0xFFEBEBEB);
   static const Color pluhgGrey2Colour = Color(0xFFFDFDFD);
+
+  static const Color pluhgYellowColourLight = Color(0xFFFFF9D7);
+  static const Color pluhgOrangeColour = Color(0xFFF2994A);
+  static const Color pluhgRedLight = Color(0xFFFFEBEB);
+  static const Color pluhgRedDark = Color(0xFFEB5757);
+  static const Color pluhgGreenLight = Color(0xFFE3FCE7);
+  static const Color pluhgGreenDark = Color(0xFF27AE60);
+
 }

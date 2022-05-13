@@ -4,6 +4,7 @@ class NotificationResponse {
     required this.message,
     required this.data,
   });
+
   late final bool status;
   late final String message;
   late final List<NotificationData> data;
@@ -12,6 +13,32 @@ class NotificationResponse {
     status = json['status'];
     message = json['message'];
     data = List.from(json['data']).map((e) => NotificationData.fromJson(e)).toList();
+    // data = [
+    //   NotificationData(
+    //       status: 1,
+    //       id: "3",
+    //       userId: UserId(
+    //           emailAddress: "abc@gmail.com",
+    //           phoneNumber: "12345",
+    //           numberOfConnections: 1,
+    //           userName: "abc",
+    //           profileImage: "",
+    //           id: "123",
+    //           createdAt: "22-02-2022",
+    //           updatedAt: "22-02-2022",
+    //           v: 1),
+    //       notificationMsg: NotificationMsg(
+    //         title: "title",
+    //         body: " Body",
+    //         contentAvailable: true,
+    //         priority: "high",
+    //         sound: "",
+    //         badge: 1,
+    //       ),
+    //       type: "1",
+    //       createdAt: "22-02-2022",
+    //       updatedAt: "22-02-2022")
+    // ]; //List.from(json['data']).map((e) => NotificationData.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -84,8 +111,10 @@ class UserId {
     required this.v,
     this.deviceToken,
   });
+
   late final String emailAddress;
   late final String phoneNumber;
+
   // late final String lastLogin;
   late final int numberOfConnections;
   late final Null name;
@@ -145,6 +174,7 @@ class NotificationMsg {
     required this.sound,
     required this.badge,
   });
+
   late final String title;
   late final String body;
   late final bool contentAvailable;

@@ -27,11 +27,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS with ValidationMixin {
-  static const url = "https://api.pluhg.com";
-  static const ws_url = "ws://api.pluhg.com";
+  // static const url = "https://api.pluhg.com";
+  // static const ws_url = "ws://api.pluhg.com";
 
-  //static const url = "http://localhost:3001";
-  //static const ws_url = "ws://localhost:3001";
+  static const url = "http://192.168.31.86:8000";
+  static const ws_url = "ws://192.168.31.86:8000";
 
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';
@@ -39,7 +39,7 @@ class APICALLS with ValidationMixin {
   ///API to login or sign up.
   Future<bool> signUpSignIn({String? contact}) async {
     var uri = Uri.parse("$url/api/login");
-
+    print("[signUpSignIn] url: ${uri}");
     var body = {
       'emailAddress': contact!.contains("@") ? contact : '',
       'phoneNumber': !contact.contains("@") ? contact : '',
@@ -85,8 +85,8 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/verifyOTP");
     var response = await http
         .post(uri,
-            headers: {"Content-Type": "application/json"},
-            body: jsonEncode(body))
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -141,7 +141,8 @@ class APICALLS with ValidationMixin {
       return true;
     }
 
-    Get.to(() => SetProfileScreenView(
+    Get.to(() =>
+        SetProfileScreenView(
           token: token,
           userID: userData['_id'].toString(),
           contact: userData['emailAddress'] == null
@@ -191,10 +192,10 @@ class APICALLS with ValidationMixin {
       pluhgSnackBar('Great', 'Your profile Has been set');
       User user = await UserState.get();
       await UserState.storeNewProfile(
-          token: token,
-          name: username,
-          contact: contact,
-          countryCode: user.countryCode,
+        token: token,
+        name: username,
+        contact: contact,
+        countryCode: user.countryCode,
       );
 
       Get.offAll(() => HomeView(index: 1.obs));
@@ -209,12 +210,11 @@ class APICALLS with ValidationMixin {
     }
   }
 
-  Future<void> sendSupportEmail(
-      {required String emailAddress,
-      required String token,
-      required String subject,
-      required String emailContent,
-      required BuildContext context}) async {
+  Future<void> sendSupportEmail({required String emailAddress,
+    required String token,
+    required String subject,
+    required String emailContent,
+    required BuildContext context}) async {
     var uri = Uri.parse("$url/api/sendSupportEmail");
     var body = {
       "emailAddress": emailAddress,
@@ -227,11 +227,11 @@ class APICALLS with ValidationMixin {
     User user = await UserState.get();
     var response = await http
         .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer ${user.token}"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -256,17 +256,16 @@ class APICALLS with ValidationMixin {
   }
 
   // Connect two People API
-  Future<bool> connectTwoPeople(
-      {required String requesterName,
-      required String contactName,
-      required String contactContact,
-      required String requesterContact,
-      required String requesterMessage,
-      required String contactMessage,
-      required String bothMessage,
-      // required Uint8List? contactImage,
-      // required Uint8List? requesterImage,
-      required BuildContext context}) async {
+  Future<bool> connectTwoPeople({required String requesterName,
+    required String contactName,
+    required String contactContact,
+    required String requesterContact,
+    required String requesterMessage,
+    required String contactMessage,
+    required String bothMessage,
+    // required Uint8List? contactImage,
+    // required Uint8List? requesterImage,
+    required BuildContext context}) async {
     var uri = Uri.parse("$url/api/connect/people");
     User user = await UserState.get();
 
@@ -276,25 +275,27 @@ class APICALLS with ValidationMixin {
         "contact": requesterContact,
         "contactType": requesterContact.contains("@") ? 'email' : 'phone',
         "message":
-            "${user.name} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
+        "${user
+            .name} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$requesterMessage "
       },
       "contact": {
         "name": contactName,
         "contact": contactContact,
         "contactType": contactContact.contains("@") ? 'email' : 'phone',
         "message":
-            "${user.name} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
+        "${user
+            .name} has recommeded a connection between you and One of Their Contacts. Click this link to log into Pluhg and respond to the connection. \n$bothMessage \n$contactMessage "
       },
       'generalMessage': bothMessage
     };
 
     var response = await http
         .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer ${user.token}"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -319,16 +320,23 @@ class APICALLS with ValidationMixin {
           buttonText: "Continue",
           heading: 'Connection Successful',
           iconName: 'success_status',
-          onPressed: () => Get.offAll(HomeView(
-            index: 0.obs,
-            isDeepLinkCodeExecute: false,
-            connectionTabIndex: 2,
-          )),
+          onPressed: () =>
+              Get.offAll(HomeView(
+                index: 0.obs,
+                isDeepLinkCodeExecute: false,
+                connectionTabIndex: 2,
+              )),
           subheading: bothemail
               ? "$requesterName and $contactName will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
               : bothphone
               ? "$requesterName and $contactName will be notified by text of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
-              : "$requesterName will be notified by ${requesterContact.contains("@") ? "email" : "phone"} AND $contactName will be notified by ${contactContact.contains("@") ? "email" : "phone"} of your CONNECTION RECOMMENDATIOIN!  Don't worry we will not share any personal contact details between them 🤐 ",
+              : "$requesterName will be notified by ${requesterContact.contains(
+              "@")
+              ? "email"
+              : "phone"} AND $contactName will be notified by ${contactContact
+              .contains("@")
+              ? "email"
+              : "phone"} of your CONNECTION RECOMMENDATIOIN!  Don't worry we will not share any personal contact details between them 🤐 ",
 
           /*subheading: bothemail
               ? "$requesterName in phone and $contactName in phone will be notified by email of your connections recommendation.  Don't worry we will not share any personal contact details between them 🤐"
@@ -351,11 +359,10 @@ class APICALLS with ValidationMixin {
   }
 
   // send Message to remind user
-  Future<bool> sendReminderMessage(
-      {required String message,
-      required String party,
-      required String connectionID,
-      required BuildContext context}) async {
+  Future<bool> sendReminderMessage({required String message,
+    required String party,
+    required String connectionID,
+    required BuildContext context}) async {
     var uri = Uri.parse("$url/api/connect/sendReminder");
 
     User user = await UserState.get();
@@ -377,11 +384,11 @@ class APICALLS with ValidationMixin {
 
     var response = await http
         .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer ${user.token}"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -414,7 +421,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/profileDetails");
     var response = await http
         .get(uri, headers: {"Authorization": "Bearer ${user.token}"}).timeout(
-            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+        AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
 
@@ -427,7 +434,8 @@ class APICALLS with ValidationMixin {
     }
 
     print(
-        "[Api:getProfile] error: status code [${response.statusCode}]; body [${response.body}]");
+        "[Api:getProfile] error: status code [${response
+            .statusCode}]; body [${response.body}]");
     if (response.statusCode == 401) {
       pluhgSnackBar("So sorry", "You have to login again, session expired");
     }
@@ -536,27 +544,48 @@ class APICALLS with ValidationMixin {
   }
 
   // Update user's image
-  Future<bool> updateProfile(
-    var imageFile, {
+  Future<bool> updateProfile(var imageFile, {
     required String token,
+    String name = "",
+    String userName = "",
+    String address = "",
+    required String phone,
+    required String email,
     required BuildContext context,
   }) async {
-    var stream = http.ByteStream(imageFile.openRead());
-    stream.cast();
-    var length = await imageFile.length();
 
-    var uri = Uri.parse("$url/api/uploadProfileImage");
+    // var uri = Uri.parse("$url/api/uploadProfileImage");
+    var uri = Uri.parse("$url/api/updateProfileDetails");
     Map<String, String> headers = {"Authorization": "Bearer $token"};
-    var request = http.MultipartRequest("POST", uri)
-      // ..fields["name"] = name
-      // ..fields["address"] = address
-      // ..fields["numberOfConnections"] = numberofConnection
-      // ..fields["emailAddress"] = emailAddress + "7y"
-      // ..fields["phoneNumber"] = phoneNumber + "29"
-      ..files.add(http.MultipartFile('profileImage', stream, length,
+    var request = http.MultipartRequest("POST", uri);
+
+    if(imageFile !=null){
+      var stream = http.ByteStream(imageFile.openRead());
+      stream.cast();
+      var length = await imageFile.length();
+      request.files.add(http.MultipartFile('profileImage', stream, length,
           filename: basename(imageFile.path),
-          contentType: MediaType('image', 'png')))
-      ..headers.addAll(headers);
+          contentType: MediaType('image', 'png')));
+    }
+
+    Map<String, String> body = {};
+    if (email != "nothing") {
+      body["emailAddress"] = email;
+    }
+    if (name != "nothing") {
+      body["name"] = name;
+    }
+    if (userName != "nothing") {
+      body["userName"] = userName;
+    }
+    if (address != "nothing") {
+      body["address"] = address;
+    }
+    if (phone != "nothing") {
+      body["phoneNumber"] = phone;
+    }
+    request.fields.addAll(body);
+    request.headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
 
@@ -574,7 +603,7 @@ class APICALLS with ValidationMixin {
     if (response.statusCode == 200) {
       Future.delayed(Duration(microseconds: 10000), () {
         Get.offAll(() => HomeView(index: 3.obs, isDeepLinkCodeExecute: false));
-        pluhgSnackBar("Great", "You have changed your picture");
+        pluhgSnackBar("Great", "You have changed your profile details");
       });
 
       return false;
@@ -592,7 +621,7 @@ class APICALLS with ValidationMixin {
     // NotificationSettings settingz;
     var response = await http
         .get(uri, headers: {"Authorization": "Bearer $token"}).timeout(
-            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+        AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
 
@@ -630,11 +659,11 @@ class APICALLS with ValidationMixin {
 
     var response = await http
         .post(uri,
-            headers: {
-              "Authorization": "Bearer $token",
-              "Content-Type": "application/json"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -663,7 +692,7 @@ class APICALLS with ValidationMixin {
     try {
       response = await http
           .get(uri, headers: {"Authorization": "Bearer $token"}).timeout(
-              AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+          AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
         return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
       });
     } catch (e) {
@@ -801,11 +830,11 @@ class APICALLS with ValidationMixin {
     print("[API:respondToConnectionRequest] send request: $body");
     var response = await http
         .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer ${user.token}"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -838,7 +867,8 @@ class APICALLS with ValidationMixin {
     }
 
     print(
-        "[API:respondToConnectionRequest] response: ${parsedResponse.toString()}");
+        "[API:respondToConnectionRequest] response: ${parsedResponse
+            .toString()}");
 
     if (parsedResponse["status"] == true) {
       pd.close();
@@ -846,11 +876,13 @@ class APICALLS with ValidationMixin {
       showPluhgDailog2(
         context,
         "Success",
-        "You have successfully ${isAccepting ? "accepted" : "rejected"} this  connection",
+        "You have successfully ${isAccepting
+            ? "accepted"
+            : "rejected"} this  connection",
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
           Get.offAll(
-              () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
+                  () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
         },
       );
 
@@ -920,11 +952,11 @@ class APICALLS with ValidationMixin {
     print("[API:acceptConnectionRequest] send request: $body");
     var response = await http
         .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer ${user.token}"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message": "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -950,7 +982,7 @@ class APICALLS with ValidationMixin {
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
           Get.offAll(
-              () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
+                  () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
         },
       );
 
@@ -984,11 +1016,11 @@ class APICALLS with ValidationMixin {
     print("[API:declineConnectionRequest] send request: $body");
     var response = await http
         .post(uri,
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer ${user.token}"
-            },
-            body: jsonEncode(body))
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer ${user.token}"
+        },
+        body: jsonEncode(body))
         .timeout(AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
     });
@@ -996,7 +1028,8 @@ class APICALLS with ValidationMixin {
     parsedResponse = jsonDecode(response.body);
 
     print(
-        "[API:declineConnectionRequest] response: ${parsedResponse.toString()}");
+        "[API:declineConnectionRequest] response: ${parsedResponse
+            .toString()}");
 
     pd.close();
 
@@ -1014,7 +1047,7 @@ class APICALLS with ValidationMixin {
         onCLosed: () {
           print("[Dialogue:OnClose] go to HomeView [2]");
           Get.offAll(
-              () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
+                  () => HomeView(index: 2.obs, isDeepLinkCodeExecute: false));
         },
       );
 
@@ -1027,10 +1060,9 @@ class APICALLS with ValidationMixin {
   }
 
   //Close connection
-  Future<bool> closeConnection(
-      {required String connectionID,
-      required BuildContext context,
-      required String rating}) async {
+  Future<bool> closeConnection({required String connectionID,
+    required BuildContext context,
+    required String rating}) async {
     var uri = Uri.parse("$url/api/connect/closeConnection");
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     User user = await UserState.get();
@@ -1104,7 +1136,9 @@ class APICALLS with ValidationMixin {
       contacts.forEach((c) {
         final contactPhoneNumber = formatPhoneNumber(c.phoneNumber);
 
-        if(contactPhoneNumber == userPhoneNumber || (user['emailAddress'] != null && c.emailAddress == (user['emailAddress'] as String).trim())){
+        if (contactPhoneNumber == userPhoneNumber ||
+            (user['emailAddress'] != null &&
+                c.emailAddress == (user['emailAddress'] as String).trim())) {
           c.isPlughedUser = true;
         }
       });
@@ -1154,7 +1188,7 @@ class APICALLS with ValidationMixin {
 
     var response = await http
         .get(uri, headers: {"Authorization": "Bearer ${user.token}"}).timeout(
-            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+        AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('{"message" : "$TIME_OUT_EXCEPTION"}', 400);
     });
     var parsedResponse = jsonDecode(response.body);
@@ -1177,7 +1211,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/connect/getConnectionsDetails/$connectionID");
     var response = await http
         .get(uri, headers: {"Authorization": "Bearer ${user.token}"}).timeout(
-            AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
+        AppConstants.API_TIME_OUT_EXCEPTION, onTimeout: () {
       return http.Response('"message" : "$TIME_OUT_EXCEPTION"', 400);
     });
 
@@ -1192,8 +1226,8 @@ class APICALLS with ValidationMixin {
   }
 
   // Upload file (document / image(s))
-  Future<dynamic> uploadFile(
-      String senderId, List<String> files, String type, String subType) async {
+  Future<dynamic> uploadFile(String senderId, List<String> files, String type,
+      String subType) async {
     User user = await UserState.get();
     Map<String, String> headers = {"Authorization": "Bearer ${user.token}"};
     print("[uploadFile] user token ${user.token}");
@@ -1202,7 +1236,9 @@ class APICALLS with ValidationMixin {
     for (int i = 0; i < files.length; i++) {
       iterable.add(new http.MultipartFile.fromBytes(
           'files', await File(files[i]).readAsBytes(),
-          filename: basename(files[i].split("/").last),
+          filename: basename(files[i]
+              .split("/")
+              .last),
           contentType: MediaType(type, subType)));
     }
 
@@ -1210,9 +1246,9 @@ class APICALLS with ValidationMixin {
     client.connectionTimeout = const Duration(seconds: 10);
 
     var request =
-        http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
-          ..files.addAll(iterable)
-          ..headers.addAll(headers);
+    http.MultipartRequest("POST", Uri.parse("$url/api/upload/upload-files"))
+      ..files.addAll(iterable)
+      ..headers.addAll(headers);
 
     //contentType: new MediaType('image', 'png'));
 
@@ -1237,7 +1273,7 @@ class APICALLS with ValidationMixin {
     var uri = Uri.parse("$url/api/getNotificationCount");
 
     var response =
-        await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
+    await http.get(uri, headers: {"Authorization": "Bearer ${user.token}"});
 
     var parseResponse = jsonDecode(response.body);
 

@@ -74,7 +74,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                   child: Row(
                     children: [
                       //show if user entered a number i.e phoneNumber
-                      if (controller.isNumber.value)
+                     // if (controller.isNumber.value)
                         Container(
                           width: 60.w,
                           //library to fetch country codes
@@ -96,6 +96,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                         child: Form(
                           key: _formKey,
                           child: TextFormField(
+                            readOnly: controller.isLoading.value,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null) {
@@ -109,7 +110,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             },
                             controller: _textController,
                             onChanged: (val) {
-                              controller.isNumber.value = controller.isNumeric(val);
+                              controller.isNumber.value =
+                                  controller.isNumeric(val);
                             },
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
@@ -143,7 +145,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
                         height: 24.h,
                         width: 24.w,
                         child: Checkbox(
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.r),
                           ),
@@ -158,7 +161,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
                               return pluhgSnackBar("Sorry", error);
                             }
 
-                            controller.hasAccepted.value = !controller.hasAccepted.value;
+                            controller.hasAccepted.value =
+                                !controller.hasAccepted.value;
                           },
                         ),
                       ),
@@ -178,7 +182,9 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             style: TextStyle(
                               color: pluhgColour,
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = () => launchURL("https://pluhg.com/terms"),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap =
+                                  () => launchURL("https://pluhg.com/terms"),
                           ),
                           TextSpan(
                             text: 'and\n',
@@ -188,7 +194,9 @@ class AuthScreenView extends GetView<AuthScreenController> {
                             style: TextStyle(
                               color: pluhgColour,
                             ),
-                            recognizer: TapGestureRecognizer()..onTap = () => launchURL("https://pluhg.com/privacy"),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap =
+                                  () => launchURL("https://pluhg.com/privacy"),
                           ),
                         ],
                       ),
@@ -202,8 +210,11 @@ class AuthScreenView extends GetView<AuthScreenController> {
                         child: ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 261.w),
                           child: PluhgButton(
-                            onPressed: controller.hasAccepted.value ? _submit : null,
-                            text: controller.hasAccepted.value ? 'Continue' : 'Get Started',
+                            onPressed:
+                                controller.hasAccepted.value ? _submit : null,
+                            text: controller.hasAccepted.value
+                                ? 'Continue'
+                                : 'Get Started',
                           ),
                         ),
                       ),
@@ -223,10 +234,14 @@ class AuthScreenView extends GetView<AuthScreenController> {
 
     if (contact.isNum) {
       String phone = _preparePhoneNumber(contact);
-      return !PhoneValidator.validate(phone) ? "Please provide valid phone number" : '';
+      return !PhoneValidator.validate(phone)
+          ? "Please provide valid phone number"
+          : '';
     }
 
-    return !EmailValidator.validate(contact) ? "Please provide valid email" : '';
+    return !EmailValidator.validate(contact)
+        ? "Please provide valid email"
+        : '';
   }
 
   String _preparePhoneNumber(String phone) {
@@ -252,7 +267,8 @@ class AuthScreenView extends GetView<AuthScreenController> {
       contact = this._preparePhoneNumber(contact);
     }
 
-    print("[AuthScreenView:submit] contact [$contact] is phone number [$isPhoneContact]");
+    print(
+        "[AuthScreenView:submit] contact [$contact] is phone number [$isPhoneContact]");
     if (isPhoneContact) {
       //@TODO something wrong here. Need to avoid this storing
       SharedPreferences prefs = await SharedPreferences.getInstance();
