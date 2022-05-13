@@ -253,7 +253,6 @@ class EditProfileView extends GetView<EditProfileController> {
                                       uploadNow(
                                           controller.image.value,
                                           user.token,
-                                          _username.text,
                                           _name.text.toString() ==
                                               controller.data2["data"]
                                               ["name"]
@@ -262,6 +261,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                               : _name.text.isEmpty
                                               ? "nothing"
                                               : _name.text,
+                                          _username.text,
                                           _address.text ==
                                               controller.data2["data"]
                                               ["address"]
