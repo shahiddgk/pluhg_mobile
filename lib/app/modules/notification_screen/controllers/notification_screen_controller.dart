@@ -35,7 +35,8 @@ class NotificationScreenController extends GetxController {
     var result = await apicalls.getNotifications();
 
     ///Read All notification
-    readAllNotification(result);
+    //
+    // readAllNotification(result);
 
     return result;
   }
@@ -57,10 +58,8 @@ class NotificationScreenController extends GetxController {
     final body = {
       "notificationId": [notification.id]
     };
-
     final isRead = await apicalls.markAsRead(body);
     read[notification.id] = isRead;
-
     return isRead;
   }
 

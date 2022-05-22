@@ -27,11 +27,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class APICALLS with ValidationMixin {
-  // static const url = "https://api.pluhg.com";
-  // static const ws_url = "ws://api.pluhg.com";
+  static const url = "https://api.pluhg.com";
+  static const ws_url = "ws://api.pluhg.com";
 
-  static const url = "http://192.168.31.86:8000";
-  static const ws_url = "ws://192.168.31.86:8000";
+  // static const url = "http://192.168.31.86:8000";
+  // static const ws_url = "ws://192.168.31.86:8000";
 
   late Size screenSize;
   static const imageBaseUrl = 'https://pluhg.s3.us-east-2.amazonaws.com/';

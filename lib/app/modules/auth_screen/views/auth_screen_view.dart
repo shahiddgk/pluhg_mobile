@@ -74,7 +74,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                   child: Row(
                     children: [
                       //show if user entered a number i.e phoneNumber
-                     // if (controller.isNumber.value)
+                     if (controller.isNumber.value)
                         Container(
                           width: 60.w,
                           //library to fetch country codes

@@ -1,3 +1,10 @@
+abstract class kindOf {
+  static const RECOMMENDATION = 'recommendation';
+  static const ACCEPT = 'accept';
+  static const DECLINE = 'decline';
+  static const NONE = 'none';
+}
+
 class NotificationResponse {
   NotificationResponse({
     required this.status,
@@ -12,33 +19,9 @@ class NotificationResponse {
   NotificationResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    data = List.from(json['data']).map((e) => NotificationData.fromJson(e)).toList();
-    // data = [
-    //   NotificationData(
-    //       status: 1,
-    //       id: "3",
-    //       userId: UserId(
-    //           emailAddress: "abc@gmail.com",
-    //           phoneNumber: "12345",
-    //           numberOfConnections: 1,
-    //           userName: "abc",
-    //           profileImage: "",
-    //           id: "123",
-    //           createdAt: "22-02-2022",
-    //           updatedAt: "22-02-2022",
-    //           v: 1),
-    //       notificationMsg: NotificationMsg(
-    //         title: "title",
-    //         body: " Body",
-    //         contentAvailable: true,
-    //         priority: "high",
-    //         sound: "",
-    //         badge: 1,
-    //       ),
-    //       type: "1",
-    //       createdAt: "22-02-2022",
-    //       updatedAt: "22-02-2022")
-    // ]; //List.from(json['data']).map((e) => NotificationData.fromJson(e)).toList();
+    data = List.from(json['data'])
+        .map((e) => NotificationData.fromJson(e))
+        .toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -166,14 +149,14 @@ class UserId {
 }
 
 class NotificationMsg {
-  NotificationMsg({
-    required this.title,
-    required this.body,
-    required this.contentAvailable,
-    required this.priority,
-    required this.sound,
-    required this.badge,
-  });
+  NotificationMsg(
+      {required this.title,
+      required this.body,
+      required this.contentAvailable,
+      required this.priority,
+      required this.sound,
+      required this.badge,
+      this.type = kindOf.NONE});
 
   late final String title;
   late final String body;
@@ -181,6 +164,7 @@ class NotificationMsg {
   late final String priority;
   late final String sound;
   late final int badge;
+  late final String type;
 
   NotificationMsg.fromJson(Map<String, dynamic> json) {
     title = json['title'];
@@ -189,6 +173,7 @@ class NotificationMsg {
     priority = json['priority'];
     sound = json['sound'];
     badge = json['badge'];
+    type = json['type'] == null ? kindOf.NONE : json['type'] ;
   }
 
   Map<String, dynamic> toJson() {
