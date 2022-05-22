@@ -6,10 +6,11 @@ import 'package:plug/utils/location.dart';
 class SetProfileScreenController extends GetxController {
   //TODO: Implement ProfileScreenController
   var currentCountryCode = ''.obs;
-  RxBool isLoading = false.obs;
+  RxBool isLoading = true.obs;
   RxString isoCountryCode = ''.obs;
   RxDouble lat = 0.0.obs, long = 0.0.obs;
   final size = Get.size;
+
   @override
   void onInit() {
     fetchCountryCode();
@@ -25,27 +26,41 @@ class SetProfileScreenController extends GetxController {
   void onClose() {}
 
   Future<String> fetchCountryCode() async {
-    print("[SetProfileScreenController:fetchCountryCode] start fetching iso country code");
+    print(
+        "[SetProfileScreenController:fetchCountryCode] start fetching iso country code");
     User user = await UserState.get();
-    String countryCode;
+    String countryCode = '';
     if (user.countryCode.isNotEmpty) {
       countryCode = user.countryCode;
       print(
           "[SetProfileScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
     } else {
-      countryCode =  await DeviceCountryCode.get();
-      print(
-          "[SetProfileScreenController:fetchCountryCode] the code has been fetched from the DeviceCountryCode [$countryCode]");
+      try {
+        countryCode = await DeviceCountryCode.get();
+        print(
+            "[SetProfileScreenController:fetchCountryCode] the code has been fetched from the DeviceCountryCode [$countryCode]");
+      } catch (e) {
+        print(e);
+      }
     }
 
-    currentCountryCode.value = countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
+    if (countryCode.isNotEmpty) {
+      isoCountryCode.value = countryCode;
+      user.countryCode = isoCountryCode.value;
+      await UserState.store(user);
+    } else {
+      isoCountryCode.value = User.DEFAULT_COUNTRY_CODE;
+    }
+
+    isLoading.value = false;
     return currentCountryCode.value;
   }
 
   Future<void> updateCountryCode(CountryCode? countryCode) async {
     final isoCode = countryCode!.code ?? User.DEFAULT_COUNTRY_CODE;
     final dialCode = countryCode.dialCode ?? '';
-    print("[SetProfileScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
+    print(
+        "[SetProfileScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
 
     isoCountryCode.value = isoCode;
     currentCountryCode.value = dialCode;

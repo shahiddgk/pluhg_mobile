@@ -137,6 +137,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                   width: controller.size.width - 60 - 10 - 24,
                                   child: TextFormField(
                                       keyboardType: TextInputType.number,
+                                      readOnly: controller.isLoading.value,
                                       validator: (value) {
                                         String error = _validatePhone(value);
                                         if (error.isNotEmpty) {

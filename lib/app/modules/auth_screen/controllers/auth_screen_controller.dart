@@ -65,9 +65,14 @@ class AuthScreenController extends GetxController {
         print(e);
       }
     }
+    if (countryCode.isNotEmpty) {
+      isoCountryCode.value = countryCode;
+      user.countryCode = isoCountryCode.value;
+      await UserState.store(user);
+    } else {
+      isoCountryCode.value = User.DEFAULT_COUNTRY_CODE;
+    }
 
-    isoCountryCode.value =
-        countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
     isLoading.value = false;
     return isoCountryCode.value;
   }
