@@ -43,7 +43,15 @@ void main() async {
           return MediaQuery(
             //Setting font does not change with system font size
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            child: widget!,
+            child: Listener(
+                onPointerDown: (_) {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus &&
+                      currentFocus.focusedChild != null) {
+                    currentFocus.focusedChild?.unfocus();
+                  }
+                },
+                child: widget!),
           );
         },
         initialRoute: AppPages.INITIAL,
@@ -70,12 +78,12 @@ void _configureFirebase() async {
 
     final tempCtx = Get.find<ChatScreenController>().connect();
 
-
-    Get.put(HomeController()).notificationCount.value ++;
+    Get.put(HomeController()).notificationCount.value++;
 
     print('Message data: ${message.data}');
     if (message.notification != null) {
-      print('Message also contained a notification: ${message.notification!.body.toString()}');
+      print(
+          'Message also contained a notification: ${message.notification!.body.toString()}');
     }
   });
 }
@@ -84,6 +92,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   final controller = Get.put(NotificationController());
   controller.fcmNotificationReceived();
   pluhgSnackBar('Notification', "Received Message".toString());
-  Get.put(HomeController()).notificationCount.value ++;
+  Get.put(HomeController()).notificationCount.value++;
   print("Handling a background message: ${message.messageId}");
 }

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,8 @@ class SendMessageView extends GetView<SendMessageController> {
   final TextEditingController _bothMessage = TextEditingController();
   final TextEditingController _recieverMessage = TextEditingController();
   final TextEditingController _contactMessage = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {

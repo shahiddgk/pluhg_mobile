@@ -1,6 +1,10 @@
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class SendMessageController extends GetxController {
+
   //TODO: Implement SendMessageController
   RxString requesterMessage = "".obs;
   RxString contactMessage = "".obs;
@@ -9,6 +13,8 @@ class SendMessageController extends GetxController {
   RxBool loading = false.obs;
   final count = 0.obs;
   RxInt selectedRadio = 1.obs;
+
+
   @override
   void onInit() {
     super.onInit();

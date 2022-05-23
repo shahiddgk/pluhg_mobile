@@ -192,6 +192,32 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen> with 
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
                             ),
                           ),
+                          Container(
+                            //width: 307.22,
+                            margin: EdgeInsets.only(top: 20),
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                            child: Text(
+                              widget.data["requester"]["message"] == "" || widget.data["requester"]["message"] == null
+                                  ? "Hi!! You have been connected, please check the app"
+                                  : "${widget.data["requester"]["message"]}",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          Container(
+                            //width: 307.22,
+                            margin: EdgeInsets.only(top: 20),
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                            child: Text(
+                              widget.data["requester"]["message"] == "" || widget.data["requester"]["message"] == null
+                                  ? "Hi!! You have been connected, please check the app"
+                                  : "${widget.data["requester"]["message"]}",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                            ),
+                          ),
                           SizedBox(
                             height: 14.79,
                           ),
