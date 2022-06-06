@@ -125,29 +125,31 @@ class ContactController extends GetxController with ValidationMixin {
         final newPhoneNumber;
         RegionInfo region;
         if (addresses.length > 0) {
-          region = regions.firstWhere((element) =>
-              element.code.toLowerCase() ==
-              addresses[0].isoCountry.toLowerCase());
+          String iso = addresses[0].isoCountry.isNotEmpty
+              ? addresses[0].isoCountry.toLowerCase()
+              : user.regionCode;
+          region = regions
+              .firstWhere((element) => element.code.toLowerCase() == iso);
         } else {
           region = RegionInfo(
               name: user.regionCode,
               code: user.regionCode,
               prefix: int.parse(user.countryCode));
         }
-        try {
-          bool isValid = await plugin.validate(contactPhoneNumber, region.code);
-          if (isValid) {
-            PhoneNumber phoneNumber =
-                await plugin.parse(contactPhoneNumber, regionCode: region.code);
-            newPhoneNumber = phoneNumber.e164;
-          } else {
-            newPhoneNumber =
-                contactPhoneNumber.replaceAll(new RegExp(r'^00+(?=.)'), '+');
-          }
-          element2.number = newPhoneNumber;
-        } catch (e) {
-          element2.number = "";
+        //try {
+        bool isValid = await plugin.validate(contactPhoneNumber, region.code);
+        if (isValid) {
+          PhoneNumber phoneNumber =
+              await plugin.parse(contactPhoneNumber, regionCode: region.code);
+          newPhoneNumber = phoneNumber.e164;
+        } else {
+          newPhoneNumber =
+              contactPhoneNumber.replaceAll(new RegExp(r'^00+(?=.)'), '+');
         }
+        element2.number = newPhoneNumber;
+        // } catch (e) {
+        //   element2.number = "";
+        // }
       }
     }
     return contacts;
