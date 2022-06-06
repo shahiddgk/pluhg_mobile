@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/login_request_model.dart';
+import 'package:plug/app/data/models/request/verify_otp_request_model.dart';
 import 'package:plug/app/modules/auth_screen/controllers/otp_screen_controller.dart';
+import 'package:plug/app/modules/home/views/home_view.dart';
+import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
+import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/app_bar.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/utils/validation_mixin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OTPScreenView extends GetView<OTPScreenController> {
   final String contact;
@@ -140,12 +149,32 @@ class OTPScreenView extends GetView<OTPScreenController> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            if(controller.start.value==0){
+                            if (controller.start.value == 0) {
                               controller.startTimer();
                               controller.str.value = "OTP has been resent\n";
                               controller.start.value = 30;
                               controller.otp.value = "Sent Successfully";
-                              await apicalls.signUpSignIn(contact: contact);
+                              HTTPManager()
+                                  .loginUser(LoginRequestModel(
+                                      emailAddress:
+                                          EmailValidator.validate(contact)
+                                              ? contact
+                                              : "",
+                                      phoneNumber:
+                                          PhoneValidator.validate(contact)
+                                              ? contact
+                                              : "",
+                                      type: EmailValidator.validate(contact)
+                                          ? User.EMAIL_CONTACT_TYPE
+                                          : User.PHONE_CONTACT_TYPE))
+                                  .then((value) {
+                                controller.loading.value = false;
+                                //Get.to(() => OTPScreenView(contact: contact));
+                              }).catchError((onError) {
+                                controller.loading.value = false;
+                                pluhgSnackBar('Sorry', onError.toString());
+                              });
+                              //wait apicalls.signUpSignIn(contact: contact);
                             }
                           },
                           child: Align(
@@ -182,18 +211,70 @@ class OTPScreenView extends GetView<OTPScreenController> {
   }
 
   void _submit(context) async {
-
     //If the user enter otp code
     if (_otp.text.length == 4) {
       controller.loading.value = true;
-      bool data = await apicalls.verifyOTP(
-          context: context,
-          contact: contact,
-          code: _otp.text,
-          fcmToken: controller.fcmToken);
-      if (data == false) {
+      HTTPManager()
+          .verifyOtp(
+        VerifyOtpRequestModel(
+            emailAddress: EmailValidator.validate(contact) ? contact : "",
+            phoneNumber: PhoneValidator.validate(contact) ? contact : "",
+            type: EmailValidator.validate(contact)
+                ? User.EMAIL_CONTACT_TYPE
+                : User.PHONE_CONTACT_TYPE,
+            code: _otp.text,
+            deviceToken: controller.fcmToken),
+      )
+          .then((value) async {
         controller.loading.value = false;
-      }
+        pluhgSnackBar('Great', 'Successfully logged in');
+
+        SharedPreferences storage = await SharedPreferences.getInstance();
+        storage.setBool(PREF_IS_FIRST_APP_RUN, false);
+
+        if ((value.user?.isRegistered ?? false) &&
+            (value.user?.data?.emailAddress?.isNotEmpty ?? false) &&
+            (value.user?.data?.userName?.isNotEmpty ?? false)) {
+          User user = await UserState.get();
+          await UserState.store(
+            User.registered(
+              token: value?.token ?? "",
+              id: value.user?.data?.sId ?? "",
+              name: value.user?.data?.userName ?? "",
+              phone: value.user?.data?.phoneNumber ?? "",
+              email: value.user?.data?.emailAddress ?? "",
+              regionCode: user.regionCode.isNotEmpty
+                  ? user.regionCode
+                  : User.DEFAULT_REGION_CODE,
+              countryCode: user.countryCode.isNotEmpty
+                  ? user.countryCode
+                  : User.DEFAULT_COUNTRY_CODE,
+            ),
+          );
+
+          Get.offAll(() => HomeView(index: 1.obs));
+          return true;
+        }
+
+        Get.to(() => SetProfileScreenView(
+              token: value?.token ?? "",
+              userID: value.user?.data?.sId ?? "",
+              contact: value.user?.data?.emailAddress?.isEmpty ?? false
+                  ? value.user?.data?.phoneNumber ?? ""
+                  : value.user?.data?.emailAddress ?? "",
+            ));
+      }).catchError((onError) {
+        controller.loading.value = false;
+        pluhgSnackBar('Sorry', onError.toString());
+      });
+      // bool data = await apicalls.verifyOTP(
+      //     context: context,
+      //     contact: contact,
+      //     code: _otp.text,
+      //     fcmToken: controller.fcmToken);
+      // if (data == false) {
+      //   controller.loading.value = false;
+      // }
     } else {
       pluhgSnackBar('Sorry', 'Add your code');
     }

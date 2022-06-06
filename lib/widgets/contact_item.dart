@@ -1,24 +1,16 @@
-
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
-import 'package:plug/app/values/colors.dart';
 import 'package:plug/widgets/radio_list_widget.dart';
 import 'package:plug/widgets/text_style.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-Widget contactItem(PluhgContact contact, isRequestAndContactSelectionDone, Function()? onTap) {
 
-
-  final List<ContactItemDataClass> temString = [];
-
-
-  temString.addAll(contact.phoneNumbers.take(2).map((e) => ContactItemDataClass(value: e,type: contactItemType.phone)).toList());
-  temString.addAll(contact.emailAddresses.take(2).map((e) => ContactItemDataClass(value: e,type: contactItemType.email)).toList());
-
-  ContactItemDataClass? newRadioGroupValue = contact.selectedContact != null ? temString.firstWhere((element) => element.value == contact.selectedContact) : null;
-
+Widget contactItem(
+    {required PluhgContact contact,
+    isRequestAndContactSelectionDone,
+    Function(int index)? onTap}) {
   return Column(
     children: [
       Padding(
@@ -27,7 +19,7 @@ Widget contactItem(PluhgContact contact, isRequestAndContactSelectionDone, Funct
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _avatar(contact.name.substring(0, 1), contact.photo, contact.isPlughedUser),
+            _avatar(contact.name.substring(0, 1), contact.photo, false),
             SizedBox(
               width: 12,
             ),
@@ -38,39 +30,57 @@ Widget contactItem(PluhgContact contact, isRequestAndContactSelectionDone, Funct
                   Text(
                     contact.name,
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
                     ),
                   ),
-
-                  Column(
-                    children: temString.map((e) => RadioListTitleComponent<ContactItemDataClass?>(
-                      label: e.value,
-                      value: e,
-                      isChecked: contact.selectedContact == e.value,
-                      itemSelected: (value){
-
-                        if(isRequestAndContactSelectionDone){
-                          return;
-                        }
-
-                        if(contact.selectedContact != null)
-                          return;
-
-                        newRadioGroupValue = value;
-                        if(value?.type == contactItemType.phone){
-                          contact.selectedContact = contact.phoneNumbers.firstWhere((element) => element == e.value);
-                        }
-                        else {
-                          contact.selectedContact = contact.emailAddresses.firstWhere((element) => element == e.value);
-                        }
-                        onTap!();
-                      },
-                    )
-                    ).toList(),
-                  ),
-                      /*Column(
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: contact.contacts.length,
+                    itemBuilder: (ctx, i) {
+                      return RadioListTitleComponent<ContactData?>(
+                        label: contact.contacts[i].value,
+                        value: contact.contacts[i],
+                        isChecked: contact.contacts[i].isSelected,
+                        itemSelected: (value) {
+                          if (contact.isSelected ||
+                              isRequestAndContactSelectionDone) {
+                            return;
+                          }
+                          onTap!(i);
+                        },
+                      );
+                    },
+                  )
+                  // Column(
+                  //   children: contact.contacts
+                  //       .map((e) => RadioListTitleComponent<ContactData?>(
+                  //             label: e.value,
+                  //             value: e,
+                  //             isChecked: e.isSelected,
+                  //             itemSelected: (value) {
+                  //               if (isRequestAndContactSelectionDone) {
+                  //                 return;
+                  //               }
+                  //
+                  //               // if(contact.selectedContact != null)
+                  //               //   return;
+                  //               //
+                  //               // newRadioGroupValue = value;
+                  //               // if(value?.type == contactItemType.phone){
+                  //               //   contact.selectedContact = contact.phoneNumbers.firstWhere((element) => element == e.value);
+                  //               // }
+                  //               // else {
+                  //               //   contact.selectedContact = contact.emailAddresses.firstWhere((element) => element == e.value);
+                  //               // }
+                  //               onTap!();
+                  //             },
+                  //           ))
+                  //       .toList(),
+                  // ),
+                  /*Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: temString.map((e) => Container(
@@ -146,14 +156,14 @@ Widget _avatar(String initials, Uint8List? photo, bool isPluhgUser) {
   );
 }
 
-enum contactItemType{
-  email,
-  phone,
-}
-
-class ContactItemDataClass{
-  final String value;
-  final contactItemType type;
-
-  ContactItemDataClass({required this.value,required this.type});
-}
+// enum contactItemType {
+//   email,
+//   phone,
+// }
+//
+// class ContactItemDataClass {
+//   final String value;
+//   final contactItemType type;
+//
+//   ContactItemDataClass({required this.value, required this.type});
+// }

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/profile_create_request_model.dart';
+import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/controllers/set_profile.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/colors.dart';
@@ -14,7 +17,9 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
   final String userID;
   final String token;
 
-  SetProfileScreenView({required this.contact, required this.token, required this.userID});
+  SetProfileScreenView(
+      {required this.contact, required this.token, required this.userID});
+
   TextEditingController _nameController = TextEditingController();
 
   TextEditingController _contactController = TextEditingController();
@@ -22,6 +27,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
   final controller = Get.put(SetProfileScreenController());
 
   APICALLS apicalls = APICALLS();
+
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
@@ -55,7 +61,10 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   "Set Your Profile",
-                  style: TextStyle(color: pluhgColour, fontSize: 28, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      color: pluhgColour,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(
@@ -83,7 +92,8 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 fontWeight: FontWeight.w400,
                                 fontFamily: "Muli",
                                 fontStyle: FontStyle.normal,
-                                fontSize: MediaQuery.of(context).size.height * 0.02),
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.02),
                           ),
                         ),
                       ),
@@ -99,7 +109,8 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 },
                                 controller: _contactController,
                                 keyboardType: TextInputType.emailAddress,
-                                textCapitalization: TextCapitalization.sentences,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   labelText: "Set your email",
                                   prefixIcon: Icon(Icons.email_outlined),
@@ -108,7 +119,9 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                       fontWeight: FontWeight.w400,
                                       fontFamily: "Muli",
                                       fontStyle: FontStyle.normal,
-                                      fontSize: MediaQuery.of(context).size.height * 0.02),
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02),
                                 ),
                               ))
                           : Container(
@@ -117,14 +130,17 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 Container(
                                   width: 60,
                                   child: CountryCodePicker(
-                                    boxDecoration: BoxDecoration(border: Border.all(color: Color(0xff707070))),
+                                    boxDecoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xff707070))),
                                     onInit: (val) async {
                                       await controller.updateCountryCode(val);
                                     },
                                     onChanged: (val) async {
                                       await controller.updateCountryCode(val);
                                     },
-                                    initialSelection: controller.isoCountryCode.value,
+                                    initialSelection:
+                                        controller.isoCountryCode.value,
                                     padding: EdgeInsets.zero,
                                     backgroundColor: Colors.white,
                                     showFlag: false,
@@ -147,7 +163,8 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                       controller: _contactController,
                                       decoration: InputDecoration(
                                         focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(color: Color(0xFF080F18)),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFF080F18)),
                                         ),
                                         // border: UnderlineInputBorder(
                                         //   borderSide:
@@ -160,7 +177,10 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                             fontWeight: FontWeight.w400,
                                             fontFamily: "Muli",
                                             fontStyle: FontStyle.normal,
-                                            fontSize: MediaQuery.of(context).size.height * 0.02),
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.02),
                                       )),
                                 ),
                               ]),
@@ -180,7 +200,9 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                         child: Container(
                           width: 261,
                           height: 45,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(59), color: pluhgColour),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(59),
+                              color: pluhgColour),
                           child: Center(
                             child: Text(
                               "Next",
@@ -204,7 +226,9 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
     }
 
     String phone = _preparePhoneNumber(contact);
-    return !contact.isNum && !PhoneValidator.validate(phone) ? "Please provide valid phone number" : '';
+    return !contact.isNum && !PhoneValidator.validate(phone)
+        ? "Please provide valid phone number"
+        : '';
   }
 
   String _validateEmail(String? contact) {
@@ -212,7 +236,9 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
       return "Please add email";
     }
 
-    return !EmailValidator.validate(contact) ? "Please provide valid email" : '';
+    return !EmailValidator.validate(contact)
+        ? "Please provide valid email"
+        : '';
   }
 
   String _preparePhoneNumber(String phone) {
@@ -232,15 +258,37 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
     if (isPhoneContact) {
       contact = this._preparePhoneNumber(contact);
     }
-
-    print("[SetProfileScreen:submit] contact [$contact] is phone number [$isPhoneContact]");
-    await apicalls.createProfile(
-      token: this.token,
-      contact: contact,
-      contactType: isPhoneContact ? User.PHONE_CONTACT_TYPE : User.EMAIL_CONTACT_TYPE,
-      username: _nameController.text,
-    );
-
-    controller.isLoading.value = false;
+    HTTPManager()
+        .createProfile(
+            this.token,
+            CreateProfileRequestModel(
+                contact: contact,
+                contactType: isPhoneContact
+                    ? User.PHONE_CONTACT_TYPE
+                    : User.EMAIL_CONTACT_TYPE,
+                userName: _nameController.text))
+        .then((value) async {
+      User user = await UserState.get();
+      await UserState.storeNewProfile(
+        token: this.token,
+        name: _nameController.text,
+        contact: contact,
+        regionCode: user.regionCode,
+        countryCode: user.countryCode
+      );
+      controller.isLoading.value = false;
+      Get.offAll(() => HomeView(index: 1.obs));
+    }).catchError((onError) {
+      controller.isLoading.value = false;
+    });
+    // print(
+    //     "[SetProfileScreen:submit] contact [$contact] is phone number [$isPhoneContact]");
+    // await apicalls.createProfile(
+    //   token: this.token,
+    //   contact: contact,
+    //   contactType: isPhoneContact ? User.PHONE_CONTACT_TYPE : User
+    //       .EMAIL_CONTACT_TYPE,
+    //   username: _nameController.text,
+    // );
   }
 }

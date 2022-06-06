@@ -106,10 +106,10 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                     ),
 
                     Center(
-                      child: controller.isLoading.value || controller.profileDetails['data'] == null
+                      child: controller.isLoading.value || (controller.profileDetails.value.profileImage ?? "").isEmpty
                           ? defaultImage()
                           : networkImage(
-                              "${APICALLS.imageBaseUrl}${controller.profileDetails['data']['profileImage'].toString()}"),
+                              "${APICALLS.imageBaseUrl}${controller.profileDetails.value.profileImage}"),
                     ),
                     SizedBox(height: 8.h),
                     Center(child: Text("The Pluhg")),

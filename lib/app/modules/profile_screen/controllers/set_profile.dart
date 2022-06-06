@@ -30,8 +30,8 @@ class SetProfileScreenController extends GetxController {
         "[SetProfileScreenController:fetchCountryCode] start fetching iso country code");
     User user = await UserState.get();
     String countryCode = '';
-    if (user.countryCode.isNotEmpty) {
-      countryCode = user.countryCode;
+    if (user.regionCode.isNotEmpty) {
+      countryCode = user.regionCode;
       print(
           "[SetProfileScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
     } else {
@@ -46,10 +46,10 @@ class SetProfileScreenController extends GetxController {
 
     if (countryCode.isNotEmpty) {
       isoCountryCode.value = countryCode;
-      user.countryCode = isoCountryCode.value;
+      user.regionCode = isoCountryCode.value;
       await UserState.store(user);
     } else {
-      isoCountryCode.value = User.DEFAULT_COUNTRY_CODE;
+      isoCountryCode.value = User.DEFAULT_REGION_CODE;
     }
 
     isLoading.value = false;
@@ -57,7 +57,7 @@ class SetProfileScreenController extends GetxController {
   }
 
   Future<void> updateCountryCode(CountryCode? countryCode) async {
-    final isoCode = countryCode!.code ?? User.DEFAULT_COUNTRY_CODE;
+    final isoCode = countryCode!.code ?? User.DEFAULT_REGION_CODE;
     final dialCode = countryCode.dialCode ?? '';
     print(
         "[SetProfileScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");

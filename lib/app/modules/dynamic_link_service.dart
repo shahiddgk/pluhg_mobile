@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/modules/auth_screen/views/auth_screen_view.dart';
 import 'package:plug/app/modules/onboarding_screen/views/onboarding_screen_view.dart';
-import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+
+import 'waiting_screen/views/waiting_connection_screen.dart';
 
 class DynamicLinkService {
   Future<void> retrieveDynamicLink({required BuildContext context}) async {
     try {
-      final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
+      final PendingDynamicLinkData? data =
+          await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = data?.link;
 
       print('---------------------->${deepLink.toString()}');
@@ -20,7 +22,8 @@ class DynamicLinkService {
       print(e);
     }
 
-    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData? dynamicLink) async {
       // final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = dynamicLink?.link;
 
@@ -32,9 +35,11 @@ class DynamicLinkService {
     });
   }
 
-  Future<void> _handleDeepLink(BuildContext context, Uri? deepLink, [bool activateDialog = false]) async {
+  Future<void> _handleDeepLink(BuildContext context, Uri? deepLink,
+      [bool activateDialog = false]) async {
     print('\n\n[_handleDeepLink] deepLink ::: ${deepLink.toString()}');
-    if (deepLink == null || deepLink.queryParameters.containsKey("id") == false) {
+    if (deepLink == null ||
+        deepLink.queryParameters.containsKey("id") == false) {
       return;
     }
 
@@ -55,21 +60,26 @@ class DynamicLinkService {
 
     //navigate to a specific page and parse the id
     // state;
-    print("[_handleDeepLink] navigate to a specific page and parse the ID[$id]");
+    print(
+        "[_handleDeepLink] navigate to a specific page and parse the ID[$id]");
     //stop progress bar
     Get.back();
     if (user.token.isNotEmpty && user.isAuthenticated) {
       if (id.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No data Found!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('No data Found!')));
       } else {
-        Get.to(() => RecommendedScreenView(connectionID: id));
+        Get.to(() => WaitingScreenView(
+                connectionID: id) //RecommendedScreenView(connectionID: id)
+            );
       }
     } else if (user.token.isNotEmpty && user.isAuthenticated == false) {
       Get.offAll(() => AuthScreenView());
     } else if (user.token.isEmpty) {
       Get.offAll(() => OnboardingScreenView());
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No data Found')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('No data Found')));
     }
   }
 }

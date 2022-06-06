@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/connect_people_request_model.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
@@ -13,6 +15,11 @@ import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/text_style.dart';
 
+import '../../../../utils/validation_mixin.dart';
+import '../../../services/UserState.dart';
+import '../../../widgets/snack_bar.dart';
+import '../../../widgets/status_screen.dart';
+import '../../home/views/home_view.dart';
 import '../controllers/send_message_controller.dart';
 
 class SendMessageView extends GetView<SendMessageController> {
@@ -33,8 +40,6 @@ class SendMessageView extends GetView<SendMessageController> {
   final TextEditingController _bothMessage = TextEditingController();
   final TextEditingController _recieverMessage = TextEditingController();
   final TextEditingController _contactMessage = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +75,9 @@ class SendMessageView extends GetView<SendMessageController> {
                       width: 88.66.w,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
+                        boxShadow: [
+                          BoxShadow(blurRadius: 40, color: Colors.black12)
+                        ],
                         borderRadius: BorderRadius.circular(15.r),
                       ),
                       child: Column(
@@ -81,15 +88,22 @@ class SendMessageView extends GetView<SendMessageController> {
                               : requesterImage == null
                                   ? SvgPicture.asset("resources/svg/avatar.svg")
                                   : requesterImage == null
-                                      ? SvgPicture.asset("resources/svg/avatar.svg")
+                                      ? SvgPicture.asset(
+                                          "resources/svg/avatar.svg")
                                       : Container(
                                           width: 67.37.w,
                                           height: 69.35.h,
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(image: MemoryImage(requesterImage!)),
-                                              borderRadius: BorderRadius.circular(13)),
+                                              image: DecorationImage(
+                                                  image: MemoryImage(
+                                                      requesterImage!)),
+                                              borderRadius:
+                                                  BorderRadius.circular(13)),
                                         ),
-                          Text(requesterName.isEmpty ? "Add Contact" : requesterName,
+                          Text(
+                              requesterName.isEmpty
+                                  ? "Add Contact"
+                                  : requesterName,
                               style: TextStyle(
                                   color: Color(0xff121212),
                                   letterSpacing: -0.3,
@@ -114,7 +128,10 @@ class SendMessageView extends GetView<SendMessageController> {
                               ),
                               child: Center(
                                 child: Text("Requester",
-                                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400)),
                               ))
                         ],
                       ),
@@ -125,7 +142,9 @@ class SendMessageView extends GetView<SendMessageController> {
                       width: 88.66.w,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
+                          boxShadow: [
+                            BoxShadow(blurRadius: 40, color: Colors.black12)
+                          ],
                           borderRadius: BorderRadius.circular(15.r)),
                       child: Column(
                         children: [
@@ -137,15 +156,20 @@ class SendMessageView extends GetView<SendMessageController> {
                               : contactImage == null
                                   ? SvgPicture.asset("resources/svg/avatar.svg")
                                   : contactImage == null
-                                      ? SvgPicture.asset("resources/svg/avatar.svg")
+                                      ? SvgPicture.asset(
+                                          "resources/svg/avatar.svg")
                                       : Container(
                                           width: 67.37.w,
                                           height: 69.35.h,
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(image: MemoryImage(contactImage!)),
-                                              borderRadius: BorderRadius.circular(13)),
+                                              image: DecorationImage(
+                                                  image: MemoryImage(
+                                                      contactImage!)),
+                                              borderRadius:
+                                                  BorderRadius.circular(13)),
                                         ),
-                          Text(contactName.isEmpty ? "Add Contact" : contactName,
+                          Text(
+                              contactName.isEmpty ? "Add Contact" : contactName,
                               style: TextStyle(
                                   color: Color(0xff121212),
                                   letterSpacing: -0.3,
@@ -164,10 +188,15 @@ class SendMessageView extends GetView<SendMessageController> {
                           Container(
                               width: 74.62.w,
                               height: 20.86.h,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: pluhgColour),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: pluhgColour),
                               child: Center(
                                 child: Text("Contact",
-                                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w400)),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400)),
                               ))
                         ],
                       ),
@@ -178,7 +207,10 @@ class SendMessageView extends GetView<SendMessageController> {
                   height: 10.h,
                 ),
                 Text("Send message to",
-                    style: TextStyle(color: Color(0xff263238), fontSize: 20.sp, fontWeight: FontWeight.w400)),
+                    style: TextStyle(
+                        color: Color(0xff263238),
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w400)),
                 SizedBox(
                   height: 2.h,
                 ),
@@ -189,12 +221,15 @@ class SendMessageView extends GetView<SendMessageController> {
                   child: Container(
                     width: 339.w,
                     height: 47.65.h,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(39), color: Color(0xffEBEBEB)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(39),
+                        color: Color(0xffEBEBEB)),
                     child: new Row(
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
                               controller.text.value,
                               textAlign: TextAlign.start,
@@ -234,7 +269,8 @@ class SendMessageView extends GetView<SendMessageController> {
                       maxLines: 300,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Type your message to ${controller.text.value} \n(Optional) ",
+                        hintText:
+                            "Type your message to ${controller.text.value} \n(Optional) ",
                         hintStyle: body2TextStyle,
                       ),
                     ),
@@ -268,20 +304,65 @@ class SendMessageView extends GetView<SendMessageController> {
 
   Future onTap(context) async {
     controller.loading.value = true;
-
-    var data = await apicalls.connectTwoPeople(
-      requesterName: requesterName,
-      contactName: contactName,
-      requesterMessage: _recieverMessage.text,
-      contactMessage: _contactMessage.text,
-      bothMessage: _bothMessage.text,
-      contactContact: contactContact,
-      requesterContact: requesterContact,
-      context: context,
-    );
-    if (data == false) {
+    HTTPManager()
+        .connectTwoPeople(ConnectPeopleRequestModel(
+            requester: Requester(
+                name: requesterName,
+                message: _recieverMessage.text,
+                contact: requesterContact,
+                contactType: EmailValidator.validate(requesterContact)
+                    ? User.EMAIL_CONTACT_TYPE
+                    : User.PHONE_CONTACT_TYPE),
+            contact: Requester(
+                name: contactName,
+                message: _contactMessage.text,
+                contact: contactContact,
+                contactType: EmailValidator.validate(requesterContact)
+                    ? User.EMAIL_CONTACT_TYPE
+                    : User.PHONE_CONTACT_TYPE),
+            both: _bothMessage.text,
+            requesterMessage: _recieverMessage.text,
+            contactMessage: _contactMessage.text))
+        .then((value) {
       controller.loading.value = false;
-    }
+      pluhgSnackBar("Great", "You have connected them, about to send message");
+
+      Get.off(
+        StatusScreen(
+          buttonText: "Continue",
+          heading: 'Connection Successful',
+          iconName: 'success_status',
+          onPressed: () => Get.offAll(HomeView(
+            index: 0.obs,
+            isDeepLinkCodeExecute: false,
+            connectionTabIndex: 2,
+          )),
+          subheading: EmailValidator.validate(requesterContact) &&
+                  EmailValidator.validate(contactContact)
+              ? "$requesterName and $contactName will be notified by email of your connections recommendation. Don't worry we will not share any personal contact details between them 🤐"
+              : !EmailValidator.validate(requesterContact) &&
+                      !EmailValidator.validate(contactContact)
+                  ? "$requesterName and $contactName will be notified by text of your connections recommendation. Don't worry we will not share any personal contact details between them 🤐"
+                  : "$requesterName will be notified by ${requesterContact.contains("@") ? "email" : "text"} AND $contactName will be notified by ${contactContact.contains("@") ? "email" : "text"} of your CONNECTION RECOMMENDATIOIN!  Don't worry we will not share any personal contact details between them 🤐 ",
+        ),
+      );
+    }).catchError((onError) {
+      controller.loading.value = false;
+      pluhgSnackBar("Sorry", onError.toString());
+    });
+    // var data = await apicalls.connectTwoPeople(
+    //   requesterName: requesterName,
+    //   contactName: contactName,
+    //   requesterMessage: _recieverMessage.text,
+    //   contactMessage: _contactMessage.text,
+    //   bothMessage: _bothMessage.text,
+    //   contactContact: contactContact,
+    //   requesterContact: requesterContact,
+    //   context: context,
+    // );
+    // if (data == false) {
+    //   controller.loading.value = false;
+    // }
   }
 
   contactMessageSelection(BuildContext context) {
@@ -306,7 +387,10 @@ class SendMessageView extends GetView<SendMessageController> {
                       ),
                       Text(
                         "Select Receiver",
-                        style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w600, color: AppColors.pluhgColour),
+                        style: TextStyle(
+                            fontSize: 28.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.pluhgColour),
                       ),
                       Row(
                         children: [

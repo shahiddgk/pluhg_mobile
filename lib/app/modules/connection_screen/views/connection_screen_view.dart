@@ -130,7 +130,7 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                     else if (snapshot.hasData) {
 
                       return Obx(() {
-                        if(controller.currentIndex.value == 1 && controller.waitingList.value <= 0){
+                        if(controller.currentIndex.value == 1 && controller.waitingConnectionList.value.length == 0){
                           return Column (
                             children: [
                               SizedBox(
@@ -144,10 +144,10 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: controller.currentIndex.value == 0
-                                  ? controller.activeList.value
+                                  ? controller.activeConnectionList.value.length
                                   : controller.currentIndex.value == 1
-                                      ? controller.waitingList.value
-                                      : controller.connectedList.value,
+                                      ? controller.waitingConnectionList.value.length
+                                      : controller.whoIConnectedList.value.length,
                               itemBuilder: (context, index) {
                                 dynamic data = snapshot.data;
                                 return controller.currentIndex.value == 0
@@ -179,8 +179,8 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                                                   user: controller.user,
                                                   onRemoveCallBack: (){
                                                     //controller.waitingData();
-                                                    controller.data['data'].removeAt(index);
-                                                    controller.waitingList.value = controller.data['data'].length;
+                                                    // controller.data['data'].removeAt(index);
+                                                    // controller.waitingList.value = controller.data['data'].length;
                                                   }
                                                 ),
                                               )

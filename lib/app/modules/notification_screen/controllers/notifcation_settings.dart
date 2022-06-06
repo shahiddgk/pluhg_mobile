@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
-import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
 import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/widgets/snack_bar.dart';
 
 class NotificationSettingsController extends GetxController {
   //TODO: Implement NotificationScreenController
@@ -9,7 +10,6 @@ class NotificationSettingsController extends GetxController {
   RxBool text = false.obs;
   final size = Get.size;
   RxBool isloading = false.obs;
-  dynamic notificationDetails = {}.obs;
 
   @override
   void onInit() {
@@ -24,19 +24,25 @@ class NotificationSettingsController extends GetxController {
 
   @override
   void onClose() {}
+
   getData1() async {
-    APICALLS apicalls = APICALLS();
+    //APICALLS apicalls = APICALLS();
     User user = await UserState.get();
     print("[getData1] user token [${user.token}] & user ID [${user.id}]");
 
     // getData();
-    var notificationDetails = await apicalls.getNotificationSettings(
-      token: user.token,
-    );
-    if (notificationDetails["data"] != null) {
-      push.value = notificationDetails["data"]["pushNotification"];
-      email.value = notificationDetails["data"]["emailNotification"];
-      text.value = notificationDetails["data"]["textNotification"];
-    }
+
+    HTTPManager().getNotificationSettings().then((value) {
+      push.value = value.pushNotification!;
+      email.value = value.emailNotification!;
+      text.value = value.textNotification!;
+    }).catchError((onError) {
+      pluhgSnackBar('Sorry', onError.toString());
+    });
+    // if (notificationDetails["data"] != null) {
+    //   push.value = notificationDetails.pushNotification!;
+    //   email.value = notificationDetails.emailNotification!;
+    //   text.value = notificationDetails.textNotification;
+    // }
   }
 }

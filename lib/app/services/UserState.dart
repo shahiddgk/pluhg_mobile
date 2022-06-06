@@ -5,21 +5,30 @@ import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserState with ValidationMixin {
-  static Future<void> storeNewProfile({
-    required String token,
-    required String name,
-    required String contact,
-    required String countryCode,
-  }) async {
+  static Future<void> storeNewProfile(
+      {required String token,
+      required String name,
+      required String contact,
+      required String regionCode,
+      required String countryCode}) async {
     // prefs.setString('profileImage',
     //     parsedResponse["data"]["userData"]["profileImage"].toString()); //TODO check the data it returns
     String email = EmailValidator.validate(contact) ? contact : '';
     String phone = PhoneValidator.validate(contact) ? contact : '';
-    String code = countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
-    User newUser = User.newProfile(name: name, token: token, countryCode: code, phone: phone, email: email);
+    String code = regionCode.isNotEmpty ? regionCode : User.DEFAULT_REGION_CODE;
+    String cCode =
+        countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
+    User newUser = User.newProfile(
+        name: name,
+        token: token,
+        regionCode: code,
+        countryCode: cCode,
+        phone: phone,
+        email: email);
 
     await UserState.store(newUser);
-    print("[UserState:storeNewProfile] created a new user: ${newUser.toString()}");
+    print(
+        "[UserState:storeNewProfile] created a new user: ${newUser.toString()}");
 
     SharedPreferences storage = await SharedPreferences.getInstance();
     storage.setBool(PREF_IS_FIRST_APP_RUN, false);
@@ -52,7 +61,8 @@ class User {
   static const EMAIL_CONTACT_TYPE = "email";
   static const PHONE_CONTACT_TYPE = "phone";
 
-  static const DEFAULT_COUNTRY_CODE = 'US';
+  static const DEFAULT_REGION_CODE = 'US';
+  static const DEFAULT_COUNTRY_CODE = '1';
 
   final String id;
   final String token;
@@ -60,6 +70,7 @@ class User {
   String phone;
   String email;
   String dynamicLink;
+  String regionCode;
   String countryCode;
   final bool isAuthenticated;
 
@@ -79,8 +90,8 @@ class User {
     this.dynamicLink = link;
   }
 
-  void setCountryCode(String countryCode) {
-    this.countryCode = countryCode.isNotEmpty ? countryCode : DEFAULT_COUNTRY_CODE;
+  void setregionCode(String regionCode) {
+    this.regionCode = regionCode.isNotEmpty ? regionCode : DEFAULT_REGION_CODE;
   }
 
   static bool isEmailContactType(String contactType) {
@@ -98,13 +109,22 @@ class User {
     required this.phone,
     required this.email,
     required this.dynamicLink,
+    required this.regionCode,
     required this.countryCode,
     required this.isAuthenticated,
   });
 
   factory User.empty() {
     return User(
-        id: "", name: "", token: "", phone: "", email: "", countryCode: "", dynamicLink: "", isAuthenticated: false);
+        id: "",
+        name: "",
+        token: "",
+        phone: "",
+        email: "",
+        regionCode: "",
+        dynamicLink: "",
+        isAuthenticated: false,
+        countryCode: "");
   }
 
   factory User.newProfile({
@@ -112,6 +132,7 @@ class User {
     required String token,
     required String phone,
     required String email,
+    required String regionCode,
     required String countryCode,
   }) {
     return User(
@@ -121,6 +142,7 @@ class User {
       token: token,
       phone: phone,
       email: email,
+      regionCode: regionCode,
       countryCode: countryCode,
       isAuthenticated: true,
     );
@@ -132,6 +154,7 @@ class User {
     required String token,
     required String phone,
     required String email,
+    required String regionCode,
     required String countryCode,
   }) {
     return User(
@@ -140,6 +163,7 @@ class User {
       token: token,
       phone: phone,
       email: email,
+      regionCode: regionCode,
       countryCode: countryCode,
       dynamicLink: "",
       isAuthenticated: true,
@@ -154,6 +178,7 @@ class User {
       phone: parsedJson['phone'] ?? "",
       email: parsedJson['email'] ?? "",
       dynamicLink: parsedJson['dynamicLink'] ?? "",
+      regionCode: parsedJson['regionCode'] ?? "",
       countryCode: parsedJson['countryCode'] ?? "",
       isAuthenticated: parsedJson['isAuthenticated'] ?? false,
     );
@@ -179,6 +204,7 @@ class User {
       "phone": this.phone,
       "email": this.email,
       "dynamicLink": this.dynamicLink,
+      "regionCode": this.regionCode,
       "countryCode": this.countryCode,
       "isAuthenticated": this.isAuthenticated,
     };

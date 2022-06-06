@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/support_request_model.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
+import 'package:plug/widgets/dialog_box.dart';
 
+import '../../../widgets/snack_bar.dart';
 import '../controllers/support_screen_controller.dart';
 
 class SupportScreenView extends GetView<SupportScreenController> {
   final String? email, token;
+
   SupportScreenView({this.token, this.email});
 
   final controller = Get.put(SupportScreenController());
   TextEditingController _subject = new TextEditingController();
   TextEditingController _body = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +46,9 @@ class SupportScreenView extends GetView<SupportScreenController> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: controller.size.height * 0.006, bottom: controller.size.height * 0.009),
+                  padding: EdgeInsets.only(
+                      top: controller.size.height * 0.006,
+                      bottom: controller.size.height * 0.009),
                   child: Text(
                     'How can we help you?',
                     style: TextStyle(
@@ -127,23 +134,38 @@ class SupportScreenView extends GetView<SupportScreenController> {
                       )
                     : InkWell(
                         onTap: () {
-                          if (_body.text.isNotEmpty && _subject.text.isNotEmpty) {
+                          if (_body.text.isNotEmpty &&
+                              _subject.text.isNotEmpty) {
                             controller.isLoading.value = true;
-
-                            APICALLS apicalls = APICALLS();
-                            apicalls.sendSupportEmail(
-                                emailAddress: email!,
-                                subject: _subject.text,
-                                token: token!,
-                                emailContent: _body.text,
-                                context: context);
-
-                            Future.delayed(Duration(microseconds: 7000), () {
+                            HTTPManager()
+                                .sendSupportEmail(SupportRequestModel(
+                                    emailAddress: email,
+                                    subject: _subject.text,
+                                    emailContent: _body.text))
+                                .then((value) {
                               _subject.text = "";
                               _body.text = "";
+                              controller.isLoading.value = false;
+                              showPluhgDailog(context, "Great",
+                                  "Your message has been sent successfully");
+                            }).catchError((onError) {
+                              controller.isLoading.value = false;
+                              pluhgSnackBar('Sorry', onError.toString());
                             });
+                            // APICALLS apicalls = APICALLS();
+                            // apicalls.sendSupportEmail(
+                            //     emailAddress: email!,
+                            //     subject: _subject.text,
+                            //     token: token!,
+                            //     emailContent: _body.text,
+                            //     context: context);
 
-                            controller.isLoading.value = false;
+                            // Future.delayed(Duration(microseconds: 7000), () {
+                            //   _subject.text = "";
+                            //   _body.text = "";
+                            // });
+                            //
+                            // controller.isLoading.value = false;
                           } else {
                             Get.snackbar("So sorry", "Can not send empty data");
                           }

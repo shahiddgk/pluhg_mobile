@@ -64,9 +64,9 @@ class ResponseData {
     return new ResponseData(
       requester: Requester.fromJson(json['requester']),
       contact: Contact.fromJson(json['contact']),
-      isRequesterAccepted: json['isRequesterAccepted'],
-      isContactAccepted: json['isContactAccepted'],
-      isPending: json['isPending'],
+      isRequesterAccepted: json['isRequesterAccepted'] == null ? false : json['isRequesterAccepted'],
+      isContactAccepted: json['isContactAccepted'] == null ? false : json['isContactAccepted'],
+      isPending: json['isPending'] ,
       rejectReason: json['rejectReason'],
       requesterMessage: json['requesterMessage'],
       contactMessage: json['contactMessage'],

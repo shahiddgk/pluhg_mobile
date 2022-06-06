@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/reminder_request_model.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/widgets/colours.dart';
 
@@ -160,7 +158,7 @@ showPluhgDailog4(BuildContext context, String connectionID, String party) {
             children: [
               GestureDetector(
                 onTap: () {
-                 sendReminder(context, text, party, connectionID);
+                  sendReminder(context, text, party, connectionID);
                 },
                 child: Container(
                     padding: EdgeInsets.all(8.0),
@@ -208,18 +206,27 @@ showPluhgDailog4(BuildContext context, String connectionID, String party) {
 sendReminder(BuildContext context, String text, String party,
     String connectionID) async {
   if (text.length > 5) {
-    final isSent = await APICALLS().sendReminderMessage(
-      message: text,
-      connectionID: connectionID,
-      party: party,
-      context: context,
-    );
-    if (isSent) {
+    HTTPManager()
+        .sendReminder(ReminderRequestModel(
+            message: text, connectionId: connectionID, party: party))
+        .then((value) {
       Navigator.of(context).pop();
       pluhgSnackBar('Great', '$party has been notified');
-    } else {
-      pluhgSnackBar('Sorry', 'An unexpected error occurred. Please try again.');
-    }
+    }).catchError((onError) {
+      pluhgSnackBar('Sorry', onError.toString());
+    });
+    // final isSent = await APICALLS().sendReminderMessage(
+    //   message: text,
+    //   connectionID: connectionID,
+    //   party: party,
+    //   context: context,
+    // );
+    // if (isSent) {
+    //   Navigator.of(context).pop();
+    //   pluhgSnackBar('Great', '$party has been notified');
+    // } else {
+    //   pluhgSnackBar('Sorry', 'An unexpected error occurred. Please try again.');
+    // }
   } else {
     pluhgSnackBar('Sorry', '$party must be up to five text');
   }

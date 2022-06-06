@@ -13,6 +13,9 @@ import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 
+import '../../../data/http_manager.dart';
+import '../../../data/models/request/connection_request_model.dart';
+
 class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
   final dynamic data;
   final bool isRequester;
@@ -205,22 +208,37 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
               progressType: ProgressType.normal,
               progressBgColor: Colors.transparent,
             );
-            APICALLS()
-                .closeConnection(connectionID: data["_id"], context: buildContext, rating: value.toString())
+            HTTPManager()
+                .closeConnection(
+                ConnectionRequestModel(connectionId : data.sId ?? "",feedbackRating: value.toString()))
                 .then((value) {
-              if (value) {
-                //call active connection API again
-                pd.close();
-                showPluhgDailog2(buildContext, "Great!!!", "You have successfully cancelled this  connection",
-                    onCLosed: () {
+              pd.close();
+              showPluhgDailog2(buildContext, "Great!!!", "You have successfully cancelled this  connection",
+                onCLosed: () {
                   Navigator.pop(buildContext);
                   refreshActiveConnection();
-                });
-              } else {
-                pd.close();
-                showPluhgDailog(buildContext, "So sorry", "Couldn't complete your request, try again");
-              }
+                },
+              );
+            }).catchError((onError) {
+              pd.close();
+              showPluhgDailog(buildContext, "So sorry", "Couldn't complete your request, try again");
             });
+            // APICALLS()
+            //     .closeConnection(connectionID: data["_id"], context: buildContext, rating: value.toString())
+            //     .then((value) {
+            //   if (value) {
+            //     //call active connection API again
+            //     pd.close();
+            //     showPluhgDailog2(buildContext, "Great!!!", "You have successfully cancelled this  connection",
+            //         onCLosed: () {
+            //       Navigator.pop(buildContext);
+            //       refreshActiveConnection();
+            //     });
+            //   } else {
+            //     pd.close();
+            //     showPluhgDailog(buildContext, "So sorry", "Couldn't complete your request, try again");
+            //   }
+            // });
           });
         });
   }

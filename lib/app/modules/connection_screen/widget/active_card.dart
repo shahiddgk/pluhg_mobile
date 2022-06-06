@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:plug/app/data/models/response/connection_response_model.dart';
 import 'package:plug/app/modules/connection_screen/controllers/connection_screen_controller.dart';
 import 'package:plug/app/modules/connection_screen/views/active_connection.dart';
 import 'package:plug/app/services/UserState.dart';
@@ -11,10 +12,10 @@ import 'package:plug/widgets/pluhg_by_widget.dart';
 
 Widget activeConnectionCard({
   required Rx<User> user,
-  required dynamic data,
+  required ConnectionResponseModel data,
 }) {
   var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
-      .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data["created_at"])
+      .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data.createdAt ?? "")
       .toLocal();
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
   return GestureDetector(
@@ -22,10 +23,13 @@ Widget activeConnectionCard({
       Get.to(
         () => ActiveConnectionScreenView(
           data: data,
-         // isRequester: user.value.compareEmail(data["requester"]["refId"]["emailAddress"]) || user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
-          isRequester: data["requester"]["refId"]["emailAddress"] != null
-              ? user.value.compareEmail(data["requester"]["refId"]["emailAddress"])
-              : user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
+          // isRequester: user.value.compareEmail(data["requester"]["refId"]["emailAddress"]) || user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
+          isRequester: (data.requester?.refId?.emailAddress ?? "")
+                  .isNotEmpty // data["requester"]["refId"]["emailAddress"] != null
+              ? user.value
+                  .compareEmail(data.requester?.refId?.emailAddress ?? "")
+              : user.value
+                  .comparePhone(data.requester?.refId?.phoneNumber ?? ""),
           refreshActiveConnection: () {
             Get.put(ConnectionScreenController()).activeData();
           },
@@ -79,7 +83,7 @@ Widget activeConnectionCard({
                             ),
                             child: card(
                               Get.context!,
-                              data["requester"]["refId"],
+                              data.requester?.refId,
                             ),
                           ),
                           Container(
@@ -94,7 +98,7 @@ Widget activeConnectionCard({
                             ),
                             child: card(
                               Get.context!,
-                              data["contact"]["refId"],
+                              data.contact?.refId,
                             ),
                           ),
                           /*  Container(
@@ -179,9 +183,9 @@ Widget activeConnectionCard({
               width: 12.w,
             ),
             PlugByWidgetCard(
-              userName: data['userId']["userName"] == null
-                  ? data['userId']["name"]
-                  : "@" + data['userId']["userName"],
+              userName: (data.userId?.userName ?? "").isEmpty
+                  ? data.userId?.name ?? ""
+                  : "@" + (data.userId?.userName ?? ""),
               date: formattedDate,
             ),
             Container(

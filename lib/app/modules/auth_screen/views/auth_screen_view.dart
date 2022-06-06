@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/login_request_model.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/pluhg_button.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 import 'package:plug/app/widgets/url.dart';
 import 'package:plug/utils/validation_mixin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../services/UserState.dart';
 import '../controllers/auth_screen_controller.dart';
+import 'otp_screen.dart';
 
 class AuthScreenView extends GetView<AuthScreenController> {
   final TextEditingController _textController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  final APICALLS apicalls = APICALLS();
+  // final APICALLS apicalls = APICALLS();
   final controller = Get.put(AuthScreenController());
 
   @override
@@ -74,7 +76,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
                   child: Row(
                     children: [
                       //show if user entered a number i.e phoneNumber
-                     if (controller.isNumber.value)
+                      if (controller.isNumber.value)
                         Container(
                           width: 60.w,
                           //library to fetch country codes
@@ -269,13 +271,26 @@ class AuthScreenView extends GetView<AuthScreenController> {
 
     print(
         "[AuthScreenView:submit] contact [$contact] is phone number [$isPhoneContact]");
-    if (isPhoneContact) {
-      //@TODO something wrong here. Need to avoid this storing
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString("countryCode", controller.currentCountryCode.value);
-    }
+    // if (isPhoneContact) {
+    //   //@TODO something wrong here. Need to avoid this storing
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   prefs.setString("countryCode", controller.currentCountryCode.value);
+    // }
 
-    await apicalls.signUpSignIn(contact: contact);
-    controller.isLoading.value = false;
+    HTTPManager()
+        .loginUser(LoginRequestModel(
+            emailAddress: EmailValidator.validate(contact) ? contact : "",
+            phoneNumber: PhoneValidator.validate(contact) ? contact : "",
+            type: EmailValidator.validate(contact)
+                ? User.EMAIL_CONTACT_TYPE
+                : User.PHONE_CONTACT_TYPE))
+        .then((value) {
+      controller.isLoading.value = false;
+      Get.to(() => OTPScreenView(contact: contact));
+    }).catchError((onError) {
+      controller.isLoading.value = false;
+      pluhgSnackBar('Sorry', onError.toString());
+    });
+    //await apicalls.signUpSignIn(contact: contact);
   }
 }

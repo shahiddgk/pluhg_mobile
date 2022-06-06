@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:plug/app/data/models/response/connection_response_model.dart';
 import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
 
 Widget whoIConnectedCard({
-  required dynamic data,
+  required ConnectionResponseModel data,
   required Rx<User> user,
 }) {
   final dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
-      .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data["created_at"])
+      .parseUTC(data == null ? "22:03:2021 12:18 Tc" : data.createdAt ?? "")
       .toLocal();
   String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
 
@@ -20,7 +21,7 @@ Widget whoIConnectedCard({
     onTap: () {
       Get.to(
         () => RecommendedScreenView(
-          connectionID: data['_id'],
+          connectionID: data.sId!,
         ),
       );
     },
@@ -67,7 +68,7 @@ Widget whoIConnectedCard({
                             ),
                             child: card(
                               Get.context!,
-                              data["requester"]["refId"],
+                              data.requester?.refId?.toJson(),
                             ),
                           ),
                           Container(
@@ -85,7 +86,7 @@ Widget whoIConnectedCard({
                             ),
                             child: card(
                               Get.context!,
-                              data["contact"]["refId"],
+                              data.contact?.refId?.toJson(),
                             ),
                           ),
                         ],
@@ -97,15 +98,15 @@ Widget whoIConnectedCard({
                     margin: EdgeInsets.only(
                         top: 12.0.h, left: 24.0.w, right: 24.0.w, bottom: 12.h),
                     decoration: BoxDecoration(
-                      color: data["isRequesterAccepted"] &&
-                              data["isContactAccepted"]
+                      color: data.isRequesterAccepted! &&
+                              data.isContactAccepted!
                           ? Color(0xff18C424)
                           : Color(0xffBFA124),
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: Center(
                       child: Text(
-                        data["isRequesterAccepted"] && data["isContactAccepted"]
+                        data.isRequesterAccepted! && data.isContactAccepted!
                             ? "Accepted"
                             : "Pending",
                         style: TextStyle(
@@ -123,9 +124,9 @@ Widget whoIConnectedCard({
             width: 12.w,
           ),
           PlugByWidgetCard(
-            userName: data['userId']["userName"] == null
-                ? data['userId']["name"]
-                : "@" + data['userId']["userName"],
+            userName: (data.userId?.userName ?? "").isEmpty
+                ? data.userId?.name ?? ""
+                : "@" + (data.userId?.userName ?? ""),
             date: formattedDate,
           ),
           SizedBox(

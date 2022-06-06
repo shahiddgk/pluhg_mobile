@@ -1,9 +1,9 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/apple/Desktop/Himanshu/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/apple/Desktop/Himanshu/flutter_front2"
+export "FLUTTER_ROOT=/Users/sairanawaz/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/sairanawaz/Documents/Work/upwork/ratedsol/PlugApp/flutter_front"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-export "FLUTTER_TARGET=/Users/apple/Desktop/Himanshu/flutter_front2/lib/main.dart"
+export "FLUTTER_TARGET=/Users/sairanawaz/Documents/Work/upwork/ratedsol/PlugApp/flutter_front/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.1.0"
 export "FLUTTER_BUILD_NUMBER=1.1.0"
@@ -11,4 +11,4 @@ export "DART_DEFINES=Zmx1dHRlci5pbnNwZWN0b3Iuc3RydWN0dXJlZEVycm9ycz10cnVl,RkxVVF
 export "DART_OBFUSCATION=false"
 export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"
-export "PACKAGE_CONFIG=/Users/apple/Desktop/Himanshu/flutter_front2/.dart_tool/package_config.json"
+export "PACKAGE_CONFIG=/Users/sairanawaz/Documents/Work/upwork/ratedsol/PlugApp/flutter_front/.dart_tool/package_config.json"

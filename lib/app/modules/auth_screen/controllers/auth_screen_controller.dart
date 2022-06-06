@@ -52,8 +52,8 @@ class AuthScreenController extends GetxController {
         "[AuthScreenController:fetchCountryCode] start fetching iso country code");
     User user = await UserState.get();
     String countryCode = '';
-    if (user.countryCode.isNotEmpty) {
-      countryCode = user.countryCode;
+    if (user.regionCode.isNotEmpty) {
+      countryCode = user.regionCode;
       print(
           "[AuthScreenController:fetchCountryCode] the code have been fetched from the User State [$countryCode]");
     } else {
@@ -67,10 +67,10 @@ class AuthScreenController extends GetxController {
     }
     if (countryCode.isNotEmpty) {
       isoCountryCode.value = countryCode;
-      user.countryCode = isoCountryCode.value;
+      user.regionCode = isoCountryCode.value;
       await UserState.store(user);
     } else {
-      isoCountryCode.value = User.DEFAULT_COUNTRY_CODE;
+      isoCountryCode.value = User.DEFAULT_REGION_CODE;
     }
 
     isLoading.value = false;
@@ -78,12 +78,15 @@ class AuthScreenController extends GetxController {
   }
 
   Future<void> updateCountryCode(CountryCode? countryCode) async {
-    final isoCode = countryCode!.code ?? User.DEFAULT_COUNTRY_CODE;
+    final isoCode = countryCode!.code ?? User.DEFAULT_REGION_CODE;
     final dialCode = countryCode.dialCode ?? '';
-    print(
-        "[AuthScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
+    print("[AuthScreenController:updateCountryCode] selected sim country code ($countryCode) [$isoCode]");
 
     isoCountryCode.value = isoCode;
     currentCountryCode.value = dialCode;
+    User user = await UserState.get();
+    user.regionCode = isoCode;
+    user.countryCode = dialCode;
+    await UserState.store(user);
   }
 }

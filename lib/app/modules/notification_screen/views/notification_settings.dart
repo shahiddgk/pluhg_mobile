@@ -3,15 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/notification_settings_request_model.dart';
 import 'package:plug/app/modules/notification_screen/controllers/notifcation_settings.dart';
-import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/app_bar.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 
+import '../../../widgets/snack_bar.dart';
+
 class NotificationSettingsView extends GetView<NotificationSettingsController> {
   final controller = Get.put(NotificationSettingsController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +43,7 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                         value: controller.push.value,
                         updateValue: (newValue) {
                           controller.push.value = newValue;
-                          controller.notificationDetails["data"]["pushNotification"] = newValue;
+                          // controller.notificationDetails["data"]["pushNotification"] = newValue;
                         },
                       ),
                       _buildSwitchTile(
@@ -49,7 +52,7 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                         value: controller.email.value,
                         updateValue: (newValue) {
                           controller.email.value = newValue;
-                          controller.notificationDetails["data"]["emailNotification"] = newValue;
+                          // controller.notificationDetails["data"]["emailNotification"] = newValue;
                         },
                       ),
                       _buildSwitchTile(
@@ -58,7 +61,7 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                         value: controller.text.value,
                         updateValue: (newValue) {
                           controller.text.value = newValue;
-                          controller.notificationDetails["data"]["textNotification"] = newValue;
+                          // controller.notificationDetails["data"]["textNotification"] = newValue;
                         },
                       ),
                       SizedBox(height: controller.size.height * 0.35),
@@ -69,19 +72,39 @@ class NotificationSettingsView extends GetView<NotificationSettingsController> {
                               child: InkWell(
                                 onTap: () async {
                                   controller.isloading.value = true;
-                                  User user = await UserState.get();
-
-                                  APICALLS apicalls = APICALLS();
-
-                                  bool d = await apicalls.updateNotificationSettings(
-                                      context: context,
-                                      token: user.token,
-                                      pushNotification: controller.push.value,
-                                      textNotification: controller.text.value,
-                                      emailNotification: controller.email.value);
-                                  if (d == false) {
+                                  HTTPManager()
+                                      .updateNotificationSettings(
+                                          NotificationSettingsRequestModel(
+                                              pushNotification:
+                                                  controller.push.value,
+                                              textNotification:
+                                                  controller.text.value,
+                                              emailNotification:
+                                                  controller.email.value))
+                                      .then((value) {
                                     controller.isloading.value = false;
-                                  }
+                                    pluhgSnackBar("Great", "${value.message}");
+                                  }).catchError((onError) {
+                                    pluhgSnackBar(
+                                        "Sorry", "${onError.toString()}");
+                                  });
+                                  // User user = await UserState.get();
+
+                                  //APICALLS apicalls = APICALLS();
+
+                                  // bool d =
+                                  //     await apicalls.updateNotificationSettings(
+                                  //         context: context,
+                                  //         token: user.token,
+                                  //         pushNotification:
+                                  //             controller.push.value,
+                                  //         textNotification:
+                                  //             controller.text.value,
+                                  //         emailNotification:
+                                  //             controller.email.value);
+                                  // if (d == false) {
+                                  //   controller.isloading.value = false;
+                                  // }
                                 },
                                 child: Container(
                                   width: controller.size.width * 0.70,

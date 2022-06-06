@@ -6,11 +6,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/http_manager.dart';
+import 'package:plug/app/data/models/request/update_profile_request.dart';
 import 'package:plug/app/modules/profile_screen/controllers/edit_profile.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/widgets/dialog_box.dart';
+
+import '../../../widgets/snack_bar.dart';
+import '../../home/views/home_view.dart';
 
 class EditProfileView extends GetView<EditProfileController> {
   final String token, userID, pics, username, email, name, phone, address;
@@ -36,7 +41,7 @@ class EditProfileView extends GetView<EditProfileController> {
   APICALLS apicalls = APICALLS();
 
   Future<Object?>? getdata() async {
-    controller.data2 = await apicalls.getProfile();
+    controller.data2.value = await HTTPManager().getProfileDetails();
 
     _address = new TextEditingController(
         text: address.isEmpty || address == "null" ? "" : address);
@@ -241,66 +246,29 @@ class EditProfileView extends GetView<EditProfileController> {
                                     //
                                     //   //getdata();
                                     // } else
-                                      if (_username.text
-                                            .toString()
-                                            .isNotEmpty ||
+                                    if (_username.text.toString().isNotEmpty ||
                                         controller.image.value != null ||
                                         _address.text.toString().isNotEmpty ||
                                         _email.text.toString().isNotEmpty ||
                                         _phone.text.toString().isNotEmpty ||
                                         _name.text.toString().isNotEmpty) {
-
                                       uploadNow(
-                                          controller.image.value,
-                                          user.token,
-                                          _name.text.toString() ==
-                                              controller.data2["data"]
-                                              ["name"]
-                                                  .toString()
-                                              ? "nothing"
+                                          controller.image.value, user.token,
+                                          name: _name.text.toString() ==
+                                                  controller.data2.value.name
+                                              ? ""
                                               : _name.text.isEmpty
-                                              ? "nothing"
-                                              : _name.text,
-                                          _username.text,
-                                          _address.text ==
-                                              controller.data2["data"]
-                                              ["address"]
-                                                  .toString()
-                                              ? "nothing"
+                                                  ? ""
+                                                  : _name.text,
+                                          userName: _username.text,
+                                          address: _address.text ==
+                                                  controller.data2.value.address
+                                              ? ""
                                               : _address.text.isEmpty
-                                              ? "nothing"
-                                              : _address.text,
-                                          _phone.text,
-                                          _email.text);
-                                      // bool res = await apicalls.setProfile2(
-                                      //     context: context,
-                                      //     token: token,
-                                      //     userName: _username.text,
-                                      //     name: _name.text.toString() ==
-                                      //             controller.data2["data"]
-                                      //                     ["name"]
-                                      //                 .toString()
-                                      //         ? "nothing"
-                                      //         : _name.text.isEmpty
-                                      //             ? "nothing"
-                                      //             : _name.text,
-                                      //     address: _address.text ==
-                                      //             controller.data2["data"]
-                                      //                     ["address"]
-                                      //                 .toString()
-                                      //         ? "nothing"
-                                      //         : _address.text.isEmpty
-                                      //             ? "nothing"
-                                      //             : _address.text,
-                                      //     phone: _phone.text,
-                                      //     email: _email.text);
-                                      // if (res == false) {
-                                      //   controller.isloading.value = false;
-                                      // }
-                                      //
-                                      // print('UPLOAD END-----2');
-                                      //
-                                      // // getdata();
+                                                  ? ""
+                                                  : _address.text,
+                                          phone: _phone.text,
+                                          email: _email.text);
                                     }
                                     print("object SGS");
                                     print(_name.text.toString());
@@ -340,34 +308,48 @@ class EditProfileView extends GetView<EditProfileController> {
     );
   }
 
-  uploadNow(
-    XFile? image,
-    String? token,
-    String name,
-    String userName,
-    String address,
-    String phone,
-    String email,
-  ) async {
-   // if (image != null) {
-      controller.isloading.value = true;
-      bool info = await apicalls.updateProfile(
-        image,
-        name: name,
-        userName: userName,
-        address: address,
-        phone: phone,
-        email: email,
-        token: token!,
-        context: Get.context!,
-      );
-
-      print('upload STatis');
-
-      if (info == false) {
-        controller.isloading.value = false;
-      }
-  //  }
+  uploadNow(XFile? image, String? token,
+      {String? name,
+      String? userName,
+      String? address,
+      String? phone,
+      String? email}) async {
+    // if (image != null) {
+    controller.isloading.value = true;
+    HTTPManager()
+        .updateProfileDetails(
+            image,
+            UpdateProfileRequestModel(
+                name: name,
+                userName: userName,
+                address: address,
+                phoneNumber: phone,
+                emailAddress: email))
+        .then((value) {
+      controller.isloading.value = false;
+      pluhgSnackBar("Great", value.message!);
+      Get.offAll(() => HomeView(index: 3.obs, isDeepLinkCodeExecute: false));
+    }).catchError((onError) {
+      pluhgSnackBar("So Sorry", onError.toString());
+      controller.isloading.value = false;
+    });
+    // bool info = await apicalls.updateProfile(
+    //   image,
+    //   name: name,
+    //   userName: userName,
+    //   address: address,
+    //   phone: phone,
+    //   email: email,
+    //   token: token!,
+    //   context: Get.context!,
+    // );
+    //
+    // print('upload STatis');
+    //
+    // if (info == false) {
+    //   controller.isloading.value = false;
+    // }
+    //  }
   }
 
   //to show selection of gallery and camera
