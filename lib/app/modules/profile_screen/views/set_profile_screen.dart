@@ -26,7 +26,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
   final _formKey = GlobalKey<FormState>();
   final controller = Get.put(SetProfileScreenController());
 
-  APICALLS apicalls = APICALLS();
+  //APICALLS apicalls = APICALLS();
 
   @override
   Widget build(BuildContext context) {

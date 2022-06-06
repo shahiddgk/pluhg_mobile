@@ -208,11 +208,12 @@ class ContactView extends GetView<ContactController> {
                                     child: ListView.builder(
                                       itemCount: contacts.length,
                                       itemBuilder: (context, index) {
-                                        if (contacts[index]
+                                        PluhgContact pluhgContact = contacts[index];
+                                        if (pluhgContact
                                             .contacts
                                             .isNotEmpty) {
                                           return contactItem(
-                                              contact: contacts[index],
+                                              contact: pluhgContact,
                                               isRequestAndContactSelectionDone:
                                                   (controller
                                                           .requesterContact
@@ -235,12 +236,7 @@ class ContactView extends GetView<ContactController> {
                                                       .name
                                                       .isEmpty) {
                                                     controller.selectRequester(
-                                                        index, i);
-                                                    // onRequesterSelect(
-                                                    //     contacts[index],
-                                                    //     index,
-                                                    //     context,
-                                                    //     contacts);
+                                                        pluhgContact, pluhgContact.contacts[i]);
                                                   } else if (controller
                                                           .contactContact
                                                           .value
@@ -252,9 +248,7 @@ class ContactView extends GetView<ContactController> {
                                                           .name
                                                           .isNotEmpty) {
                                                     controller.selectContact(
-                                                        index, i);
-                                                    // onContactSelect(contacts[index],
-                                                    //     index, context, contacts);
+                                                        pluhgContact, pluhgContact.contacts[i]);
                                                   } else {
                                                     showPluhgDailog(
                                                         context,
@@ -277,27 +271,6 @@ class ContactView extends GetView<ContactController> {
                                                       "Info",
                                                       "You can't have more than two contacts selected");
                                                 }
-
-                                                ///old data
-                                                /*if (controller.requesterName.value.isEmpty || controller.contactName.value.isEmpty) {
-                                          Contact? contact = await FlutterContacts.getContact(contacts[index].id!);
-
-                                          if (contact != null) {
-                                            PluhgContact pluhgContact = PluhgContact.fromContact(contact);
-                                            if (controller.requesterName.value.isEmpty) {
-                                              onRequesterSelect(pluhgContact, index, context, contacts);
-                                            } else if (controller.contactName.value.isEmpty && controller.requesterName.value.isNotEmpty) {
-                                              onContactSelect(pluhgContact, index, context, contacts);
-                                            } else {
-                                              showPluhgDailog(context, "Info", "So Sorry !  You can select the same person");
-                                            }
-                                          }
-                                        }
-                                        else if (controller.contactName.value.isNotEmpty && controller.requesterName.value.isNotEmpty) {
-                                          print('ON TAP CALLL ELSE IF');
-                                          showPluhgDailog(
-                                              context, "Info", "You can't have more than two contacts selected");
-                                        }*/
                                               });
                                         } else {
                                           return SizedBox.shrink();
@@ -342,7 +315,7 @@ class ContactView extends GetView<ContactController> {
         Container(
           width: 100,
           padding: EdgeInsets.all(8.0),
-          margin: EdgeInsets.only(top: 15, right: 20,left: 20),
+          margin: EdgeInsets.only(top: 15, right: 20, left: 20),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [BoxShadow(blurRadius: 40, color: Colors.black12)],
@@ -419,49 +392,6 @@ class ContactView extends GetView<ContactController> {
       ],
     );
   }
-
-  // void onRequesterSelect(PluhgContact pluhgContact, int index,
-  //     BuildContext context, List<PluhgContact> contacts) {
-  //   print("Pluhg user ${pluhgContact.isPlughedUser}");
-  //   controller.requesterId.value = controller.contacts_[index].id!;
-  //   controller.requesterImage = pluhgContact.photo;
-  //   //controller.requesterContact.value = pluhgContact.phoneNumber.isEmpty ? pluhgContact.emailAddress : pluhgContact.phoneNumber;
-  //   controller.requesterContact.value = pluhgContact.selectedContact != null
-  //       ? pluhgContact.selectedContact!
-  //       : pluhgContact.phoneNumber.isEmpty
-  //           ? pluhgContact.emailAddress
-  //           : pluhgContact.phoneNumber;
-  //   controller.requesterName.value = pluhgContact.name;
-  //   controller.isRequesterPluhg.value = contacts[index].isPlughedUser;
-  //   controller.title.value = "Select Contact";
-  //   contacts.remove(pluhgContact);
-  //
-  //   if (controller.contactName.value.isEmpty) {
-  //     showPluhgDailog(context, "Info",
-  //         "Great!  You’ve selected the Requester, \nNow you will need to select a Contact");
-  //   }
-  // }
-  //
-  // void onContactSelect(PluhgContact pluhgContact, int index,
-  //     BuildContext context, List<PluhgContact> contacts) {
-  //   print("Pluhg user ${pluhgContact.isPlughedUser}");
-  //   if (pluhgContact.id != controller.requesterId.value) {
-  //     //if (pluhgContact.phoneNumber != controller.requesterContact.value) {
-  //     controller.contactId.value = controller.contacts_[index].id!;
-  //     controller.contactImage = pluhgContact.photo;
-  //     //controller.contactContact.value = pluhgContact.phoneNumber.isEmpty ? pluhgContact.emailAddress : pluhgContact.phoneNumber;
-  //     controller.contactContact.value = pluhgContact.selectedContact != null
-  //         ? pluhgContact.selectedContact!
-  //         : pluhgContact.phoneNumber.isEmpty
-  //             ? pluhgContact.emailAddress
-  //             : pluhgContact.phoneNumber;
-  //     controller.contactName.value = pluhgContact.name;
-  //     controller.isContactPluhg.value = contacts[index].isPlughedUser;
-  //
-  //     controller.title.value = "Click Next";
-  //     contacts.remove(pluhgContact);
-  //   }
-  // }
 
   Widget contactImage(Uint8List? image, bool isPluhgUser) {
     print("contact image ${isPluhgUser.toString()}");

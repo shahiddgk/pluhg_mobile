@@ -218,11 +218,11 @@ class ContactController extends GetxController with ValidationMixin {
     });
   }
 
-  void selectRequester(int listIndex, int contactIndex) {
-    _allContacts[listIndex].isSelected = true;
-    _allContacts[listIndex].contacts[contactIndex].isSelected = true;
-    requesterGroup.value = _allContacts[listIndex];
-    requesterContact.value = _allContacts[listIndex].contacts[contactIndex];
+  void selectRequester(PluhgContact pluhgContact, ContactData contactData) {
+    pluhgContact.isSelected = true;
+    contactData.isSelected = true;
+    requesterGroup.value = pluhgContact;
+    requesterContact.value = contactData;
   }
 
   void unSelectRequester(PluhgContact pluhgContact, ContactData contactData) {
@@ -231,11 +231,11 @@ class ContactController extends GetxController with ValidationMixin {
     requesterContact.value = ContactData.empty();
   }
 
-  void selectContact(int listIndex, int contactIndex) {
-    _allContacts[listIndex].isSelected = true;
-    _allContacts[listIndex].contacts[contactIndex].isSelected = true;
-    contactGroup.value = _allContacts[listIndex];
-    contactContact.value = _allContacts[listIndex].contacts[contactIndex];
+  void selectContact(PluhgContact pluhgContact, ContactData contactData) {
+    pluhgContact.isSelected = true;
+    contactData.isSelected = true;
+    contactGroup.value = pluhgContact;
+    contactContact.value = contactData;
   }
 
   void unSelectContact(PluhgContact pluhgContact, ContactData contactData) {
