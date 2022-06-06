@@ -127,7 +127,7 @@ class ContactController extends GetxController with ValidationMixin {
         if (addresses.length > 0) {
           String iso = addresses[0].isoCountry.isNotEmpty
               ? addresses[0].isoCountry.toLowerCase()
-              : user.regionCode;
+              : user.regionCode.toLowerCase();
           region = regions
               .firstWhere((element) => element.code.toLowerCase() == iso);
         } else {

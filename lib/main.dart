@@ -15,7 +15,17 @@ import 'app/modules/chat_screen/controllers/chat_screen_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/widgets/snack_bar.dart';
 
+class MyHttpoverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    // TODO: implement createHttpClient
+    return super.createHttpClient(context)
+        ..badCertificateCallback = (X509Certificate cert, String host, int port)=>true;
+  }
+}
+
 void main() async {
+  HttpOverrides.global=new MyHttpoverrides();
   WidgetsFlutterBinding.ensureInitialized();
   _configureFirebase();
   runApp(
