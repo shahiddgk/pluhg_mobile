@@ -247,7 +247,7 @@ class AuthScreenView extends GetView<AuthScreenController> {
   }
 
   String _preparePhoneNumber(String phone) {
-    return "${controller.currentCountryCode.value}$phone";
+    return "${controller.currentCountryCode.value}${phone.replaceAll(new RegExp(r'^0+(?=.)'), '+')}";
   }
 
   void _submit() async {

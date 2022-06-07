@@ -270,8 +270,14 @@ class RecommendedScreenView
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return showPluhgDailog4(context,
-                                                responseData.sId!, 'requester');
+                                            return showPluhgDailog4(
+                                                context,
+                                                responseData.userId?.userName ??
+                                                    responseData.userId?.name ??
+                                                    "",
+                                                responseData.requesterMessage!,
+                                                responseData.sId!,
+                                                'requester');
                                           });
                                     },
                                     child: button2("Requester"),
@@ -289,8 +295,14 @@ class RecommendedScreenView
                                       showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return showPluhgDailog4(context,
-                                                responseData.sId!, 'contact');
+                                            return showPluhgDailog4(
+                                                context,
+                                                responseData.userId?.userName ??
+                                                    responseData.userId?.name ??
+                                                    "",
+                                                responseData.contactMessage!,
+                                                responseData.sId!,
+                                                'contact');
                                           });
                                     },
                                     child: button2("Contact"),

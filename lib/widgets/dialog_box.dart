@@ -116,9 +116,11 @@ showPluhgDailog2(
   );
 }
 
-showPluhgDailog4(BuildContext context, String connectionID, String party) {
-  var text = "";
-
+showPluhgDailog4(BuildContext context,String senderName, String message ,String connectionID, String party) {
+  String preText =
+      "$senderName has recommended a connection between you and One Of Their Contacts\n\n$senderName sent this message with the recommendation: $message\n\nPlease log into Pluhg to Accept or Decline $senderName connection recommendation!";
+  var reminderController = TextEditingController();
+  reminderController.text = preText;
   return Dialog(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(24.0),
@@ -142,10 +144,11 @@ showPluhgDailog4(BuildContext context, String connectionID, String party) {
               ),
             ),
             child: TextFormField(
-              onChanged: (value) {
-                text = value;
-                print(text);
-              },
+              controller: reminderController,
+              // onChanged: (value) {
+              //   text = value;
+              //   print(text);
+              // },
               maxLines: 4,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
@@ -158,7 +161,8 @@ showPluhgDailog4(BuildContext context, String connectionID, String party) {
             children: [
               GestureDetector(
                 onTap: () {
-                  sendReminder(context, text, party, connectionID);
+                  sendReminder(
+                      context, reminderController.text, party, connectionID);
                 },
                 child: Container(
                     padding: EdgeInsets.all(8.0),

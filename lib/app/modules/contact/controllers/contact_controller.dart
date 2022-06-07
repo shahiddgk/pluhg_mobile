@@ -100,8 +100,8 @@ class ContactController extends GetxController with ValidationMixin {
     contacts.removeWhere((element) {
       bool remove = false;
       element.phones.forEach((element) {
-        if (element.number.length < 6 ||
-            inValidCharacters.hasMatch(element.number)) {
+        if (element.number.length < 7 ||
+            inValidCharacters.hasMatch(element.number) || element.number.contains("*") || element.number.contains("#")) {
           remove = true;
           return;
         }
