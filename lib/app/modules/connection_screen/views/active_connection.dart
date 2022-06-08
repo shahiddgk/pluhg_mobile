@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/data/models/response/connection_response_model.dart';
 import 'package:plug/app/modules/connection_screen/controllers/connection_screen_controller.dart';
 import 'package:plug/app/widgets/button.dart';
 import 'package:plug/app/widgets/colors.dart';
@@ -17,15 +18,20 @@ import '../../../data/http_manager.dart';
 import '../../../data/models/request/connection_request_model.dart';
 
 class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
-  final dynamic data;
+  final ConnectionResponseModel data;
   final bool isRequester;
   final Function refreshActiveConnection;
 
-  ActiveConnectionScreenView({this.data, required this.isRequester, required this.refreshActiveConnection});
+  ActiveConnectionScreenView(
+      {required this.data,
+      required this.isRequester,
+      required this.refreshActiveConnection});
 
   @override
   Widget build(BuildContext context) {
-    var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ").parseUTC(data["created_at"]).toLocal();
+    var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
+        .parseUTC(data.createdAt!)
+        .toLocal();
     String formattedDate = DateFormat("dd MMM yyyy hh:mm").format(dateValue);
 
     return Scaffold(
@@ -43,7 +49,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                   child: Padding(
                       padding: EdgeInsets.only(bottom: 20.w),
                       child: Text(
-                        "${data['userId']["userName"]} Pluhgged",
+                        "${data.userId?.userName!} Pluhgged",
                         style: TextStyle(
                           fontSize: 28.sp,
                           color: pluhgColour,
@@ -78,11 +84,18 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                           width: 87.2.w,
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                               boxShadow: [
-                                                BoxShadow(color: Color.fromARGB(5, 0, 0, 0), blurRadius: 20)
+                                                BoxShadow(
+                                                    color: Color.fromARGB(
+                                                        5, 0, 0, 0),
+                                                    blurRadius: 20)
                                               ]),
-                                          child: cardProfile2(context, data["requester"]["refId"], "Requester"),
+                                          child: cardProfile2(
+                                              context,
+                                              data.requester?.refId?.toJson(),
+                                              "Requester"),
                                         ),
                                         SizedBox(
                                           width: 16.w,
@@ -92,11 +105,18 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                           width: 87.2.w,
                                           decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                               boxShadow: [
-                                                BoxShadow(color: Color.fromARGB(5, 0, 0, 0), blurRadius: 20)
+                                                BoxShadow(
+                                                    color: Color.fromARGB(
+                                                        5, 0, 0, 0),
+                                                    blurRadius: 20)
                                               ]),
-                                          child: cardProfile2(context, data["contact"]["refId"], "Contact"),
+                                          child: cardProfile2(
+                                              context,
+                                              data.contact?.refId?.toJson(),
+                                              "Contact"),
                                         ),
                                       ],
                                     ),
@@ -106,10 +126,12 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                   width: 20.w,
                                 ),
                                 PlugByWidgetCard(
-                                    userName: data['userId']["userName"] == null
-                                        ? data['userId']["name"]
-                                        : "@" + data['userId']["userName"],
-                                    date: formattedDate)
+                                  userName:
+                                      (data.userId?.userName ?? "").isEmpty
+                                          ? data.userId?.name ?? ""
+                                          : "@" + (data.userId?.userName ?? ""),
+                                  date: formattedDate,
+                                )
                               ],
                             ),
                             SizedBox(
@@ -121,8 +143,11 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                   width: 20.w,
                                 ),
                                 Text(
-                                  "Message From @${data["userId"]["userName"]}",
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xff575858)),
+                                  "Message From @${data.userId?.userName}",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xff575858)),
                                 ),
                               ],
                             ),
@@ -132,12 +157,15 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                               width: MediaQuery.of(context).size.width,
                               margin: EdgeInsets.all(12.w),
                               padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.white),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white),
                               child: Text(
-                                data["message"] == null ? "" : "${data["message"]}",
+                                (data.both ?? "").isEmpty ? "" : "${data.both}",
                                 textAlign: TextAlign.justify,
                                 maxLines: 25,
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w400),
                               ),
                             ),
                             SizedBox(
@@ -171,18 +199,25 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                 MaterialPageRoute(
                                     builder: (context) => ChatScreen(
                                           username_receiver: !isRequester
-                                              ? "@${data["requester"]["refId"]["userName"]}"
-                                              : "@${data["contact"]["refId"]["userName"]}",
-                                          name_receiver:
-                                              !isRequester ? data["requester"]["name"] : data["contact"]["name"],
+                                              ? "@${data.requester?.refId?.userName}"
+                                              : "@${data.contact?.refId?.userName}",
+                                          name_receiver: !isRequester
+                                              ? (data.requester?.refId?.name ??
+                                                  "")
+                                              : (data.contact?.refId?.name ??
+                                                  ""),
                                           profile_receiver:
-                                              "${APICALLS.imageBaseUrl}${!isRequester ? data["requester"]["refId"]['profileImage'] : data["contact"]["refId"]['profileImage'].toString()}",
+                                              "${APICALLS.imageBaseUrl}${!isRequester ? data.requester?.refId?.profileImage : data.contact?.refId?.profileImage}",
                                           senderId: isRequester
-                                              ? data["requester"]["refId"]["_id"]
-                                              : data["contact"]["refId"]["_id"],
+                                              ? (data.requester?.refId?.sId ??
+                                                  "")
+                                              : (data.contact?.refId?.sId ??
+                                                  ""),
                                           recevierId: !isRequester
-                                              ? data["requester"]["refId"]["_id"]
-                                              : data["contact"]["refId"]["_id"],
+                                              ? (data.requester?.refId?.sId ??
+                                                  "")
+                                              : (data.contact?.refId?.sId ??
+                                                  ""),
                                         )));
                           }),
                         ],
@@ -199,7 +234,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
         context: buildContext,
         builder: (BuildContext context) {
           return showPluhgRatingDialog(context, "Close connection",
-              "To close this connection, rate @${data['userId']["userName"]}’s connection recomendation",
+              "To close this connection, rate @${data.userId?.userName}’s connection recomendation",
               onCLosed: (value) {
             ProgressDialog pd = ProgressDialog(context: buildContext);
             pd.show(
@@ -209,11 +244,15 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
               progressBgColor: Colors.transparent,
             );
             HTTPManager()
-                .closeConnection(
-                ConnectionRequestModel(connectionId : data.sId ?? "",feedbackRating: value.toString()))
+                .closeConnection(ConnectionRequestModel(
+                    connectionId: data.sId ?? "",
+                    feedbackRating: value.toString()))
                 .then((value) {
               pd.close();
-              showPluhgDailog2(buildContext, "Great!!!", "You have successfully cancelled this  connection",
+              showPluhgDailog2(
+                buildContext,
+                "Great!!!",
+                "You have successfully cancelled this  connection",
                 onCLosed: () {
                   Navigator.pop(buildContext);
                   refreshActiveConnection();
@@ -221,7 +260,8 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
               );
             }).catchError((onError) {
               pd.close();
-              showPluhgDailog(buildContext, "So sorry", "Couldn't complete your request, try again");
+              showPluhgDailog(buildContext, "So sorry",
+                  "Couldn't complete your request, try again");
             });
             // APICALLS()
             //     .closeConnection(connectionID: data["_id"], context: buildContext, rating: value.toString())

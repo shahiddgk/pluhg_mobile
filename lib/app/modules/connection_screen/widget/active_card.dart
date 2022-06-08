@@ -83,7 +83,7 @@ Widget activeConnectionCard({
                             ),
                             child: card(
                               Get.context!,
-                              data.requester?.refId,
+                              data.requester?.refId?.toJson(),
                             ),
                           ),
                           Container(
@@ -98,7 +98,7 @@ Widget activeConnectionCard({
                             ),
                             child: card(
                               Get.context!,
-                              data.contact?.refId,
+                              data.contact?.refId?.toJson(),
                             ),
                           ),
                           /*  Container(
