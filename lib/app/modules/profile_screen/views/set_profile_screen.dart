@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/data/http_manager.dart';
 import 'package:plug/app/data/models/request/profile_create_request_model.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
@@ -14,11 +13,9 @@ import 'package:plug/utils/validation_mixin.dart';
 
 class SetProfileScreenView extends GetView<SetProfileScreenController> {
   final String contact;
-  final String userID;
-  final String token;
+  final String deviceToken;
 
-  SetProfileScreenView(
-      {required this.contact, required this.token, required this.userID});
+  SetProfileScreenView({required this.contact, required this.deviceToken});
 
   TextEditingController _nameController = TextEditingController();
 
@@ -253,30 +250,42 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
 
     controller.isLoading.value = true;
 
-    String contact = _contactController.text;
-    bool isPhoneContact = contact.isNum;
+    String newContact = _contactController.text;
+    bool isPhoneContact = newContact.isNum;
     if (isPhoneContact) {
-      contact = this._preparePhoneNumber(contact);
+      newContact = this._preparePhoneNumber(newContact);
     }
     HTTPManager()
-        .createProfile(
-            this.token,
-            CreateProfileRequestModel(
-                contact: contact,
-                contactType: isPhoneContact
-                    ? User.PHONE_CONTACT_TYPE
-                    : User.EMAIL_CONTACT_TYPE,
-                userName: _nameController.text))
+        .createProfile(CreateProfileRequestModel(
+            deviceToken: deviceToken,
+            phoneNumber: isPhoneContact ? newContact : contact,
+            emailAddress: isPhoneContact ? contact : newContact,
+            userName: _nameController.text))
         .then((value) async {
+      // User user = await UserState.get();
+      // await UserState.storeNewProfile(
+      //     token: this.deviceToken,
+      //     name: _nameController.text,
+      //     contact: contact,
+      //     regionCode: user.regionCode,
+      //     countryCode: user.countryCode);
+      // controller.isLoading.value = false;
       User user = await UserState.get();
-      await UserState.storeNewProfile(
-        token: this.token,
-        name: _nameController.text,
-        contact: contact,
-        regionCode: user.regionCode,
-        countryCode: user.countryCode
+      await UserState.store(
+        User.registered(
+          token: value?.token ?? "",
+          id: value.user?.data?.sId ?? "",
+          name: value.user?.data?.userName ?? "",
+          phone: value.user?.data?.phoneNumber ?? "",
+          email: value.user?.data?.emailAddress ?? "",
+          regionCode: user.regionCode.isNotEmpty
+              ? user.regionCode
+              : User.DEFAULT_REGION_CODE,
+          countryCode: user.countryCode.isNotEmpty
+              ? user.countryCode
+              : User.DEFAULT_COUNTRY_CODE,
+        ),
       );
-      controller.isLoading.value = false;
       Get.offAll(() => HomeView(index: 1.obs));
     }).catchError((onError) {
       controller.isLoading.value = false;

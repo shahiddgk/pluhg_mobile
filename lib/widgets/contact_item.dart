@@ -10,7 +10,7 @@ import 'package:plug/widgets/text_style.dart';
 Widget contactItem(
     {required PluhgContact contact,
     isRequestAndContactSelectionDone,
-    Function(int index)? onTap}) {
+    Function(ContactData contact)? onTap}) {
   return Column(
     children: [
       Padding(
@@ -49,67 +49,11 @@ Widget contactItem(
                               isRequestAndContactSelectionDone) {
                             return;
                           }
-                          onTap!(i);
+                          onTap!(value!);
                         },
                       );
                     },
                   )
-                  // Column(
-                  //   children: contact.contacts
-                  //       .map((e) => RadioListTitleComponent<ContactData?>(
-                  //             label: e.value,
-                  //             value: e,
-                  //             isChecked: e.isSelected,
-                  //             itemSelected: (value) {
-                  //               if (isRequestAndContactSelectionDone) {
-                  //                 return;
-                  //               }
-                  //
-                  //               // if(contact.selectedContact != null)
-                  //               //   return;
-                  //               //
-                  //               // newRadioGroupValue = value;
-                  //               // if(value?.type == contactItemType.phone){
-                  //               //   contact.selectedContact = contact.phoneNumbers.firstWhere((element) => element == e.value);
-                  //               // }
-                  //               // else {
-                  //               //   contact.selectedContact = contact.emailAddresses.firstWhere((element) => element == e.value);
-                  //               // }
-                  //               onTap!();
-                  //             },
-                  //           ))
-                  //       .toList(),
-                  // ),
-                  /*Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: temString.map((e) => Container(
-                          width: 220.w,
-                          child: RadioListTile<ContactItemDataClass?>(
-                            title: Text(e.value),
-                            dense: true,
-                            tileColor: Colors.red,
-                            contentPadding: EdgeInsets.zero,
-                            visualDensity: const VisualDensity(
-                              horizontal: 0,
-                              vertical: 0,
-                            ),
-                            groupValue: newRadioGroupValue,
-                            controlAffinity: ListTileControlAffinity.leading,
-                            value: e,
-                            activeColor: AppColors.pluhgColour,
-                            onChanged: (value) async{
-                              print(value);
-                              newRadioGroupValue = value;
-                              if(value?.type == contactItemType.phone){
-                                    contact.selectedContact =contact.phoneNumbers.firstWhere((element) => element == e.value);
-                                  }
-                              else {
-                                    contact.selectedContact =contact.emailAddresses.firstWhere((element) => element == e.value);
-                                  }
-                              onTap!();
-                            },),)).toList(),
-                      ),*/
                 ],
               ),
             ),

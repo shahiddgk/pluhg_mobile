@@ -24,7 +24,7 @@ class UpdateProfileRequestModel {
     final Map<String, String> data = new Map<String, String>();
     if ((this.address ?? "").isNotEmpty) data['address'] = this.address!;
     if ((this.emailAddress ?? "").isNotEmpty)
-      data['emailAddress'] = this.emailAddress!;
+      data['emailAddress'] = this.emailAddress!.toLowerCase();
     if ((this.phoneNumber ?? "").isNotEmpty)
       data['phoneNumber'] = this.phoneNumber!;
     if ((this.userName ?? "").isNotEmpty) data['userName'] = this.userName!;

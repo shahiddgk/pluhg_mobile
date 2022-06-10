@@ -208,10 +208,9 @@ class ContactView extends GetView<ContactController> {
                                     child: ListView.builder(
                                       itemCount: contacts.length,
                                       itemBuilder: (context, index) {
-                                        PluhgContact pluhgContact = contacts[index];
-                                        if (pluhgContact
-                                            .contacts
-                                            .isNotEmpty) {
+                                        PluhgContact pluhgContact =
+                                            contacts[index];
+                                        if (pluhgContact.contacts.isNotEmpty) {
                                           return contactItem(
                                               contact: pluhgContact,
                                               isRequestAndContactSelectionDone:
@@ -225,7 +224,7 @@ class ContactView extends GetView<ContactController> {
                                                           .value
                                                           .name
                                                           .isNotEmpty),
-                                              onTap: (i) {
+                                              onTap: (tappedContact) {
                                                 if (controller.requesterContact
                                                         .value.name.isEmpty ||
                                                     controller.contactContact
@@ -236,7 +235,8 @@ class ContactView extends GetView<ContactController> {
                                                       .name
                                                       .isEmpty) {
                                                     controller.selectRequester(
-                                                        pluhgContact, pluhgContact.contacts[i]);
+                                                        pluhgContact,
+                                                        tappedContact);
                                                   } else if (controller
                                                           .contactContact
                                                           .value
@@ -248,7 +248,8 @@ class ContactView extends GetView<ContactController> {
                                                           .name
                                                           .isNotEmpty) {
                                                     controller.selectContact(
-                                                        pluhgContact, pluhgContact.contacts[i]);
+                                                        pluhgContact,
+                                                        tappedContact);
                                                   } else {
                                                     showPluhgDailog(
                                                         context,

@@ -38,12 +38,15 @@ class HTTPManager {
     return sessionUserModel;
   }
 
-  Future<GeneralResponseModel> createProfile(String token,
+  Future<VerifyOtpResponseModel> createProfile(
       CreateProfileRequestModel createProfileRequestModel) async {
     final url = ApplicationURLs.API_CREATE_PROFILE;
+
     final GeneralResponseModel response =
-        await _handler.post(url, createProfileRequestModel.toJson(),token: token);
-    return response;
+        await _handler.post(url, createProfileRequestModel.toJson());
+    VerifyOtpResponseModel sessionUserModel =
+        VerifyOtpResponseModel.fromJson(response.data);
+    return sessionUserModel;
   }
 
   Future<GeneralResponseModel> sendSupportEmail(
@@ -161,7 +164,7 @@ class HTTPManager {
       ConnectionRequestModel connectionRequestModel) async {
     final url = ApplicationURLs.API_DECLINE_CONNECTION;
     final GeneralResponseModel response =
-    await _handler.post(url, connectionRequestModel.toJson());
+        await _handler.post(url, connectionRequestModel.toJson());
     return response;
   }
 
@@ -169,7 +172,7 @@ class HTTPManager {
       ConnectionRequestModel connectionRequestModel) async {
     final url = ApplicationURLs.API_CLOSE_CONNECTION;
     final GeneralResponseModel response =
-    await _handler.post(url, connectionRequestModel.toJson());
+        await _handler.post(url, connectionRequestModel.toJson());
     return response;
   }
 
@@ -177,7 +180,7 @@ class HTTPManager {
       NotificationSettingsRequestModel notificationSettingsRequestModel) async {
     final url = ApplicationURLs.API_UPDATE_NOTFICATION_SETTINGS;
     final GeneralResponseModel response =
-    await _handler.post(url, notificationSettingsRequestModel.toJson());
+        await _handler.post(url, notificationSettingsRequestModel.toJson());
     return response;
   }
 
@@ -185,7 +188,7 @@ class HTTPManager {
       CheckContactRequestModel checkContactRequestModel) async {
     final url = ApplicationURLs.API_CHECK_PLUHG_USERS;
     final GeneralResponseModel response =
-    await _handler.post(url, checkContactRequestModel.toJson());
+        await _handler.post(url, checkContactRequestModel.toJson());
     return response;
   }
 }

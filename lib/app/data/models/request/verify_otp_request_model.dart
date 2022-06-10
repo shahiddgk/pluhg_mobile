@@ -22,7 +22,7 @@ class VerifyOtpRequestModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['emailAddress'] = this.emailAddress;
+    data['emailAddress'] = this.emailAddress?.toLowerCase();
     data['phoneNumber'] = this.phoneNumber;
     data['code'] = this.code;
     data['type'] = this.type;

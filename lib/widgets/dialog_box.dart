@@ -137,7 +137,8 @@ showPluhgDailog4(BuildContext context,String senderName, String message ,String 
             style: TextStyle(fontSize: 20, color: pluhgColour),
           ),
           Container(
-            height: 120,
+            height: 320,
+            padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               border: Border.all(
                 color: pluhgColour,
@@ -149,7 +150,7 @@ showPluhgDailog4(BuildContext context,String senderName, String message ,String 
               //   text = value;
               //   print(text);
               // },
-              maxLines: 4,
+              maxLines: 30,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 border: InputBorder.none,

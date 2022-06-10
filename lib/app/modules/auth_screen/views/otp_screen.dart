@@ -257,11 +257,8 @@ class OTPScreenView extends GetView<OTPScreenController> {
         }
 
         Get.to(() => SetProfileScreenView(
-              token: value?.token ?? "",
-              userID: value.user?.data?.sId ?? "",
-              contact: value.user?.data?.emailAddress?.isEmpty ?? false
-                  ? value.user?.data?.phoneNumber ?? ""
-                  : value.user?.data?.emailAddress ?? "",
+              deviceToken: controller.fcmToken,
+              contact: contact,
             ));
       }).catchError((onError) {
         controller.loading.value = false;
