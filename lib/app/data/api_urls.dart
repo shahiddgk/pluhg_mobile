@@ -5,6 +5,9 @@ class ApplicationURLs {
   static const BASE_URL = "http://192.168.31.86:8000/api/";
   static const WS_URL = "ws://192.168.31.86:8000";
 
+  // static const BASE_URL = "http://192.168.43.65:8000/api/";
+  // static const WS_URL = "ws://192.168.43.65:8000";
+
   //Authentication
   static const API_LOGIN = BASE_URL + "login";
   static const API_VERIFY_OTP = BASE_URL + "verifyOTP";

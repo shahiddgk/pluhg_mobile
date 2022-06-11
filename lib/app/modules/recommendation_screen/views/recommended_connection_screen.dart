@@ -33,7 +33,7 @@ class RecommendedScreenView
               return Center(child: pluhgProgress());
             } else if (snapshot.hasError) {
               return Center(
-                child: Text("$snapshot.error"),
+                child: Text("${snapshot.error.toString()}"),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData && snapshot.data != null) {
@@ -95,10 +95,9 @@ class RecommendedScreenView
                                                       ]),
                                                   child: cardProfile2(
                                                       context,
-                                                      responseData
-                                                          .requester?.refId
-                                                          ?.toJson(),
-                                                      "Requester")),
+                                                      responseData.requester!,
+                                                      "Requester",
+                                                      whoIConnected: true)),
                                               SizedBox(
                                                 width: 16,
                                               ),
@@ -119,10 +118,9 @@ class RecommendedScreenView
                                                       ]),
                                                   child: cardProfile2(
                                                       context,
-                                                      responseData
-                                                          .contact?.refId
-                                                          ?.toJson(),
-                                                      "Contact")),
+                                                      responseData.contact!,
+                                                      "Contact",
+                                                      whoIConnected: true)),
                                             ],
                                           ),
                                         ],
@@ -228,10 +226,12 @@ class RecommendedScreenView
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    smallCard(responseData.requester?.toJson(),
-                                        responseData.isRequesterAccepted),
-                                    smallCard(responseData.contact?.toJson(),
-                                        responseData.isContactAccepted),
+                                    smallCard(responseData.requester!,
+                                        responseData.isRequesterAccepted,
+                                        whoIConnected: true),
+                                    smallCard(responseData.contact!,
+                                        responseData.isContactAccepted,
+                                        whoIConnected: true),
                                   ],
                                 ),
                               ],

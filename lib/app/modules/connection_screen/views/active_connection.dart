@@ -94,7 +94,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                               ]),
                                           child: cardProfile2(
                                               context,
-                                              data.requester?.refId?.toJson(),
+                                              data.requester!,
                                               "Requester"),
                                         ),
                                         SizedBox(
@@ -115,7 +115,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                               ]),
                                           child: cardProfile2(
                                               context,
-                                              data.contact?.refId?.toJson(),
+                                              data.requester!,
                                               "Contact"),
                                         ),
                                       ],

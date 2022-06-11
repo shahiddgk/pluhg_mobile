@@ -39,7 +39,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
               return Center(child: pluhgProgress());
             } else if (snapshot.hasError) {
               return Center(
-                child: Text("$snapshot.error"),
+                child: Text("${snapshot.error.toString()}"),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData && snapshot.data != null) {
@@ -100,8 +100,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                                 child: cardProfile2(
                                                     context,
                                                     responseData
-                                                        .requester?.refId
-                                                        ?.toJson(),
+                                                        .requester!,
                                                     "Requester")),
                                             SizedBox(
                                               width: 16,
@@ -122,8 +121,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                                   ]),
                                               child: cardProfile2(
                                                   context,
-                                                  responseData.contact?.refId
-                                                      ?.toJson(),
+                                                  responseData.contact!,
                                                   "Contact"),
                                             ),
                                           ],
@@ -246,14 +244,13 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                         //ADD HERE
                                       },
                                       child: smallCard(
-                                          responseData.requester?.refId
-                                              ?.toJson(),
+                                          responseData.requester!,
                                           responseData.isRequesterAccepted),
                                     ),
                                     GestureDetector(
                                       onTap: () {},
                                       child: smallCard(
-                                          responseData.contact?.refId?.toJson(),
+                                          responseData.contact!,
                                           responseData.isRequesterAccepted),
                                     ),
                                   ],

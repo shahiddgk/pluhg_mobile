@@ -143,8 +143,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                               ]),
                                           child: cardProfile2(
                                               context,
-                                              widget.data.requester?.refId
-                                                  ?.toJson(),
+                                              widget.data.requester!,
                                               "Requester")),
                                       SizedBox(
                                         width: 16,
@@ -165,8 +164,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                             ]),
                                         child: cardProfile2(
                                             context,
-                                            widget.data.contact?.refId
-                                                ?.toJson(),
+                                            widget.data.contact!,
                                             "Contact"),
                                       ),
                                     ],
@@ -276,13 +274,13 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                   //ADD HERE
                                 },
                                 child: smallCard(
-                                    widget.data.requester?.refId?.toJson(),
+                                    widget.data.requester!,
                                     widget.data.isRequesterAccepted),
                               ),
                               GestureDetector(
                                 onTap: () {},
                                 child: smallCard(
-                                    widget.data.contact?.refId?.toJson(),
+                                    widget.data.contact!,
                                     widget.data.isContactAccepted),
                               ),
                             ],

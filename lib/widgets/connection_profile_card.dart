@@ -6,12 +6,13 @@ import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/widgets/image.dart';
 
-import 'colours.dart';
+import '../app/data/models/response/connection_response_model.dart';
 
-Widget card(BuildContext context, var data) {
+Widget card(BuildContext context, Requester data,
+    {bool whoIConnected = false}) {
   if (data == null) return SizedBox();
 
-  final userName = extractUserName(data);
+  final userName = extractUserName(data, whoIConnected);
   return Column(
     children: [
       Container(
@@ -20,38 +21,22 @@ Widget card(BuildContext context, var data) {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
         ),
-        child: !data.containsKey("profileImage") || data["profileImage"] == null
-            ? Container(
-                child: Center(
-                  child: SvgPicture.asset("resources/svg/profile.svg"),
-                ),
-                decoration: BoxDecoration(
-                  color: pluhgColour,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              )
-            : cachedNetworkImageWidget(
-                imageUrl: APICALLS.imageBaseUrl + data['profileImage'].toString(),
-                height: 64.w,
-                width: 64.w,
-                borderRadiusValue: 12.r,
-              )/*ClipRRect(
-                borderRadius: BorderRadius.circular(12.r)
-                ,
-                child: Image.network(
-                  APICALLS.imageBaseUrl + data['profileImage'].toString(),
-                  height: 64.w,
-                  width: 64.w,
-                  fit: BoxFit.cover,
-                ),
-              )*/,
+        child: cachedNetworkImageWidget(
+          imageUrl: APICALLS.imageBaseUrl + (data?.refId?.profileImage ?? ""),
+          height: 64.w,
+          width: 64.w,
+          borderRadiusValue: 12.r,
+        ),
       ),
       Container(height: 2.h),
       Text(
         "$userName",
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Color(0xff8D8D8D), fontSize: 11.sp, fontWeight: FontWeight.w400),
+        style: TextStyle(
+            color: Color(0xff8D8D8D),
+            fontSize: 11.sp,
+            fontWeight: FontWeight.w400),
         textAlign: TextAlign.center,
       ),
     ],
@@ -59,85 +44,52 @@ Widget card(BuildContext context, var data) {
 }
 
 //@todo should be a part of DTO/Model
-String extractUserName(Map data) {
-  final userName = data["userName"];
-  final name = data["name"];
+String? extractUserName(Requester data, bool whoIConnected) {
+  final userName = data.refId?.userName;
+  final name = data.refId?.name; //data["name"];
 
-  final isUserNameExists = userName != null && userName?.isNotEmpty;
-  final isContactNameExists = name != null && name?.isNotEmpty;
+  final isUserNameExists = userName != null && userName.isNotEmpty;
+  final isContactNameExists = name != null && name.isNotEmpty;
   if (isUserNameExists) {
     return "@$userName";
   }
   if (isContactNameExists) {
     return name;
   }
-
+  if(whoIConnected){
+    return data?.name;
+  }
   return "unknown";
 }
 
-Widget cardProfile2(BuildContext context, var data, String text) {
+Widget cardProfile2(BuildContext context, Requester data, String text,
+    {bool whoIConnected = false}) {
   if (data == null) return SizedBox();
 
-  final userName = extractUserName(data);
+  final userName = extractUserName(data, whoIConnected);
   return Column(
     children: [
       SizedBox(
         height: 10.h,
       ),
-
-      !data.containsKey("profileImage") || data["profileImage"] == null
-          ? Container(
-              width: 68.73.w,
-              height: 65.65.h,
-              child: Center(
-                child: SvgPicture.asset("resources/svg/profile.svg"),
-              ),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            )
-          : Center(
-              child: cachedNetworkImageWidget(
-                imageUrl:
-                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
-                width: 68.73.w,
-                height: 65.65.w,
-                borderRadiusValue: Get.size.width * 0.042,
-              ),
-            ),
-
-      ///OLD CCODE
-      /*!data.containsKey("profileImage") || data["profileImage"] == null
-          ? Container(
-              width: 68.73.w,
-              height: 65.65.h,
-              child: Center(
-                child: SvgPicture.asset("resources/svg/profile.svg"),
-              ),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            )
-          : Container(
-              width: 68.73.w,
-              height: 65.65.h,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Get.size.width * 0.042),
-                  child: Image.network(
-                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
-                    width: 68.73.w,
-                    height: 65.65.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              )),*/
+      Center(
+        child: cachedNetworkImageWidget(
+          imageUrl: APICALLS.imageBaseUrl + (data.refId?.profileImage ?? ""),
+          width: 68.73.w,
+          height: 65.65.w,
+          borderRadiusValue: Get.size.width * 0.042,
+        ),
+      ),
       Container(
         height: 6.h,
       ),
       Expanded(
         child: Text("$userName",
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Color(0xff8D8D8D), fontSize: 12.5.sp, fontWeight: FontWeight.w400),
+            style: TextStyle(
+                color: Color(0xff8D8D8D),
+                fontSize: 12.5.sp,
+                fontWeight: FontWeight.w400),
             maxLines: 2,
             textAlign: TextAlign.center),
       ),
@@ -153,10 +105,10 @@ Widget cardProfile2(BuildContext context, var data, String text) {
   );
 }
 
-Widget smallCard(var data, var accepted) {
+Widget smallCard(Requester data, var accepted, {bool whoIConnected = false}) {
   if (data == null) return SizedBox();
 
-  final userName = extractUserName(data);
+  final userName = extractUserName(data, whoIConnected);
   return Container(
     height: 41.03,
     width: 150,
@@ -168,28 +120,16 @@ Widget smallCard(var data, var accepted) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        !data.containsKey("profileImage") || data["profileImage"] == null
-            ? Container(
-                child: Center(
-                  child: SvgPicture.asset("resources/svg/profile.svg"),
-                ),
-                height: 28.82,
-                width: 30.17,
-                decoration: BoxDecoration(
-                    color: pluhgColour,
-                    borderRadius: BorderRadius.circular(16)),
-              )
-            : Container(
-                height: 28.82,
-                width: 30.17,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(16)),
-                child: Center(
-                    child: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(
-                    APICALLS.imageBaseUrl + data['profileImage'].toString(),
-                  ),
-                ))),
+        Container(
+            height: 28.82,
+            width: 30.17,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+            child: Center(
+                child: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(
+                APICALLS.imageBaseUrl + (data.refId?.profileImage ?? ""),
+              ),
+            ))),
         SizedBox(
           width: Get.width * 0.013.w,
         ),

@@ -93,7 +93,7 @@ Widget waitingConnectionCard({
                               ),
                               child: card(
                                 Get.context!,
-                                data.requester?.refId?.toJson(),
+                                data.requester!,
                               ),
                             ),
                             Container(
@@ -111,7 +111,7 @@ Widget waitingConnectionCard({
                               ),
                               child: card(
                                 Get.context!,
-                                data.contact?.refId?.toJson(),
+                                data.contact!,
                               ),
                             ),
                           ],

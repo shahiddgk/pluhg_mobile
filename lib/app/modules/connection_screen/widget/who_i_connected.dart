@@ -68,7 +68,8 @@ Widget whoIConnectedCard({
                             ),
                             child: card(
                               Get.context!,
-                              data.requester?.refId?.toJson(),
+                              data.requester!,
+                              whoIConnected: true
                             ),
                           ),
                           Container(
@@ -86,7 +87,8 @@ Widget whoIConnectedCard({
                             ),
                             child: card(
                               Get.context!,
-                              data.contact?.refId?.toJson(),
+                              data.contact!,
+                              whoIConnected: true
                             ),
                           ),
                         ],

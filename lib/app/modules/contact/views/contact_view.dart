@@ -193,10 +193,10 @@ class ContactView extends GetView<ContactController> {
                                     SizedBox(
                                       height: 20.h,
                                     ),
-                                    Text(
-                                      'Please wait, fetching contacts takes 2 minutes or less to load',
-                                      textAlign: TextAlign.center,
-                                    )
+                                    // Text(
+                                    //   'Please wait, fetching contacts takes 2 minutes or less to load',
+                                    //   textAlign: TextAlign.center,
+                                    // )
                                   ],
                                 ),
                               );
