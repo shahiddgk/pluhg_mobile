@@ -225,9 +225,7 @@ class _InputChatWidgetState extends State<InputChatWidget> {
                             backspaceColor: AppColors.pluhgGreyColour,
                             showRecentsTab: true,
                             recentsLimit: 28,
-                            noRecentsText: 'No Recents',
-                            noRecentsStyle:
-                                TextStyle(fontSize: 20, color: Colors.black26),
+                            noRecents: Text('No Recents', style: TextStyle(fontSize: 20, color: Colors.black26),),
                             categoryIcons: CategoryIcons(),
                             buttonMode: ButtonMode.MATERIAL)),
                   ),

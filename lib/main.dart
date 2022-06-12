@@ -31,7 +31,7 @@ void main() async {
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: (_) => GetMaterialApp(
+      builder: (_,child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         supportedLocales: [
           Locale("en"),

@@ -35,7 +35,7 @@ dependencies:
   flutter_dialogs: ^2.1.1
   image_picker: ^0.8.4+6
   sn_progress_dialog:
-  flutter_contacts: 1.1.1+2
+  flutter_contacts: ^1.1.4
   permission_handler: 8.1.5
   group_radio_button: ^1.2.0
   intl: ^0.17.0
@@ -67,6 +67,7 @@ dependencies:
   mime:
   photo_view:
   open_document:
+    path: flutter_libs/open_document-null-safety
   dio:
   flutter_slidable: ^1.2.0
 
