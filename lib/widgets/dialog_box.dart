@@ -116,9 +116,7 @@ showPluhgDailog2(
   );
 }
 
-showPluhgDailog4(BuildContext context,String senderName, String message ,String connectionID, String party) {
-  String preText =
-      "$senderName has recommended a connection between you and One Of Their Contacts\n\n$senderName sent this message with the recommendation: $message\n\nPlease log into Pluhg to Accept or Decline $senderName connection recommendation!";
+showPluhgDailog4(BuildContext context,String preText ,String connectionID, String party) {
   var reminderController = TextEditingController();
   reminderController.text = preText;
   return Dialog(

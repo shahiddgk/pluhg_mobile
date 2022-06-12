@@ -272,10 +272,7 @@ class RecommendedScreenView
                                           builder: (BuildContext context) {
                                             return showPluhgDailog4(
                                                 context,
-                                                responseData.userId?.userName ??
-                                                    responseData.userId?.name ??
-                                                    "",
-                                                responseData.requesterMessage!,
+                                                responseData.requesterPreMessage!,
                                                 responseData.sId!,
                                                 'requester');
                                           });
@@ -297,10 +294,7 @@ class RecommendedScreenView
                                           builder: (BuildContext context) {
                                             return showPluhgDailog4(
                                                 context,
-                                                responseData.userId?.userName ??
-                                                    responseData.userId?.name ??
-                                                    "",
-                                                responseData.contactMessage!,
+                                                responseData.requesterPreMessage!,
                                                 responseData.sId!,
                                                 'contact');
                                           });

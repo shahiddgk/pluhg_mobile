@@ -7,6 +7,8 @@ class ConnectionResponseModel {
   String? rejectReason;
   String? requesterMessage;
   String? contactMessage;
+  String? requesterPreMessage;
+  String? contactPreMessage;
   String? both;
   bool? closeConnection;
   Null? feedbackRating;
@@ -24,7 +26,9 @@ class ConnectionResponseModel {
       this.isPending,
       this.rejectReason,
       this.requesterMessage,
+      this.requesterPreMessage,
       this.contactMessage,
+      this.contactPreMessage,
       this.both,
       this.closeConnection,
       this.feedbackRating,
@@ -47,6 +51,8 @@ class ConnectionResponseModel {
     rejectReason = json['rejectReason'];
     requesterMessage = json['requesterMessage'];
     contactMessage = json['contactMessage'];
+    requesterPreMessage = json['requesterPreMessage'];
+    contactPreMessage = json['contactPreMessage'];
     both = json['both'];
     closeConnection = json['closeConnection'];
     feedbackRating = json['feedbackRating'];
@@ -71,6 +77,8 @@ class ConnectionResponseModel {
     data['rejectReason'] = this.rejectReason;
     data['requesterMessage'] = this.requesterMessage;
     data['contactMessage'] = this.contactMessage;
+    data['requesterPreMessage'] = this.requesterPreMessage;
+    data['contactPreMessage'] = this.contactPreMessage;
     data['both'] = this.both;
     data['closeConnection'] = this.closeConnection;
     data['feedbackRating'] = this.feedbackRating;
