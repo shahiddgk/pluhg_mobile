@@ -143,8 +143,8 @@ class HTTPManager {
   }
 
   Future<ConnectionResponseModel> getConnectionDetails(
-      {required String connectionId}) async {
-    final url = ApplicationURLs.API_GET_CONNECTION_DETAILS;
+      {required String path ,required String connectionId}) async {
+    final url = path;
     final GeneralResponseModel response =
         await _handler.get('$url$connectionId');
     ConnectionResponseModel connectionResponseModel =

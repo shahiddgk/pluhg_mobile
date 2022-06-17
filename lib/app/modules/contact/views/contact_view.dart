@@ -225,15 +225,11 @@ class ContactView extends GetView<ContactController> {
                                                           .name
                                                           .isNotEmpty),
                                               onTap: (tappedContact) {
-                                                if (controller.requesterContact
-                                                        .value.name.isEmpty ||
-                                                    controller.contactContact
-                                                        .value.name.isEmpty) {
                                                   if (controller
                                                       .requesterContact
                                                       .value
                                                       .name
-                                                      .isEmpty) {
+                                                      .isEmpty || (pluhgContact.id == controller.requesterGroup.value.id)) {
                                                     controller.selectRequester(
                                                         pluhgContact,
                                                         tappedContact);
@@ -241,12 +237,7 @@ class ContactView extends GetView<ContactController> {
                                                           .contactContact
                                                           .value
                                                           .name
-                                                          .isEmpty &&
-                                                      controller
-                                                          .requesterContact
-                                                          .value
-                                                          .name
-                                                          .isNotEmpty) {
+                                                          .isEmpty || (pluhgContact.id == controller.contactGroup.value.id)) {
                                                     controller.selectContact(
                                                         pluhgContact,
                                                         tappedContact);
@@ -256,23 +247,25 @@ class ContactView extends GetView<ContactController> {
                                                         "Info",
                                                         "So Sorry !  You can select the same person");
                                                   }
-                                                } else if (controller
-                                                        .contactContact
-                                                        .value
-                                                        .name
-                                                        .isNotEmpty &&
-                                                    controller
-                                                        .requesterContact
-                                                        .value
-                                                        .name
-                                                        .isNotEmpty) {
-                                                  print('ON TAP CALLL ELSE IF');
-                                                  showPluhgDailog(
-                                                      context,
-                                                      "Info",
-                                                      "You can't have more than two contacts selected");
                                                 }
-                                              });
+                                                // else if (controller
+                                                //         .contactContact
+                                                //         .value
+                                                //         .name
+                                                //         .isNotEmpty &&
+                                                //     controller
+                                                //         .requesterContact
+                                                //         .value
+                                                //         .name
+                                                //         .isNotEmpty) {
+                                                //   print('ON TAP CALLL ELSE IF');
+                                                //   showPluhgDailog(
+                                                //       context,
+                                                //       "Info",
+                                                //       "You can't have more than two contacts selected");
+                                                // }
+                                             // }
+                                        );
                                         } else {
                                           return SizedBox.shrink();
                                         }

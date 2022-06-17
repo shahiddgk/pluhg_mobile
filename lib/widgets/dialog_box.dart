@@ -135,7 +135,7 @@ showPluhgDailog4(BuildContext context,String preText ,String connectionID, Strin
             style: TextStyle(fontSize: 20, color: pluhgColour),
           ),
           Container(
-            height: 320,
+            height: 550,
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               border: Border.all(

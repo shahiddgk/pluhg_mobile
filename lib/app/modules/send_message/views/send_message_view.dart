@@ -317,7 +317,7 @@ class SendMessageView extends GetView<SendMessageController> {
                 name: contactName,
                 message: _contactMessage.text,
                 contact: contactContact,
-                contactType: EmailValidator.validate(requesterContact)
+                contactType: EmailValidator.validate(contactContact)
                     ? User.EMAIL_CONTACT_TYPE
                     : User.PHONE_CONTACT_TYPE),
             both: _bothMessage.text,

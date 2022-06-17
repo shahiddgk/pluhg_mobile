@@ -294,7 +294,7 @@ class RecommendedScreenView
                                           builder: (BuildContext context) {
                                             return showPluhgDailog4(
                                                 context,
-                                                responseData.requesterPreMessage!,
+                                                responseData.contactPreMessage!,
                                                 responseData.sId!,
                                                 'contact');
                                           });

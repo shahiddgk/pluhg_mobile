@@ -45,10 +45,9 @@ Widget contactItem(
                         value: contact.contacts[i],
                         isChecked: contact.contacts[i].isSelected,
                         itemSelected: (value) {
-                          if (contact.isSelected ||
-                              isRequestAndContactSelectionDone) {
-                            return;
-                          }
+                          // if (isRequestAndContactSelectionDone) {
+                          //   return;
+                          // }
                           onTap!(value!);
                         },
                       );

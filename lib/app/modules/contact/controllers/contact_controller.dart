@@ -219,6 +219,9 @@ class ContactController extends GetxController with ValidationMixin {
   }
 
   void selectRequester(PluhgContact pluhgContact, ContactData contactData) {
+    requesterGroup.value.isSelected = false;
+    requesterContact.value.isSelected = false;
+
     pluhgContact.isSelected = true;
     contactData.isSelected = true;
     requesterGroup.value = pluhgContact;
@@ -232,6 +235,9 @@ class ContactController extends GetxController with ValidationMixin {
   }
 
   void selectContact(PluhgContact pluhgContact, ContactData contactData) {
+    contactGroup.value.isSelected = false;
+    contactContact.value.isSelected = false;
+
     pluhgContact.isSelected = true;
     contactData.isSelected = true;
     contactGroup.value = pluhgContact;
