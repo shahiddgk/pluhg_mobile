@@ -143,6 +143,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                               ]),
                                           child: cardProfile2(
                                               context,
+                                              widget.data.userId!,
                                               widget.data.requester!,
                                               "Requester")),
                                       SizedBox(
@@ -164,6 +165,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                             ]),
                                         child: cardProfile2(
                                             context,
+                                            widget.data.userId!,
                                             widget.data.contact!,
                                             "Contact"),
                                       ),
@@ -274,12 +276,14 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                   //ADD HERE
                                 },
                                 child: smallCard(
+                                    widget.data.userId!,
                                     widget.data.requester!,
                                     widget.data.isRequesterAccepted),
                               ),
                               GestureDetector(
                                 onTap: () {},
                                 child: smallCard(
+                                  widget.data.userId!,
                                     widget.data.contact!,
                                     widget.data.isContactAccepted),
                               ),

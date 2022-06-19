@@ -8,11 +8,11 @@ import 'package:plug/widgets/image.dart';
 
 import '../app/data/models/response/connection_response_model.dart';
 
-Widget card(BuildContext context, Requester data,
+Widget card(BuildContext context, RefId connector, Requester data,
     {bool whoIConnected = false}) {
   if (data == null) return SizedBox();
 
-  final userName = extractUserName(data, whoIConnected);
+  final userName = extractUserName(connector, data, whoIConnected);
   return Column(
     children: [
       Container(
@@ -44,7 +44,7 @@ Widget card(BuildContext context, Requester data,
 }
 
 //@todo should be a part of DTO/Model
-String? extractUserName(Requester data, bool whoIConnected) {
+String? extractUserName(RefId connector, Requester data, bool whoIConnected) {
   final userName = data.refId?.userName;
   final name = data.refId?.name; //data["name"];
 
@@ -56,17 +56,18 @@ String? extractUserName(Requester data, bool whoIConnected) {
   if (isContactNameExists) {
     return name;
   }
-  if(whoIConnected){
+  if (whoIConnected) {
     return data?.name;
   }
-  return "unknown";
+  return "${connector.userName}'s Contact";
 }
 
-Widget cardProfile2(BuildContext context, Requester data, String text,
+Widget cardProfile2(BuildContext context, RefId connector, Requester data,
+    String text,
     {bool whoIConnected = false}) {
   if (data == null) return SizedBox();
 
-  final userName = extractUserName(data, whoIConnected);
+  final userName = extractUserName(connector, data, whoIConnected);
   return Column(
     children: [
       SizedBox(
@@ -105,10 +106,11 @@ Widget cardProfile2(BuildContext context, Requester data, String text,
   );
 }
 
-Widget smallCard(Requester data, var accepted, {bool whoIConnected = false}) {
+Widget smallCard(RefId connector, Requester data, var accepted,
+    {bool whoIConnected = false}) {
   if (data == null) return SizedBox();
 
-  final userName = extractUserName(data, whoIConnected);
+  final userName = extractUserName(connector, data, whoIConnected);
   return Container(
     height: 41.03,
     width: 150,
@@ -126,10 +128,10 @@ Widget smallCard(Requester data, var accepted, {bool whoIConnected = false}) {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
             child: Center(
                 child: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(
-                APICALLS.imageBaseUrl + (data.refId?.profileImage ?? ""),
-              ),
-            ))),
+                  backgroundImage: CachedNetworkImageProvider(
+                    APICALLS.imageBaseUrl + (data.refId?.profileImage ?? ""),
+                  ),
+                ))),
         SizedBox(
           width: Get.width * 0.013.w,
         ),
@@ -150,19 +152,19 @@ Widget smallCard(Requester data, var accepted, {bool whoIConnected = false}) {
                 children: [
                   accepted
                       ? Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                              color: Color(0xff09CE35),
-                              borderRadius: BorderRadius.circular(2)),
-                          child: Center(
-                            child: Icon(
-                              Icons.check,
-                              size: 8,
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                        color: Color(0xff09CE35),
+                        borderRadius: BorderRadius.circular(2)),
+                    child: Center(
+                      child: Icon(
+                        Icons.check,
+                        size: 8,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
                       : SvgPicture.asset("resources/svg/waiting.svg"),
                   SizedBox(
                     width: 5,

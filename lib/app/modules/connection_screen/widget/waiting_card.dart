@@ -93,6 +93,7 @@ Widget waitingConnectionCard({
                               ),
                               child: card(
                                 Get.context!,
+                                data.userId!,
                                 data.requester!,
                               ),
                             ),
@@ -111,6 +112,7 @@ Widget waitingConnectionCard({
                               ),
                               child: card(
                                 Get.context!,
+                                data.userId!,
                                 data.contact!,
                               ),
                             ),

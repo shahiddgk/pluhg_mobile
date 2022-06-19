@@ -95,6 +95,7 @@ class RecommendedScreenView
                                                       ]),
                                                   child: cardProfile2(
                                                       context,
+                                                      responseData.userId!,
                                                       responseData.requester!,
                                                       "Requester",
                                                       whoIConnected: true)),
@@ -118,6 +119,7 @@ class RecommendedScreenView
                                                       ]),
                                                   child: cardProfile2(
                                                       context,
+                                                      responseData.userId!,
                                                       responseData.contact!,
                                                       "Contact",
                                                       whoIConnected: true)),
@@ -226,10 +228,10 @@ class RecommendedScreenView
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    smallCard(responseData.requester!,
+                                    smallCard(responseData.userId!,responseData.requester!,
                                         responseData.isRequesterAccepted,
                                         whoIConnected: true),
-                                    smallCard(responseData.contact!,
+                                    smallCard(responseData.userId!,responseData.contact!,
                                         responseData.isContactAccepted,
                                         whoIConnected: true),
                                   ],

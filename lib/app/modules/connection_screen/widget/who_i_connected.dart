@@ -68,6 +68,7 @@ Widget whoIConnectedCard({
                             ),
                             child: card(
                               Get.context!,
+                                data.userId!,
                               data.requester!,
                               whoIConnected: true
                             ),
@@ -87,6 +88,7 @@ Widget whoIConnectedCard({
                             ),
                             child: card(
                               Get.context!,
+                                data.userId!,
                               data.contact!,
                               whoIConnected: true
                             ),

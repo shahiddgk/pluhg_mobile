@@ -94,6 +94,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                               ]),
                                           child: cardProfile2(
                                               context,
+                                              data.userId!,
                                               data.requester!,
                                               "Requester"),
                                         ),
@@ -115,6 +116,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                               ]),
                                           child: cardProfile2(
                                               context,
+                                              data.userId!,
                                               data.requester!,
                                               "Contact"),
                                         ),

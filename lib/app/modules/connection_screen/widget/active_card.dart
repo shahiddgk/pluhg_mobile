@@ -83,6 +83,7 @@ Widget activeConnectionCard({
                             ),
                             child: card(
                               Get.context!,
+                              data.userId!,
                               data.requester!,
                             ),
                           ),
@@ -98,6 +99,7 @@ Widget activeConnectionCard({
                             ),
                             child: card(
                               Get.context!,
+                              data.userId!,
                               data.contact!,
                             ),
                           ),

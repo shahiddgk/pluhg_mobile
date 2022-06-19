@@ -99,6 +99,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                                     ]),
                                                 child: cardProfile2(
                                                     context,
+                                                    responseData.userId!,
                                                     responseData
                                                         .requester!,
                                                     "Requester")),
@@ -121,6 +122,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                                   ]),
                                               child: cardProfile2(
                                                   context,
+                                                  responseData.userId!,
                                                   responseData.contact!,
                                                   "Contact"),
                                             ),
@@ -244,12 +246,14 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                         //ADD HERE
                                       },
                                       child: smallCard(
+                                          responseData.userId!,
                                           responseData.requester!,
                                           responseData.isRequesterAccepted),
                                     ),
                                     GestureDetector(
                                       onTap: () {},
                                       child: smallCard(
+                                          responseData.userId!,
                                           responseData.contact!,
                                           responseData.isRequesterAccepted),
                                     ),
