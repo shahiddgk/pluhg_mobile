@@ -3,9 +3,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/data/http_manager.dart';
-import 'package:plug/app/modules/dynamic_link_service.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
+
+import '../../../services/UserState.dart';
+import '../../waiting_screen/views/waiting_connection_screen.dart';
 
 class HomeController extends GetxController {
   //TODO: Implement HomeController
@@ -34,11 +36,21 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     getNotificationCount();
+    goToDeepLink();
   }
 
   @override
   void onReady() {
     super.onReady();
+  }
+
+  goToDeepLink() async {
+    User user = await UserState.get();
+    if (user.dynamicLink.isNotEmpty) {
+      Get.to(() => WaitingScreenView(connectionID: user.dynamicLink));
+      user.setDynamicLink("");
+      await UserState.store(user);
+    }
   }
 
   getNotificationCount() async {
@@ -75,10 +87,5 @@ class HomeController extends GetxController {
       return Future.value(false);
     }
     return Future.value(true);
-  }
-
-  void retrieveDynamicLink() {
-    final DynamicLinkService _dynamicLinkService = DynamicLinkService();
-    _dynamicLinkService.retrieveDynamicLink(context: Get.context!);
   }
 }

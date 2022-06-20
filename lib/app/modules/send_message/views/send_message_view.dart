@@ -334,7 +334,6 @@ class SendMessageView extends GetView<SendMessageController> {
           iconName: 'success_status',
           onPressed: () => Get.offAll(HomeView(
             index: 0.obs,
-            isDeepLinkCodeExecute: false,
             connectionTabIndex: 2,
           )),
           subheading: EmailValidator.validate(requesterContact) &&

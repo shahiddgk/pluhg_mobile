@@ -294,8 +294,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                           print(
                                               "[Dialogue:OnClose] go to HomeView [2]");
                                           Get.offAll(() => HomeView(
-                                              index: 2.obs,
-                                              isDeepLinkCodeExecute: false));
+                                              index: 2.obs));
                                         },
                                       );
                                     }).catchError((onError) {
@@ -333,8 +332,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                               "[Dialogue:OnClose] go to HomeView [2]");
                                           Get.offAll(() => HomeView(
                                               index: 0.obs,
-                                              connectionTabIndex: 1,
-                                              isDeepLinkCodeExecute: false));
+                                              connectionTabIndex: 1));
                                         },
                                       );
                                     }).catchError((onError) {

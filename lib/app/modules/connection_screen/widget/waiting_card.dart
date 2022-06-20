@@ -185,8 +185,7 @@ Widget waitingConnectionCard({
                                           print(
                                               "[Dialogue:OnClose] go to HomeView [2]");
                                           Get.offAll(() => HomeView(
-                                              index: 2.obs,
-                                              isDeepLinkCodeExecute: false));
+                                              index: 2.obs,));
                                         },
                                       );
                                     }).catchError((onError) {
@@ -245,8 +244,7 @@ Widget waitingConnectionCard({
                                               "[Dialogue:OnClose] go to HomeView [2]");
                                           Get.offAll(() => HomeView(
                                               index: 0.obs,
-                                              connectionTabIndex: 1,
-                                              isDeepLinkCodeExecute: false));
+                                              connectionTabIndex: 1));
                                         },
                                       );
                                     }).catchError((onError) {

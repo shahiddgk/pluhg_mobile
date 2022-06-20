@@ -12,19 +12,18 @@ import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 
+import '../../../services/UserState.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends StatefulWidget {
   // final String token, userID;
   final RxInt index;
-  final isDeepLinkCodeExecute;
   final int connectionTabIndex;
 
   // final dynamic data;
   HomeView({
     required this.index,
     this.connectionTabIndex = 0,
-    this.isDeepLinkCodeExecute = true,
   });
 
   @override
@@ -45,26 +44,9 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
-    print('HOME INIT CALL AGAIN');
-
-    if(widget.isDeepLinkCodeExecute) {
-      controller.retrieveDynamicLink();
-    }
-
     pages = [ConnectionScreenView(widget.connectionTabIndex), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
-
     WidgetsBinding.instance!.addObserver(this);
   }
-
- /* @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(const Duration(milliseconds: 1000), () {
-        controller.retrieveDynamicLink();
-      });
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
