@@ -46,6 +46,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     super.initState();
     pages = [ConnectionScreenView(widget.connectionTabIndex), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
     WidgetsBinding.instance!.addObserver(this);
+    controller.goToDeepLink();
   }
 
   @override

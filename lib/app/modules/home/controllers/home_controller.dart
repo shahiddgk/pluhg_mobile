@@ -36,7 +36,6 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     getNotificationCount();
-    goToDeepLink();
   }
 
   @override
