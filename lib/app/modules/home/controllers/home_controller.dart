@@ -47,7 +47,8 @@ class HomeController extends GetxController {
   goToDeepLink() async {
     User user = await UserState.get();
     if (user.dynamicLink.isNotEmpty) {
-      Get.to(() => WaitingScreenView(connectionID: user.dynamicLink));
+      String id = user.dynamicLink;
+      Get.to(() => WaitingScreenView(connectionID: id));
       user.setDynamicLink("");
       await UserState.store(user);
     }
