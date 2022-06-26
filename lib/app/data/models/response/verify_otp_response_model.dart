@@ -54,6 +54,7 @@ class UserData {
   String? deviceToken;
   String? createdAt;
   String? updatedAt;
+  String? connectionRating;
   int? iV;
 
   UserData(
@@ -70,6 +71,7 @@ class UserData {
         this.deviceToken,
         this.createdAt,
         this.updatedAt,
+        this.connectionRating,
         this.iV});
 
   UserData.fromJson(Map<String, dynamic> json) {
@@ -86,6 +88,7 @@ class UserData {
     deviceToken = json['deviceToken'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    connectionRating = json['connectionRating'];
     iV = json['__v'];
   }
 
@@ -104,6 +107,7 @@ class UserData {
     data['deviceToken'] = this.deviceToken;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    data['connectionRating'] = this.connectionRating;
     data['__v'] = this.iV;
     return data;
   }

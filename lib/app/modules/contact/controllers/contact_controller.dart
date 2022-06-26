@@ -218,6 +218,15 @@ class ContactController extends GetxController with ValidationMixin {
     });
   }
 
+  void setTitle(){
+    if(requesterGroup.value.isSelected && contactGroup.value.isSelected){
+      title.value = "Tap Next";
+    }else if(requesterGroup.value.isSelected){
+      title.value = "Select Contact";
+    }else if(contactGroup.value.isSelected){
+      title.value = "Select Requester";
+    }
+  }
   void selectRequester(PluhgContact pluhgContact, ContactData contactData) {
     requesterGroup.value.isSelected = false;
     requesterContact.value.isSelected = false;
@@ -226,12 +235,14 @@ class ContactController extends GetxController with ValidationMixin {
     contactData.isSelected = true;
     requesterGroup.value = pluhgContact;
     requesterContact.value = contactData;
+    setTitle();
   }
 
   void unSelectRequester(PluhgContact pluhgContact, ContactData contactData) {
     pluhgContact.isSelected = false;
     contactData.isSelected = false;
     requesterContact.value = ContactData.empty();
+    setTitle();
   }
 
   void selectContact(PluhgContact pluhgContact, ContactData contactData) {
@@ -242,12 +253,14 @@ class ContactController extends GetxController with ValidationMixin {
     contactData.isSelected = true;
     contactGroup.value = pluhgContact;
     contactContact.value = contactData;
+    setTitle();
   }
 
   void unSelectContact(PluhgContact pluhgContact, ContactData contactData) {
     pluhgContact.isSelected = false;
     contactData.isSelected = false;
     contactContact.value = ContactData.empty();
+    setTitle();
   }
 
   //Get Pluhg Contacts

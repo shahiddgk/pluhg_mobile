@@ -145,7 +145,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                                   width: 20.w,
                                 ),
                                 Text(
-                                  "Message From @${data.userId?.userName}",
+                                  "Message From \n @${data.userId?.userName}",
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
@@ -185,13 +185,17 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          GestureDetector(
-                            child: button3("Close Connection", pluhgRedColour),
-                            onTap: () {
-                              //show dialog with rating
-                              showDialogWithRating(context);
-                            },
-                          ),
+                          if (isRequester && !data.closeConnection!)
+                            GestureDetector(
+                              child:
+                                  button3("Close Connection", pluhgRedColour),
+                              onTap: () {
+                                //show dialog with rating
+                                showDialogWithRating(context);
+                              },
+                            ),
+                          if (data.closeConnection ?? false)
+                            button3("Connection Closed", pluhgGrayColour),
                           SizedBox(
                             width: 10.w,
                           ),

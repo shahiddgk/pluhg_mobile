@@ -12,7 +12,6 @@ import 'package:plug/app/modules/profile_screen/views/profile_screen_view.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 
-import '../../../services/UserState.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends StatefulWidget {
@@ -33,7 +32,6 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   final controller_chat = Get.put(ChatScreenController());
 
-
   late List<Widget> pages;
 
   final controller = Get.put(HomeController());
@@ -44,7 +42,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    pages = [ConnectionScreenView(widget.connectionTabIndex), ConnectScreenView(), ChatScreenView(), ProfileScreenView()];
+    pages = [
+      ConnectionScreenView(widget.connectionTabIndex),
+      ConnectScreenView(),
+      ChatScreenView(),
+      ProfileScreenView()
+    ];
     WidgetsBinding.instance!.addObserver(this);
     controller.goToDeepLink();
   }
@@ -101,15 +104,19 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                 BottomNavigationBarItem(
                   icon: Padding(
                       padding: EdgeInsets.only(bottom: 1.h),
-                      child: SvgPicture.asset('assets/svg/inactive_connections.svg')),
-                  activeIcon: SvgPicture.asset('assets/svg/active_connections.svg'),
+                      child: SvgPicture.asset(
+                          'assets/svg/inactive_connections.svg')),
+                  activeIcon:
+                      SvgPicture.asset('assets/svg/active_connections.svg'),
                   label: 'Connections',
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
                       padding: EdgeInsets.only(bottom: 1.h),
-                      child: SvgPicture.asset('assets/svg/inactive_connect_people.svg')),
-                  activeIcon: SvgPicture.asset('assets/svg/active_connect_people.svg'),
+                      child: SvgPicture.asset(
+                          'assets/svg/inactive_connect_people.svg')),
+                  activeIcon:
+                      SvgPicture.asset('assets/svg/active_connect_people.svg'),
                   label: "Connect People",
                 ),
                 BottomNavigationBarItem(
@@ -123,29 +130,41 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                           Positioned(
                             top: -10,
                             right: -6,
-                            child: controller_chat.total_unread_messages.value == 0
-                                ? Container()
-                                : Container(
-                                    decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(6.0),
-                                      child: Text(controller_chat.  total_unread_messages.toString(),
-                                          maxLines: 1,
-                                           style: TextStyle(color: Colors.white, fontSize: 12.sp, fontWeight: FontWeight.w400),
-                                          textAlign: TextAlign.center),
-                                    ),
-                                  ),
+                            child:
+                                controller_chat.total_unread_messages.value == 0
+                                    ? Container()
+                                    : Container(
+                                        decoration: BoxDecoration(
+                                            color: AppColors.pluhgColour,
+                                            shape: BoxShape.circle),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: Text(
+                                              controller_chat
+                                                  .total_unread_messages
+                                                  .toString(),
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.w400),
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      ),
                           )
                         ],
                       )),
-                  activeIcon: SvgPicture.asset('assets/svg/active_messages.svg'),
+                  activeIcon:
+                      SvgPicture.asset('assets/svg/active_messages.svg'),
                   label: 'Messages',
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(
                       padding: EdgeInsets.only(bottom: 1.h),
-                      child: SvgPicture.asset('assets/svg/inactive_settings.svg')),
-                  activeIcon: SvgPicture.asset('assets/svg/active_settings.svg'),
+                      child:
+                          SvgPicture.asset('assets/svg/inactive_settings.svg')),
+                  activeIcon:
+                      SvgPicture.asset('assets/svg/active_settings.svg'),
                   label: 'Settings',
                 ),
               ],

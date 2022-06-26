@@ -152,12 +152,14 @@ class HTTPManager {
     return connectionResponseModel;
   }
 
-  Future<GeneralResponseModel> acceptConnection(
+  Future<ConnectionResponseModel> acceptConnection(
       ConnectionRequestModel connectionRequestModel) async {
     final url = ApplicationURLs.API_ACCEPT_CONNECTION;
     final GeneralResponseModel response =
         await _handler.post(url, connectionRequestModel.toJson());
-    return response;
+    ConnectionResponseModel connectionResponseModel =
+        ConnectionResponseModel.fromJson(response.data);
+    return connectionResponseModel;
   }
 
   Future<GeneralResponseModel> declineConnection(

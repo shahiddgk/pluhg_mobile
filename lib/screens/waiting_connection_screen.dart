@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/widgets/button.dart';
@@ -214,8 +216,8 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                               ),
                             ],
                           ),
-                          if (widget.data.both != "" ||
-                              widget.data.both != null)
+                          if (widget.data.both != null||
+                              widget.data.both != "" )
                             Container(
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -228,6 +230,8 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                     fontSize: 12, fontWeight: FontWeight.w400),
                               ),
                             ),
+                          if (widget.data.requester?.message != null||
+                              widget.data.requester?.message != "" )
                           Container(
                             //width: 307.22,
                             margin: EdgeInsets.only(top: 20),
@@ -235,12 +239,7 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.white),
-                            child: Text(
-                              widget.data.requester?.message == "" ||
-                                      widget.data.requester?.message ==
-                                          null
-                                  ? "Hi!! You have been connected, please check the app"
-                                  : "${widget.data.requester?.message}",
+                            child: Text("${widget.data.requester?.message}",
                               textAlign: TextAlign.justify,
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w400),
@@ -313,13 +312,21 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                   showPluhgDailog2(
                                     context,
                                     "Success",
-                                    value.message!,
+                                    "Accepted Successfully",
                                     onCLosed: () {
                                       print(
                                           "[Dialogue:OnClose] go to HomeView [2]");
-                                      // Get.offAll(() => HomeView(
-                                      //     index: 2.obs,
-                                      //     isDeepLinkCodeExecute: false));
+                                      if (value.isRequesterAccepted! &&
+                                          value.isContactAccepted!) {
+                                        Get.offAll(() => HomeView(
+                                          index: 2.obs,
+                                        ));
+                                      }else{
+                                        Get.offAll(() => HomeView(
+                                          index: 0.obs,
+                                          connectionTabIndex: 1,
+                                        ));
+                                      }
                                     },
                                   );
                                 }).catchError((onError) {

@@ -21,19 +21,15 @@ Widget activeConnectionCard({
   return GestureDetector(
     onTap: () {
       Get.to(
-        () => ActiveConnectionScreenView(
-          data: data,
-          // isRequester: user.value.compareEmail(data["requester"]["refId"]["emailAddress"]) || user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
-          isRequester: (data.requester?.refId?.emailAddress ?? "")
-                  .isNotEmpty // data["requester"]["refId"]["emailAddress"] != null
-              ? user.value
-                  .compareEmail(data.requester?.refId?.emailAddress ?? "")
-              : user.value
-                  .comparePhone(data.requester?.refId?.phoneNumber ?? ""),
-          refreshActiveConnection: () {
-            Get.put(ConnectionScreenController()).activeData();
-          },
-        ),
+            () =>
+            ActiveConnectionScreenView(
+              data: data,
+              // isRequester: user.value.compareEmail(data["requester"]["refId"]["emailAddress"]) || user.value.comparePhone(data["requester"]["refId"]["phoneNumber"]),
+              isRequester: user.value.compareId('${data.requester?.refId?.sId}'),
+              refreshActiveConnection: () {
+                Get.put(ConnectionScreenController()).activeData();
+              },
+            ),
       );
     },
     child: Container(
@@ -47,164 +43,124 @@ Widget activeConnectionCard({
           BoxShadow(blurRadius: 40, color: Colors.black12),
         ],
       ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 40,
-                      color: Color.fromARGB(5, 0, 0, 0),
-                    )
-                  ],
-                ),
-                child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            width: 87.2.w,
-                            padding: EdgeInsets.all(6.0.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(color: Colors.black12, blurRadius: 20)
-                              ],
-                            ),
-                            child: card(
-                              Get.context!,
-                              data.userId!,
-                              data.requester!,
+            Padding(
+                padding: const EdgeInsets.all(8.0), child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 40,
+                              color: Color.fromARGB(5, 0, 0, 0),
+                            )
+                          ],
+                        ),
+                        child: Align(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: IntrinsicHeight(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Container(
+                                    width: 87.2.w,
+                                    padding: EdgeInsets.all(6.0.w),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(color: Colors.black12,
+                                            blurRadius: 20)
+                                      ],
+                                    ),
+                                    child: card(
+                                      Get.context!,
+                                      data.userId!,
+                                      data.requester!,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 87.2.w,
+                                    padding: EdgeInsets.all(6.0.w),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(color: Colors.black12,
+                                            blurRadius: 20)
+                                      ],
+                                    ),
+                                    child: card(
+                                      Get.context!,
+                                      data.userId!,
+                                      data.contact!,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          Container(
-                            width: 87.2.w,
-                            padding: EdgeInsets.all(6.0.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(color: Colors.black12, blurRadius: 20)
-                              ],
-                            ),
-                            child: card(
-                              Get.context!,
-                              data.userId!,
-                              data.contact!,
-                            ),
-                          ),
-                          /*  Container(
-                                width: 84.w,
-                                padding: EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
-                                      BoxShadow(color: Colors.black12, blurRadius: 20)
-                                    ]),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      height: 64,
-                                      width: 64,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12)),
-                                      child: data == null ||
-                                              !data["contact"]["refId"]
-                                                  .containsKey("profileImage") ||
-                                              data["contact"]["refId"]
-                                                      ["profileImage"] ==
-                                                  null
-                                          ? ClipRRect(
-                                              borderRadius: BorderRadius.circular(12),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: pluhgColour,
-                                                ),
-                                                child: SvgPicture.asset(
-                                                    "resources/svg/profile.svg"),
-                                              ),
-                                            )
-                                          : ClipRRect(
-                                              borderRadius: BorderRadius.circular(12.r),
-                                              child: Image.network(
-                                                APICALLS.imageBaseUrl +
-                                                    "${data["contact"]["refId"]['profileImage'].toString()}",
-                                                height: 64.h,
-                                                width: 64.w,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                    ),
-                                    SizedBox(
-                                      height: 4.0,
-                                    ),
-                                    data != null &&
-                                            data["contact"].containsKey("userName") &&
-                                            data["contact"]["userName"] != null
-                                        ? Text("@${data["contact"]["userName"]}",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Color(0xff8D8D8D),
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400),
-                                            textAlign: TextAlign.center)
-                                        : Text(
-                                            data == null
-                                                ? "Contact"
-                                                : "@${data["contact"]["name"]}",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Color(0xff8D8D8D),
-                                                fontSize: 12.sp,
-                                                fontWeight: FontWeight.w400),
-                                            textAlign: TextAlign.center),
-                                  ],
-                                )),*/
-                        ],
+                        ),
                       ),
                     ),
+                    Container(
+                      width: 12.w,
+                    ),
+                    PlugByWidgetCard(
+                      userName: (data.userId?.userName ?? "").isEmpty
+                          ? data.userId?.name ?? ""
+                          : "@" + (data.userId?.userName ?? ""),
+                      date: formattedDate,
+                    ),
+                    Container(
+                      width: 8.w,
+                    ),
+                    Center(
+                      child: Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: Color(0xff575858),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 12,
+                    )
+                  ],
+                ))),
+            if(data.closeConnection ?? false)
+            Container(
+              margin: EdgeInsets.only(
+                top: 12.0.h,
+                left: 24.0.w,
+                right: 24.0.w,
+                bottom: 12.h,
+              ),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Color(0xFFA4A4A4),
+                borderRadius: BorderRadius.circular(28),
+              ),
+              child: Center(
+                child: Text(
+                  "Closed",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-            ),
-            Container(
-              width: 12.w,
-            ),
-            PlugByWidgetCard(
-              userName: (data.userId?.userName ?? "").isEmpty
-                  ? data.userId?.name ?? ""
-                  : "@" + (data.userId?.userName ?? ""),
-              date: formattedDate,
-            ),
-            Container(
-              width: 8.w,
-            ),
-            Center(
-              child: Icon(
-                Icons.arrow_forward_ios_outlined,
-                color: Color(0xff575858),
-              ),
-            ),
-            SizedBox(
-              width: 12,
             )
-          ],
-        ),
-      ),
-    ),
-  );
+          ]),
+    ),);
 }

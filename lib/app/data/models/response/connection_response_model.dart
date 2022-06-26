@@ -11,7 +11,7 @@ class ConnectionResponseModel {
   String? contactPreMessage;
   String? both;
   bool? closeConnection;
-  Null? feedbackRating;
+  String? feedbackRating;
   String? sId;
   RefId? userId;
   String? createdAt;
@@ -55,7 +55,8 @@ class ConnectionResponseModel {
     contactPreMessage = json['contactPreMessage'];
     both = json['both'];
     closeConnection = json['closeConnection'];
-    feedbackRating = json['feedbackRating'];
+    feedbackRating =
+        json['feedbackRating'] != null ? '${json['feedbackRating']}' : "";
     sId = json['_id'];
     userId = json['userId'] != null ? new RefId.fromJson(json['userId']) : null;
     createdAt = json['created_at'];

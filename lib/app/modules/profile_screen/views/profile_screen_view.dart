@@ -270,7 +270,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                                                 TextSpan(
                                                   text: snapshot.data == null
                                                       ? ".."
-                                                      : '${snapshot.data?.numberOfConnections ?? 0}',
+                                                      : '${snapshot.data?.connectionRating ?? 0}',
                                                   style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.w500),

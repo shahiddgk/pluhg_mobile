@@ -29,7 +29,9 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       appBar: SimpleAppBar(backButton: true),
       body: FutureBuilder<ConnectionResponseModel>(
@@ -48,7 +50,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                     .parseUTC(responseData.createdAt!)
                     .toLocal();
                 String formattedDate =
-                    DateFormat("dd MMM yyyy hh:mm").format(dateValue);
+                DateFormat("dd MMM yyyy hh:mm").format(dateValue);
                 return CustomScrollView(
                   physics: BouncingScrollPhysics(),
                   slivers: [
@@ -77,7 +79,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Column(
                                       children: [
@@ -89,8 +91,8 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                                 decoration: BoxDecoration(
                                                     color: Colors.white,
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
+                                                    BorderRadius.circular(
+                                                        15),
                                                     boxShadow: [
                                                       BoxShadow(
                                                           color: Color.fromARGB(
@@ -100,8 +102,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                                 child: cardProfile2(
                                                     context,
                                                     responseData.userId!,
-                                                    responseData
-                                                        .requester!,
+                                                    responseData.requester!,
                                                     "Requester")),
                                             SizedBox(
                                               width: 16,
@@ -112,7 +113,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                   boxShadow: [
                                                     BoxShadow(
                                                       color: Color.fromARGB(
@@ -134,13 +135,13 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                     Expanded(
                                         child: PlugByWidgetCard(
                                             userName:
-                                                responseData.userId?.userName ==
-                                                        null
-                                                    ? "Pluhg user"
-                                                    : "@" +
-                                                        (responseData.userId
-                                                                ?.userName ??
-                                                            ""),
+                                            responseData.userId?.userName ==
+                                                null
+                                                ? "Pluhg user"
+                                                : "@" +
+                                                (responseData.userId
+                                                    ?.userName ??
+                                                    ""),
                                             date: formattedDate))
                                   ],
                                 ),
@@ -156,7 +157,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                           backgroundImage: NetworkImage(
                                               APICALLS.imageBaseUrl +
                                                   (responseData.userId
-                                                          ?.profileImage ??
+                                                      ?.profileImage ??
                                                       ""))),
                                     ),
                                     SizedBox(
@@ -164,14 +165,12 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                     ),
                                     Text(
                                       (responseData.userId?.userName == null
-                                              ? (responseData
-                                                      .userId?.userName ??
-                                                  "")
-                                              : "@" +
-                                                  (responseData
-                                                          .userId?.userName ??
-                                                      "")) +
-                                          "Message From \n",
+                                          ? (responseData.userId?.userName ??
+                                          "")
+                                          : "Message From \n" +
+                                          "@" +
+                                          (responseData.userId?.userName ??
+                                              "")),
                                       style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w600,
@@ -179,8 +178,8 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                     ),
                                   ],
                                 ),
-                                if (responseData.both != "" ||
-                                    responseData.both != null)
+                                if (responseData.both != null &&
+                                    responseData.both != "")
                                   Container(
                                     margin: EdgeInsets.only(top: 20),
                                     padding: EdgeInsets.all(8),
@@ -195,25 +194,42 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                           fontWeight: FontWeight.w400),
                                     ),
                                   ),
-                                Container(
-                                  //width: 307.22,
-                                  margin: EdgeInsets.only(top: 20),
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white),
-                                  child: Text(
-                                    responseData.requester?.message == "" ||
-                                            responseData.requester?.message ==
-                                                null
-                                        ? "Hi!! You have been connected, please check the app"
-                                        : "${responseData.requester?.message}",
-                                    textAlign: TextAlign.justify,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400),
+                                if (controller.isRequester.value &&
+                                    responseData.requester?.message != null &&
+                                    responseData.requester?.message != "")
+                                  Container(
+                                    //width: 307.22,
+                                    margin: EdgeInsets.only(top: 20),
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.white),
+                                    child: Text(
+                                      "${responseData.requester?.message}",
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
+                                    ),
                                   ),
-                                ),
+                                if (!controller.isRequester.value &&
+                                    responseData.contact?.message != null &&
+                                    responseData.contact?.message != "")
+                                  Container(
+                                    //width: 307.22,
+                                    margin: EdgeInsets.only(top: 20),
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.white),
+                                    child: Text(
+                                      "${responseData.contact?.message}",
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
                                 SizedBox(
                                   height: 14.79,
                                 ),
@@ -239,7 +255,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                         fontWeight: FontWeight.w600)),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     GestureDetector(
                                       onTap: () {
@@ -265,49 +281,95 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                           SizedBox(
                             height: 21,
                           ),
-
-                          //if (this.user != null && !_responded)
-                          Visibility(
-                            visible: true, //_responded ? false : true,
-                            // visible: isBottomButtonVisible,
+                          (controller.isRequester.value && (responseData
+                              ?.isRequesterAccepted ?? false)) ?
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 12.0.h,
+                              left: 24.0.w,
+                              right: 24.0.w,
+                              bottom: 12.h,
+                            ),
+                            padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA4A4A4),
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _getUserName(responseData, controller.isRequester.value),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ) : (!controller.isRequester.value && (responseData
+                              ?.isContactAccepted ?? false))
+                              ? Container(
+                            margin: EdgeInsets.only(
+                              top: 12.0.h,
+                              left: 24.0.w,
+                              right: 24.0.w,
+                              bottom: 12.h,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFA4A4A4),
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _getUserName(responseData, controller.isRequester.value),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ) : Visibility(
+                            visible: true,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
                                   child: button3("Accept", pluhgGreenColour),
                                   onTap: () async {
-                                    // bool _isSuccessful = await APICALLS()
-                                    //     .acceptConnectionRequest(
-                                    //   context: context,
-                                    //   connectionID: connectionID!,
-                                    // );
                                     HTTPManager()
                                         .acceptConnection(
-                                            ConnectionRequestModel(
-                                                connectionId: connectionID))
+                                        ConnectionRequestModel(
+                                            connectionId: connectionID))
                                         .then((value) {
                                       showPluhgDailog2(
                                         Get.context!,
                                         "Success",
-                                        value.message!,
+                                        "Accepted Successfully"!,
                                         onCLosed: () {
                                           print(
                                               "[Dialogue:OnClose] go to HomeView [2]");
-                                          Get.offAll(() => HomeView(
-                                              index: 2.obs));
+                                          if (value.isRequesterAccepted! &&
+                                              value.isContactAccepted!) {
+                                            Get.offAll(() =>
+                                                HomeView(
+                                                  index: 2.obs,
+                                                ));
+                                          } else {
+                                            Get.offAll(() =>
+                                                HomeView(
+                                                  index: 0.obs,
+                                                  connectionTabIndex: 1,
+                                                ));
+                                          }
                                         },
                                       );
                                     }).catchError((onError) {
                                       pluhgSnackBar(
                                           'Sorry', onError.toString());
                                     });
-                                    // if(_isSuccessful){
-                                    //   isValueChange = true;
-                                    // }
-                                    // setState(() {
-                                    //   _responded = _isSuccessful;
-                                    //   //isBottomButtonVisible = _isSuccessful;
-                                    // });
                                   },
                                 ),
                                 SizedBox(
@@ -318,10 +380,10 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                   onTap: () async {
                                     HTTPManager()
                                         .declineConnection(
-                                            ConnectionRequestModel(
-                                                connectionId:
-                                                    connectionID ?? "",
-                                                reason: 'Unknown ??'))
+                                        ConnectionRequestModel(
+                                            connectionId:
+                                            connectionID ?? "",
+                                            reason: 'Unknown ??'))
                                         .then((value) {
                                       showPluhgDailog2(
                                         Get.context!,
@@ -330,29 +392,16 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                         onCLosed: () {
                                           print(
                                               "[Dialogue:OnClose] go to HomeView [2]");
-                                          Get.offAll(() => HomeView(
-                                              index: 0.obs,
-                                              connectionTabIndex: 1));
+                                          Get.offAll(() =>
+                                              HomeView(
+                                                  index: 0.obs,
+                                                  connectionTabIndex: 1));
                                         },
                                       );
                                     }).catchError((onError) {
                                       pluhgSnackBar(
                                           'Sorry', onError.toString());
                                     });
-                                    // bool _isSuccessful = await APICALLS()
-                                    //     .declineConnectionRequest(
-                                    //   context: context,
-                                    //   connectionID: connectionID!,
-                                    //   reason: "Unknown ??",
-                                    // );
-
-                                    // if(_isSuccessful){
-                                    //   isValueChange = true;
-                                    // }
-                                    //
-                                    // setState(() {
-                                    //   _responded = _isSuccessful;
-                                    // });
                                   },
                                 ),
                               ],
@@ -369,12 +418,29 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
               } else {
                 return Center(
                     child: Text('') //Text('${snapshot.data.message}'),
-                    );
+                );
               }
             } else {
               return SizedBox.shrink();
             }
           }),
     );
+  }
+}
+
+String _getUserName(ConnectionResponseModel data, bool isRequester) {
+  String initials = "You've Accepted. Waiting on ";
+  if (isRequester) {
+    if (data.contact?.refId?.userName?.isNotEmpty ?? false) {
+      return "$initials${data.contact?.refId?.userName}";
+    } else {
+      return "$initials${data.userId?.userName}'s Contact";
+    }
+  } else {
+    if (data.requester?.refId?.userName?.isNotEmpty ?? false) {
+      return "$initials${data.requester?.refId?.userName}";
+    } else {
+      return "$initials${data.userId?.userName}'s Contact";
+    }
   }
 }

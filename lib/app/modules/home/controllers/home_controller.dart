@@ -14,7 +14,7 @@ class HomeController extends GetxController {
   RxInt currentIndex = 0.obs;
   DateTime? currentBackPressTime;
 
-  APICALLS apicalls = APICALLS();
+  //APICALLS apicalls = APICALLS();
 
   Rx<int> notificationCount = 0.obs;
 

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:plug/app/data/models/response/connection_response_model.dart';
 import 'package:plug/app/modules/recommendation_screen/views/recommended_connection_screen.dart';
 import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
 
@@ -97,7 +98,23 @@ Widget whoIConnectedCard({
                       ),
                     ),
                   ),
-                  Container(
+                data.closeConnection! ? Container(
+                    height: 28.h,
+                    margin: EdgeInsets.only(
+                        top: 12.0.h, left: 24.0.w, right: 24.0.w, bottom: 12.h),
+                    decoration: BoxDecoration(
+                      color: pluhgGrayColour,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    child: Center(
+                      child:  Text( "Connection Closed",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ):Container(
                     height: 28.h,
                     margin: EdgeInsets.only(
                         top: 12.0.h, left: 24.0.w, right: 24.0.w, bottom: 12.h),
@@ -109,7 +126,12 @@ Widget whoIConnectedCard({
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: Center(
-                      child: Text(
+                      child: data.closeConnection! ? Text( "Connection Closed",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400),
+                      ): Text(
                         data.isRequesterAccepted! && data.isContactAccepted!
                             ? "Accepted"
                             : "Pending",
