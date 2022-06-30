@@ -231,25 +231,25 @@ class OTPScreenView extends GetView<OTPScreenController> {
 
         SharedPreferences storage = await SharedPreferences.getInstance();
         storage.setBool(PREF_IS_FIRST_APP_RUN, false);
-
+        User existing = await UserState.get();
         if ((value.user?.isRegistered ?? false) &&
             (value.user?.data?.emailAddress?.isNotEmpty ?? false) &&
             (value.user?.data?.userName?.isNotEmpty ?? false)) {
           User user = await UserState.get();
           await UserState.store(
             User.registered(
-              token: value?.token ?? "",
-              id: value.user?.data?.sId ?? "",
-              name: value.user?.data?.userName ?? "",
-              phone: value.user?.data?.phoneNumber ?? "",
-              email: value.user?.data?.emailAddress ?? "",
-              regionCode: user.regionCode.isNotEmpty
-                  ? user.regionCode
-                  : User.DEFAULT_REGION_CODE,
-              countryCode: user.countryCode.isNotEmpty
-                  ? user.countryCode
-                  : User.DEFAULT_COUNTRY_CODE,
-            ),
+                token: value?.token ?? "",
+                id: value.user?.data?.sId ?? "",
+                name: value.user?.data?.userName ?? "",
+                phone: value.user?.data?.phoneNumber ?? "",
+                email: value.user?.data?.emailAddress ?? "",
+                regionCode: user.regionCode.isNotEmpty
+                    ? user.regionCode
+                    : User.DEFAULT_REGION_CODE,
+                countryCode: user.countryCode.isNotEmpty
+                    ? user.countryCode
+                    : User.DEFAULT_COUNTRY_CODE,
+                dynamicLink: existing.dynamicLink ?? ""),
           );
 
           Get.offAll(() => HomeView(index: 1.obs));

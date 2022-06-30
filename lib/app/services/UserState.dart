@@ -5,35 +5,35 @@ import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserState with ValidationMixin {
-  static Future<void> storeNewProfile(
-      {required String token,
-      required String name,
-      required String contact,
-      required String regionCode,
-      required String countryCode}) async {
-    // prefs.setString('profileImage',
-    //     parsedResponse["data"]["userData"]["profileImage"].toString()); //TODO check the data it returns
-    String email = EmailValidator.validate(contact) ? contact : '';
-    String phone = PhoneValidator.validate(contact) ? contact : '';
-    String code = regionCode.isNotEmpty ? regionCode : User.DEFAULT_REGION_CODE;
-    String cCode =
-        countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
-    User newUser = User.newProfile(
-        name: name,
-        token: token,
-        regionCode: code,
-        countryCode: cCode,
-        phone: phone,
-        email: email);
-
-    await UserState.store(newUser);
-    print(
-        "[UserState:storeNewProfile] created a new user: ${newUser.toString()}");
-
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    storage.setBool(PREF_IS_FIRST_APP_RUN, false);
-    print("[UserState:storeNewProfile] PREF_IS_FIRST_APP_RUN: false");
-  }
+  // static Future<void> storeNewProfile(
+  //     {required String token,
+  //     required String name,
+  //     required String contact,
+  //     required String regionCode,
+  //     required String countryCode}) async {
+  //   // prefs.setString('profileImage',
+  //   //     parsedResponse["data"]["userData"]["profileImage"].toString()); //TODO check the data it returns
+  //   String email = EmailValidator.validate(contact) ? contact : '';
+  //   String phone = PhoneValidator.validate(contact) ? contact : '';
+  //   String code = regionCode.isNotEmpty ? regionCode : User.DEFAULT_REGION_CODE;
+  //   String cCode =
+  //       countryCode.isNotEmpty ? countryCode : User.DEFAULT_COUNTRY_CODE;
+  //   User newUser = User.newProfile(
+  //       name: name,
+  //       token: token,
+  //       regionCode: code,
+  //       countryCode: cCode,
+  //       phone: phone,
+  //       email: email);
+  //
+  //   await UserState.store(newUser);
+  //   print(
+  //       "[UserState:storeNewProfile] created a new user: ${newUser.toString()}");
+  //
+  //   SharedPreferences storage = await SharedPreferences.getInstance();
+  //   storage.setBool(PREF_IS_FIRST_APP_RUN, false);
+  //   print("[UserState:storeNewProfile] PREF_IS_FIRST_APP_RUN: false");
+  // }
 
   static Future<void> logout() async {
     await store(User.empty());
@@ -127,26 +127,26 @@ class User {
         countryCode: "");
   }
 
-  factory User.newProfile({
-    required String name,
-    required String token,
-    required String phone,
-    required String email,
-    required String regionCode,
-    required String countryCode,
-  }) {
-    return User(
-      id: "",
-      dynamicLink: "",
-      name: name,
-      token: token,
-      phone: phone,
-      email: email,
-      regionCode: regionCode,
-      countryCode: countryCode,
-      isAuthenticated: true,
-    );
-  }
+  // factory User.newProfile({
+  //   required String name,
+  //   required String token,
+  //   required String phone,
+  //   required String email,
+  //   required String regionCode,
+  //   required String countryCode,
+  // }) {
+  //   return User(
+  //     id: "",
+  //     dynamicLink: "",
+  //     name: name,
+  //     token: token,
+  //     phone: phone,
+  //     email: email,
+  //     regionCode: regionCode,
+  //     countryCode: countryCode,
+  //     isAuthenticated: true,
+  //   );
+  // }
 
   factory User.registered({
     required String id,
@@ -156,6 +156,7 @@ class User {
     required String email,
     required String regionCode,
     required String countryCode,
+    required String dynamicLink
   }) {
     return User(
       id: id,
@@ -165,7 +166,7 @@ class User {
       email: email,
       regionCode: regionCode,
       countryCode: countryCode,
-      dynamicLink: "",
+      dynamicLink: dynamicLink,
       isAuthenticated: true,
     );
   }

@@ -49,7 +49,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       ProfileScreenView()
     ];
     WidgetsBinding.instance!.addObserver(this);
-    controller.goToDeepLink();
+    // controller.goToDeepLink();
   }
 
   @override

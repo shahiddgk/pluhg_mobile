@@ -11,27 +11,30 @@ import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.da
 import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
 import 'package:plug/app/widgets/colors.dart';
 
+import 'app/modules/AppLifeCycleController.dart';
 import 'app/modules/chat_screen/controllers/chat_screen_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'app/widgets/snack_bar.dart';
 
-class MyHttpoverrides extends HttpOverrides{
+class MyHttpoverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     // TODO: implement createHttpClient
     return super.createHttpClient(context)
-        ..badCertificateCallback = (X509Certificate cert, String host, int port)=>true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
 void main() async {
-  HttpOverrides.global=new MyHttpoverrides();
+  HttpOverrides.global = new MyHttpoverrides();
   WidgetsFlutterBinding.ensureInitialized();
   _configureFirebase();
+  Get.put(AppLifeCycleController());
   runApp(
     ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: (_,child) => GetMaterialApp(
+      builder: (_, child) => GetMaterialApp(
         debugShowCheckedModeBanner: false,
         supportedLocales: [
           Locale("en"),

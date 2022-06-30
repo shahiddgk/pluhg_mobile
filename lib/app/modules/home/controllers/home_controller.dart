@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/data/http_manager.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 
 import '../../../services/UserState.dart';
+import '../../../widgets/progressbar.dart';
+import '../../dynamic_link_service.dart';
 import '../../waiting_screen/views/waiting_connection_screen.dart';
 
-class HomeController extends GetxController {
+class HomeController extends SuperController {
   //TODO: Implement HomeController
   RxInt currentIndex = 0.obs;
   DateTime? currentBackPressTime;
@@ -36,6 +37,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     getNotificationCount();
+    goToDeepLink();
   }
 
   @override
@@ -87,5 +89,26 @@ class HomeController extends GetxController {
       return Future.value(false);
     }
     return Future.value(true);
+  }
+
+  @override
+  void onDetached() {
+    // TODO: implement onDetached
+  }
+
+  @override
+  void onInactive() {
+    // TODO: implement onInactive
+  }
+
+  @override
+  void onPaused() {
+    // TODO: implement onPaused
+  }
+
+  @override
+  void onResumed() {
+    // TODO: implement onResumed
+    goToDeepLink();
   }
 }

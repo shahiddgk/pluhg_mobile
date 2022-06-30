@@ -1,32 +1,45 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
+import '../services/UserState.dart';
+
 class DynamicLinkService {
-  Future<void> retrieveDynamicLink(
-      {required Function(Uri? deeplink, bool? activate) deepCallBack}) async {
+  Future<void> _listenForDynamicLink() async {
+    FirebaseDynamicLinks.instance.onLink(
+        onSuccess: (PendingDynamicLinkData? dynamicLink) async {
+      final Uri? deepLink = dynamicLink?.link;
+      deepCallBack(deepLink: deepLink, activateDialog: false);
+      // this._handleDeepLink(context, deepLink, true);
+    }, onError: (error) async {
+      print('error is $error');
+      deepCallBack(deepLink: null, activateDialog: false);
+    });
+  }
+
+  Future<void> retrieveDynamicLink() async {
     try {
       final PendingDynamicLinkData? data =
           await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri? deepLink = data?.link;
 
-      print('---------------------->${deepLink.toString()}');
-      deepCallBack(deepLink, false);
-      //this._handleDeepLink(context, deepLink);
+      deepCallBack(deepLink: deepLink, activateDialog: false);
+      _listenForDynamicLink();
     } catch (e) {
       print(e);
-      deepCallBack(null, false);
+      deepCallBack(deepLink: null, activateDialog: false);
+    }
+  }
+
+  deepCallBack({Uri? deepLink, bool? activateDialog}) async {
+    User user = await UserState.get();
+    if (deepLink == null ||
+        deepLink.queryParameters.containsKey("id") == false) {
+      return;
     }
 
-    FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData? dynamicLink) async {
-      // final PendingDynamicLinkData? data = await FirebaseDynamicLinks.instance.getInitialLink();
-      final Uri? deepLink = dynamicLink?.link;
+    String? id = deepLink?.queryParameters["id"]!;
+    print('[_handleDeepLink] the dynamic link id is $id');
 
-      print('FROM LINK---------------------->${deepLink.toString()}');
-      deepCallBack(deepLink, false);
-      // this._handleDeepLink(context, deepLink, true);
-    }, onError: (error) async {
-      print('error is $error');
-      deepCallBack(null, false);
-    });
+    user.setDynamicLink(id!);
+    await UserState.store(user);
   }
 }

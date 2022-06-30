@@ -273,18 +273,18 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
       User user = await UserState.get();
       await UserState.store(
         User.registered(
-          token: value?.token ?? "",
-          id: value.user?.data?.sId ?? "",
-          name: value.user?.data?.userName ?? "",
-          phone: value.user?.data?.phoneNumber ?? "",
-          email: value.user?.data?.emailAddress ?? "",
-          regionCode: user.regionCode.isNotEmpty
-              ? user.regionCode
-              : User.DEFAULT_REGION_CODE,
-          countryCode: user.countryCode.isNotEmpty
-              ? user.countryCode
-              : User.DEFAULT_COUNTRY_CODE,
-        ),
+            token: value?.token ?? "",
+            id: value.user?.data?.sId ?? "",
+            name: value.user?.data?.userName ?? "",
+            phone: value.user?.data?.phoneNumber ?? "",
+            email: value.user?.data?.emailAddress ?? "",
+            regionCode: user.regionCode.isNotEmpty
+                ? user.regionCode
+                : User.DEFAULT_REGION_CODE,
+            countryCode: user.countryCode.isNotEmpty
+                ? user.countryCode
+                : User.DEFAULT_COUNTRY_CODE,
+            dynamicLink: user.dynamicLink ?? ""),
       );
       Get.offAll(() => HomeView(index: 1.obs));
     }).catchError((onError) {
