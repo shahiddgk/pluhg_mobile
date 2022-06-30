@@ -6,18 +6,16 @@ import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/snack_bar.dart';
 
 import '../../../services/UserState.dart';
-import '../../../widgets/progressbar.dart';
-import '../../dynamic_link_service.dart';
 import '../../waiting_screen/views/waiting_connection_screen.dart';
 
 class HomeController extends SuperController {
   //TODO: Implement HomeController
   RxInt currentIndex = 0.obs;
+  RxInt connectionTabIndex = 0.obs;
   DateTime? currentBackPressTime;
-
-  //APICALLS apicalls = APICALLS();
-
   Rx<int> notificationCount = 0.obs;
+
+  HomeController();
 
   List<String> iconMenu = [
     "resources/svg/connection_menu.svg",
@@ -47,7 +45,9 @@ class HomeController extends SuperController {
 
   goToDeepLink() async {
     User user = await UserState.get();
-    if (user.dynamicLink.isNotEmpty) {
+    if (user.isAuthenticated && user.dynamicLink.isNotEmpty) {
+      currentIndex.value = 0;
+      connectionTabIndex.value = 0;
       String id = user.dynamicLink;
       Get.to(() => WaitingScreenView(connectionID: id));
       user.setDynamicLink("");
@@ -61,11 +61,7 @@ class HomeController extends SuperController {
         .then((value) => {notificationCount.value = value})
         .catchError((onError) {
       pluhgSnackBar('Sorry', onError.toString());
-    }); //
-// var result =  apicalls.getNotificationCount();
-//     if(result != null){
-//       notificationCount.value = result;
-//     }
+    });
   }
 
   @override
@@ -108,7 +104,7 @@ class HomeController extends SuperController {
 
   @override
   void onResumed() {
-    // TODO: implement onResumed
+    print("homeview in On Resumed");
     goToDeepLink();
   }
 }

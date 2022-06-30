@@ -16,7 +16,7 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends StatefulWidget {
   // final String token, userID;
-  final RxInt index;
+  final int index;
   final int connectionTabIndex;
 
   // final dynamic data;
@@ -26,24 +26,30 @@ class HomeView extends StatefulWidget {
   });
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState(index, connectionTabIndex);
 }
 
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
+  final int index;
+  final int connectionTabIndex;
+
   final controller_chat = Get.put(ChatScreenController());
-
   late List<Widget> pages;
-
-  final controller = Get.put(HomeController());
 
   //Timer for retrieving dynamic in IOS
   Timer? _timerLink;
 
+  _HomeViewState(this.index, this.connectionTabIndex);
+
+  final controller = Get.put(HomeController());
+
   @override
   void initState() {
     super.initState();
+    controller.currentIndex.value = index;
+    controller.connectionTabIndex.value = connectionTabIndex;
     pages = [
-      ConnectionScreenView(widget.connectionTabIndex),
+      ConnectionScreenView(controller.connectionTabIndex.value),
       ConnectScreenView(),
       ChatScreenView(),
       ProfileScreenView()
@@ -54,11 +60,11 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    print("[HomeView] build: ${widget.index.value}");
+    print("[HomeView] build: ${controller.currentIndex.value}");
     return WillPopScope(
       onWillPop: () => controller.onWillPop(),
       child: Scaffold(
-        body: Obx(() => pages[widget.index.value]),
+        body: Obx(() => pages[controller.currentIndex.value]),
         bottomNavigationBar: _bottomNavigationBar(),
       ),
     );
@@ -87,9 +93,9 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               topRight: Radius.circular(30.r),
             ),
             child: BottomNavigationBar(
-              currentIndex: widget.index.value,
+              currentIndex: controller.currentIndex.value,
               onTap: (int index1) {
-                widget.index.value = index1;
+                controller.currentIndex.value = index1;
                 // index = index1;
               },
               enableFeedback: false,
