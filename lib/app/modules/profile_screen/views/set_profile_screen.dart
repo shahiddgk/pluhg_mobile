@@ -286,7 +286,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                 : User.DEFAULT_COUNTRY_CODE,
             dynamicLink: user.dynamicLink ?? ""),
       );
-      Get.offAll(() => HomeView(index: 1.obs));
+      Get.offAll(() => HomeView(index: 1));
     }).catchError((onError) {
       controller.isLoading.value = false;
     });

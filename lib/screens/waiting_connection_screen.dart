@@ -319,11 +319,11 @@ class _WaitingConnectionScreenState extends State<WaitingConnectionScreen>
                                       if (value.isRequesterAccepted! &&
                                           value.isContactAccepted!) {
                                         Get.offAll(() => HomeView(
-                                          index: 2.obs,
+                                          index: 2,
                                         ));
                                       }else{
                                         Get.offAll(() => HomeView(
-                                          index: 0.obs,
+                                          index: 0,
                                           connectionTabIndex: 1,
                                         ));
                                       }

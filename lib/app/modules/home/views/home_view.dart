@@ -49,7 +49,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     controller.currentIndex.value = index;
     controller.connectionTabIndex.value = connectionTabIndex;
     pages = [
-      ConnectionScreenView(controller.connectionTabIndex.value),
+      ConnectionScreenView(controller.connectionTabIndex),
       ConnectScreenView(),
       ChatScreenView(),
       ProfileScreenView()

@@ -355,12 +355,12 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                               value.isContactAccepted!) {
                                             Get.offAll(() =>
                                                 HomeView(
-                                                  index: 2.obs,
+                                                  index: 2,
                                                 ));
                                           } else {
                                             Get.offAll(() =>
                                                 HomeView(
-                                                  index: 0.obs,
+                                                  index: 0,
                                                   connectionTabIndex: 1,
                                                 ));
                                           }
@@ -394,7 +394,7 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                                               "[Dialogue:OnClose] go to HomeView [2]");
                                           Get.offAll(() =>
                                               HomeView(
-                                                  index: 0.obs,
+                                                  index: 0,
                                                   connectionTabIndex: 1));
                                         },
                                       );

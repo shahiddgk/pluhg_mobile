@@ -34,7 +34,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CONNECTION_SCREEN,
-      page: () => ConnectionScreenView(0),
+      page: () => ConnectionScreenView(0.obs),
       binding: ConnectionScreenBinding(),
     ),
     GetPage(

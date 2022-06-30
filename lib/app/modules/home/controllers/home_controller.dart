@@ -47,7 +47,7 @@ class HomeController extends SuperController {
     User user = await UserState.get();
     if (user.isAuthenticated && user.dynamicLink.isNotEmpty) {
       currentIndex.value = 0;
-      connectionTabIndex.value = 0;
+      connectionTabIndex.value = 1;
       String id = user.dynamicLink;
       Get.to(() => WaitingScreenView(connectionID: id));
       user.setDynamicLink("");

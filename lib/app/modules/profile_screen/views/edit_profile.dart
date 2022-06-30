@@ -328,7 +328,7 @@ class EditProfileView extends GetView<EditProfileController> {
         .then((value) {
       controller.isloading.value = false;
       pluhgSnackBar("Great", value.message!);
-      Get.offAll(() => HomeView(index: 3.obs));
+      Get.offAll(() => HomeView(index: 3));
     }).catchError((onError) {
       pluhgSnackBar("So Sorry", onError.toString());
       controller.isloading.value = false;

@@ -252,7 +252,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
                 dynamicLink: existing.dynamicLink ?? ""),
           );
 
-          Get.offAll(() => HomeView(index: 1.obs));
+          Get.offAll(() => HomeView(index: 1));
           return true;
         }
 

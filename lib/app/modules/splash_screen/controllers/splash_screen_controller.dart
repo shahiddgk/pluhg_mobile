@@ -39,6 +39,6 @@ class SplashScreenController extends GetxController {
       return AuthScreenView();
     }
     // registered user
-    return HomeView(index: 1.obs);
+    return HomeView(index: 1);
   }
 }
