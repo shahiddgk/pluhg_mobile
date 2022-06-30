@@ -82,7 +82,7 @@ class ConnectScreenView extends GetView<ConnecTwoScreenController> {
                               User user = await UserState.get();
                               Get.to(() => Center(
                                     child: ContactView(
-                                      who: "Requester",
+                                      who: "Contact",
                                       token: user.token,
                                       userID: user.id,
                                     ),

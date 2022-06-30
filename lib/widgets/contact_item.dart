@@ -7,6 +7,8 @@ import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 import 'package:plug/widgets/radio_list_widget.dart';
 import 'package:plug/widgets/text_style.dart';
 
+import '../app/data/api_calls.dart';
+
 Widget contactItem(
     {required PluhgContact contact,
     isRequestAndContactSelectionDone,
@@ -19,7 +21,8 @@ Widget contactItem(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _avatar(contact.name.substring(0, 1), contact.photo, false),
+            _avatar(contact.name!.substring(0, 1), contact.photo,
+                contact.imageUrl, contact.isPlughedUser),
             SizedBox(
               width: 12,
             ),
@@ -28,7 +31,7 @@ Widget contactItem(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    contact.name,
+                    contact.name!,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -38,16 +41,13 @@ Widget contactItem(
                   ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: contact.contacts.length,
+                    itemCount: contact.contacts!.length,
                     itemBuilder: (ctx, i) {
                       return RadioListTitleComponent<ContactData?>(
-                        label: contact.contacts[i].value,
-                        value: contact.contacts[i],
-                        isChecked: contact.contacts[i].isSelected,
+                        label: contact.contacts![i].value!,
+                        value: contact.contacts![i],
+                        isChecked: contact.contacts![i].isSelected!,
                         itemSelected: (value) {
-                          // if (isRequestAndContactSelectionDone) {
-                          //   return;
-                          // }
                           onTap!(value!);
                         },
                       );
@@ -64,7 +64,8 @@ Widget contactItem(
   );
 }
 
-Widget _avatar(String initials, Uint8List? photo, bool isPluhgUser) {
+Widget _avatar(
+    String initials, Uint8List? photo, String? imageUrl, bool isPluhgUser) {
   return Container(
     width: 50.w,
     height: 50.h,
@@ -73,20 +74,26 @@ Widget _avatar(String initials, Uint8List? photo, bool isPluhgUser) {
     ),
     child: Stack(
       children: [
-        photo == null
+        isPluhgUser
             ? CircleAvatar(
                 radius: 25.w,
-                child: Center(
-                  child: Text(
-                    initials,
-                    style: contactTextStyleWhite,
-                  ),
-                ),
+                backgroundImage:
+                    NetworkImage(APICALLS.imageBaseUrl + imageUrl!),
               )
-            : CircleAvatar(
-                radius: 25.w,
-                backgroundImage: MemoryImage(photo),
-              ),
+            : photo == null
+                ? CircleAvatar(
+                    radius: 25.w,
+                    child: Center(
+                      child: Text(
+                        initials,
+                        style: contactTextStyleWhite,
+                      ),
+                    ),
+                  )
+                : CircleAvatar(
+                    radius: 25.w,
+                    backgroundImage: MemoryImage(photo),
+                  ),
         Visibility(
           visible: isPluhgUser,
           child: Align(

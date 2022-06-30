@@ -22,9 +22,9 @@ class ResponseHandler {
   Future<GeneralResponseModel> post(String url, Map<String, dynamic> params,
       {String token = ""}) async {
     var uri = Uri.parse(url);
-    if(token.isNotEmpty){
+    if (token.isNotEmpty) {
       head['Authorization'] = 'Bearer $token';
-    }else{
+    } else {
       User user = await UserState.get();
       if (user.token.isNotEmpty) {
         print('usertoken: ${user.token}');

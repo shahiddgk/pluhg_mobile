@@ -5,119 +5,47 @@ import 'package:flutter_contacts/contact.dart';
 class PluhgContact {
   String? id;
   Uint8List? photo;
-  String name;
-
-  // String phoneNumber, emailAddress;
-  List<ContactData> contacts;
-
-  // List<ContactData> emailAddresses;
+  String? name;
+  List<ContactData>? contacts;
   bool isSelected = false;
+  bool isPlughedUser = false;
+  String? imageUrl;
 
   PluhgContact({
     required this.id,
     required this.name,
     required this.contacts,
-    //required this.phoneNumber,
+    this.imageUrl,
     this.photo,
-    //required this.emailAddress,
-    //required this.isPlughedUser,
-    //required this.emailAddresses,
     this.isSelected = false,
   });
 
   factory PluhgContact.empty() {
-    return PluhgContact(
-        id: "",
-        name: "",
-        // phoneNumber: "",
-        contacts: [],
-        //emailAddress: "",
-        //isPlughedUser: false,
-        // emailAddresses: [],
-        isSelected: false);
+    return PluhgContact(id: "", name: "", contacts: [], isSelected: false);
+  }
+
+  PluhgContact.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    isPlughedUser = json['isPlughedUser'];
+    photo = json['photo'];
+    imageUrl = json['imageUrl'];
+    if (json['contacts'] != null) {
+      contacts = <ContactData>[];
+      json['contacts'].forEach((v) {
+        contacts!.add(new ContactData.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['name'] = this.name;
     data['contacts'] = this.contacts?.map((item) => item.toJson()).toList();
+    data['isPlughedUser'] = this.isPlughedUser;
     return data;
   }
-
-  // PluhgContact copyWith({
-  //   String? id,
-  //   String? name,
-  //   String? phoneNumber,
-  //   List<ContactData>? phoneNumbers,
-  //   Uint8List? photo,
-  //   String? emailAddress,
-  //   bool? isPlughedUser,
-  //   List<ContactData>? emailAddresses,
-  //   bool selectedContact = false,
-  // }) {
-  //   return PluhgContact(
-  //     contacts: phoneNumbers!,
-  //     id: id ?? this.id,
-  //     name: name ?? this.name,
-  //     //phoneNumber: phoneNumber ?? this.phoneNumber,
-  //     photo: photo ?? this.photo,
-  //     //emailAddress: emailAddress ?? this.emailAddress,
-  //     isPlughedUser: isPlughedUser ?? this.isPlughedUser,
-  //    // emailAddresses: emailAddresses ?? this.emailAddresses,
-  //     isSelected: selectedContact,
-  //   );
-  // }
-
-  // @override
-  // String toString() {
-  //   return ""
-  //       "{id: ${this.id}, name: ${this.name}, "
-  //       "photo: ${this.photo}, contacts : ${this.contacts}}";
-  //   // return ""
-  //   //     "{id: ${this.id}, name: ${this.name}, emailAddress: ${this.emailAddress}, isPlughedUser: ${this.isPlughedUser}, "
-  //   //     "phoneNumber: ${this.phoneNumber}, photo: ${this.photo}, emailAddresses : ${this.emailAddresses}}";
-  // }
-
-  // Map toJson() {
-  //   return {
-  //     "id": this.id,
-  //     "name": this.name,
-  //     //  "emailAddress": this.emailAddress,
-  //     //"isPlughedUser": this.isPlughedUser,
-  //     //  "phoneNumber": this.phoneNumber,
-  //     "photo": this.photo,
-  //     //  "emailAddresses": this.emailAddresses,
-  //   };
-  // }
-
-  // Map toCleanedJson() {
-  //   if (phoneNumber.isNotEmpty)
-  //     return {
-  //       "name": this.name,
-  //       "phoneNumber": this
-  //           .phoneNumber
-  //           .replaceAll('(', '')
-  //           .replaceAll(')', '')
-  //           .replaceAll('-', '')
-  //           .replaceAll(' ', '')
-  //           .trim()
-  //     };
-  //   else if (emailAddress.isNotEmpty)
-  //     return {"name": this.name, "emailaddress": this.emailAddress};
-  //   else
-  //     return {};
-  // }
-
-  // factory PluhgContact.fromJson(Map json) => PluhgContact(
-  //       contacts: [],
-  //       id: '',
-  //       photo: null,
-  //       name: json['name'],
-  //       //isPlughedUser: json['isPlughedUser'] ?? false,
-  //       // phoneNumber: json['phoneNumber'] ?? '',
-  //       // emailAddress: json['emailaddress'] ?? '',
-  //       // emailAddresses: json['emailAddresses'] ?? '',
-  //     );
 
   factory PluhgContact.fromContact(Contact contact) {
     List<ContactData> tempList = [];
@@ -136,21 +64,10 @@ class PluhgContact {
             type: ContactType.email))
         .toList());
     return PluhgContact(
-      contacts: tempList,
-      id: contact.id,
-      name: contact.displayName,
-      //isPlughedUser: false,
-      // photo: '',//contact.photo,
-      // phoneNumber: contact.phones.isNotEmpty ? contact.phones.first.number : '',
-      //  emailAddress:
-      //     contact.emails.isNotEmpty ? contact.emails.first.address : '',
-      // emailAddresses: contact.emails.isNotEmpty
-      //     ? contact.emails
-      //         .map(
-      //             (e) => ContactData(value: e.address, type: ContactType.email))
-      //         .toList()
-      //     : [],
-    );
+        contacts: tempList,
+        id: contact.id,
+        name: contact.displayName,
+        photo: contact.photo);
   }
 }
 
@@ -160,12 +77,12 @@ enum ContactType {
 }
 
 class ContactData {
-  final String name;
-  final Uint8List? image;
-  final String value;
-  final ContactType type;
-  bool isSelected;
-  bool isPlughedUser = false;
+  String? name;
+  Uint8List? image;
+  String? value;
+  ContactType? type;
+  bool? isSelected = false;
+  bool? isPlughedUser = false;
 
   ContactData(
       {required this.name,
@@ -180,12 +97,21 @@ class ContactData {
         name: "", value: "", type: ContactType.phone, isSelected: false);
   }
 
+  ContactData.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    value = json['contact'];
+    isPlughedUser = json['isPlughedUser'];
+    type = json['type'] == ContactType.email.name
+        ? ContactType.email
+        : ContactType.phone;
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['contact'] = this.value;
     data['isPlughedUser'] = this.isPlughedUser;
-    data['type'] = this.type.name;
+    data['type'] = this.type?.name;
     return data;
   }
 }

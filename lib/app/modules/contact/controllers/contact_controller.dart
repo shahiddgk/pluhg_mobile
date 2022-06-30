@@ -10,6 +10,8 @@ import 'package:plug/app/services/UserState.dart';
 import 'package:plug/utils/validation_mixin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../data/http_manager.dart';
+import '../../../data/models/request/check_contact_request_model.dart';
 import '../../../widgets/snack_bar.dart';
 
 class ContactController extends GetxController with ValidationMixin {
@@ -101,7 +103,9 @@ class ContactController extends GetxController with ValidationMixin {
       bool remove = false;
       element.phones.forEach((element) {
         if (element.number.length < 7 ||
-            inValidCharacters.hasMatch(element.number) || element.number.contains("*") || element.number.contains("#")) {
+            inValidCharacters.hasMatch(element.number) ||
+            element.number.contains("*") ||
+            element.number.contains("#")) {
           remove = true;
           return;
         }
@@ -167,32 +171,28 @@ class ContactController extends GetxController with ValidationMixin {
     } catch (ex) {
       print(ex);
     }
-    // HTTPManager()
-    //     .checkIfPluhgUsers(
-    //         CheckContactRequestModel(pluhgContacts: pluhgContacts))
-    //     .then((value) => {})
-    //     .catchError((onError) {});
-
-    // _allContacts = await APICALLS().checkPluhgUsers(contacts: pluhgContacts);
-    //
-    //  _allContacts.removeWhere((element) =>
-    //      comparePhoneNumber(element.phoneNumber, user.phone) ||
-    //      comparePhoneNumber(element.emailAddress, user.email));
-
     pluhgContacts.removeWhere((element) {
       bool contactExists = false;
-      element.contacts.forEach((element) {
-        if (comparePhoneNumber(element.value, user.phone) ||
-            comparePhoneNumber(element.value, user.email)) {
+      element.contacts?.forEach((element) {
+        if (comparePhoneNumber(element?.value ?? "", user.phone) ||
+            comparePhoneNumber(element?.value ?? "", user.email)) {
           contactExists = true;
           return;
         }
       });
       return contactExists;
     });
-
+    List<PluhgContact> pluhgUsers = await HTTPManager().checkIfPluhgUsers(
+        CheckContactRequestModel(pluhgContacts: pluhgContacts));
+    pluhgContacts.forEach((element) {
+      List<PluhgContact> outContact =
+          pluhgUsers.where((o) => o.id == element.id).toList();
+      if (outContact.length > 0) {
+        outContact[0].photo = element.photo;
+      }
+    });
     _allContacts.clear();
-    _allContacts.addAll(pluhgContacts);
+    _allContacts.addAll(pluhgUsers);
     return _allContacts;
   }
 
@@ -218,15 +218,16 @@ class ContactController extends GetxController with ValidationMixin {
     });
   }
 
-  void setTitle(){
-    if(requesterGroup.value.isSelected && contactGroup.value.isSelected){
+  void setTitle() {
+    if (requesterGroup.value.isSelected && contactGroup.value.isSelected) {
       title.value = "Tap Next";
-    }else if(requesterGroup.value.isSelected){
+    } else if (requesterGroup.value.isSelected) {
       title.value = "Select Contact";
-    }else if(contactGroup.value.isSelected){
+    } else if (contactGroup.value.isSelected) {
       title.value = "Select Requester";
     }
   }
+
   void selectRequester(PluhgContact pluhgContact, ContactData contactData) {
     requesterGroup.value.isSelected = false;
     requesterContact.value.isSelected = false;
@@ -266,7 +267,7 @@ class ContactController extends GetxController with ValidationMixin {
   //Get Pluhg Contacts
   List<PluhgContact> get contacts_ => _allContacts.where((contact) {
         final regexp = RegExp(search.value, caseSensitive: false);
-        return regexp.hasMatch(contact.name);
+        return regexp.hasMatch(contact?.name ?? "");
       }).toList();
 
   List<PluhgContact> get fetchAllContacts => _allContacts;

@@ -11,10 +11,12 @@ import 'package:plug/app/data/models/request/support_request_model.dart';
 import 'package:plug/app/data/models/request/update_profile_request.dart';
 import 'package:plug/app/data/models/request/verify_otp_request_model.dart';
 import 'package:plug/app/data/models/response/connection_response_model.dart';
+import 'package:plug/app/data/models/response/contact_response_model.dart';
 import 'package:plug/app/data/models/response/notification_response_model.dart';
 import 'package:plug/app/data/models/response/notification_settings_model.dart';
 import 'package:plug/app/data/models/response/verify_otp_response_model.dart';
 import 'package:plug/app/data/response_handler.dart';
+import 'package:plug/app/modules/contact/model/pluhg_contact.dart';
 
 import 'api_urls.dart';
 
@@ -143,7 +145,7 @@ class HTTPManager {
   }
 
   Future<ConnectionResponseModel> getConnectionDetails(
-      {required String path ,required String connectionId}) async {
+      {required String path, required String connectionId}) async {
     final url = path;
     final GeneralResponseModel response =
         await _handler.get('$url$connectionId');
@@ -186,11 +188,13 @@ class HTTPManager {
     return response;
   }
 
-  Future<GeneralResponseModel> checkIfPluhgUsers(
+  Future<List<PluhgContact>> checkIfPluhgUsers(
       CheckContactRequestModel checkContactRequestModel) async {
     final url = ApplicationURLs.API_CHECK_PLUHG_USERS;
     final GeneralResponseModel response =
         await _handler.post(url, checkContactRequestModel.toJson());
-    return response;
+    ContactResponseModel contactResponseModel =
+        ContactResponseModel.fromJson(response.data);
+    return contactResponseModel.values;
   }
 }

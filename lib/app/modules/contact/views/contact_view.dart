@@ -93,8 +93,8 @@ class ContactView extends GetView<ContactController> {
           bottomSheet: Container(
             height: 70.h,
             child: Visibility(
-              visible: controller.requesterContact.value.name.isNotEmpty &&
-                      controller.contactContact.value.name.isNotEmpty
+              visible: controller.requesterContact.value.name!.isNotEmpty &&
+                      controller.contactContact.value.name!.isNotEmpty
                   ? true
                   : false,
               child: Center(
@@ -210,62 +210,67 @@ class ContactView extends GetView<ContactController> {
                                       itemBuilder: (context, index) {
                                         PluhgContact pluhgContact =
                                             contacts[index];
-                                        if (pluhgContact.contacts.isNotEmpty) {
+                                        if (pluhgContact.contacts!.isNotEmpty) {
                                           return contactItem(
                                               contact: pluhgContact,
                                               isRequestAndContactSelectionDone:
                                                   (controller
                                                           .requesterContact
                                                           .value
-                                                          .name
+                                                          .name!
                                                           .isNotEmpty &&
                                                       controller
                                                           .contactContact
                                                           .value
-                                                          .name
+                                                          .name!
                                                           .isNotEmpty),
                                               onTap: (tappedContact) {
-                                                  if (controller
-                                                      .requesterContact
-                                                      .value
-                                                      .name
-                                                      .isEmpty || (pluhgContact.id == controller.requesterGroup.value.id)) {
-                                                    controller.selectRequester(
-                                                        pluhgContact,
-                                                        tappedContact);
-                                                  } else if (controller
-                                                          .contactContact
-                                                          .value
-                                                          .name
-                                                          .isEmpty || (pluhgContact.id == controller.contactGroup.value.id)) {
-                                                    controller.selectContact(
-                                                        pluhgContact,
-                                                        tappedContact);
-                                                  } else {
-                                                    showPluhgDailog(
-                                                        context,
-                                                        "Info",
-                                                        "So Sorry !  You can select the same person");
-                                                  }
+                                                if (controller.requesterContact
+                                                        .value.name!.isEmpty ||
+                                                    (pluhgContact.id ==
+                                                        controller
+                                                            .requesterGroup
+                                                            .value
+                                                            .id)) {
+                                                  controller.selectRequester(
+                                                      pluhgContact,
+                                                      tappedContact);
+                                                } else if (controller
+                                                        .contactContact
+                                                        .value
+                                                        .name!
+                                                        .isEmpty ||
+                                                    (pluhgContact.id ==
+                                                        controller.contactGroup
+                                                            .value.id)) {
+                                                  controller.selectContact(
+                                                      pluhgContact,
+                                                      tappedContact);
+                                                } else {
+                                                  showPluhgDailog(
+                                                      context,
+                                                      "Info",
+                                                      "So Sorry !  You can select the same person");
                                                 }
-                                                // else if (controller
-                                                //         .contactContact
-                                                //         .value
-                                                //         .name
-                                                //         .isNotEmpty &&
-                                                //     controller
-                                                //         .requesterContact
-                                                //         .value
-                                                //         .name
-                                                //         .isNotEmpty) {
-                                                //   print('ON TAP CALLL ELSE IF');
-                                                //   showPluhgDailog(
-                                                //       context,
-                                                //       "Info",
-                                                //       "You can't have more than two contacts selected");
-                                                // }
-                                             // }
-                                        );
+                                              }
+                                              // else if (controller
+                                              //         .contactContact
+                                              //         .value
+                                              //         .name
+                                              //         .isNotEmpty &&
+                                              //     controller
+                                              //         .requesterContact
+                                              //         .value
+                                              //         .name
+                                              //         .isNotEmpty) {
+                                              //   print('ON TAP CALLL ELSE IF');
+                                              //   showPluhgDailog(
+                                              //       context,
+                                              //       "Info",
+                                              //       "You can't have more than two contacts selected");
+                                              // }
+                                              // }
+                                              );
                                         } else {
                                           return SizedBox.shrink();
                                         }
@@ -286,12 +291,12 @@ class ContactView extends GetView<ContactController> {
   goToMessageView(context) {
     Get.to(
       () => SendMessageView(
-        contactContact: controller.contactContact.value.value,
-        requesterContact: controller.requesterContact.value.value,
+        contactContact: controller.contactContact.value.value!,
+        requesterContact: controller.requesterContact.value.value!,
         contactImage: controller.contactContact.value.image,
         requesterImage: controller.requesterContact.value.image,
-        contactName: controller.contactContact.value.name,
-        requesterName: controller.requesterContact.value.name,
+        contactName: controller.contactContact.value.name!,
+        requesterName: controller.requesterContact.value.name!,
       ),
     );
   }
@@ -319,7 +324,9 @@ class ContactView extends GetView<ContactController> {
             children: [
               contactImage(contactData.image, false),
               Text(
-                contactData.name.isNotEmpty ? contactData.name : 'Add Contact',
+                contactData.name!.isNotEmpty
+                    ? contactData.name!
+                    : 'Add Contact',
                 style: TextStyle(
                     color: Color(0xff121212),
                     letterSpacing: -0.3,
@@ -329,10 +336,10 @@ class ContactView extends GetView<ContactController> {
               SizedBox(
                 height: 4.0,
               ),
-              contactData.value.isEmpty
+              contactData.value!.isEmpty
                   ? Text("")
                   : Text(
-                      contactData.value,
+                      contactData.value!,
                       maxLines: 1,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
@@ -366,7 +373,7 @@ class ContactView extends GetView<ContactController> {
             ],
           ),
         ),
-        !contactData.isSelected
+        !contactData.isSelected!
             ? Text("")
             : Positioned(
                 top: 0.0,
