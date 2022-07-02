@@ -1,9 +1,9 @@
 class ApplicationURLs {
-  static const BASE_URL = "https://api.pluhg.com/api/";
-  static const WS_URL = "ws://api.pluhg.com";
+  // static const BASE_URL = "https://api.pluhg.com/api/";
+  // static const WS_URL = "ws://api.pluhg.com";
 
-  // static const BASE_URL = "http://192.168.31.86:8000/api/";
-  // static const WS_URL = "ws://192.168.31.86:8000";
+  static const BASE_URL = "http://192.168.0.102:8000/api/";
+  static const WS_URL = "ws://192.168.0.102:8000";
 
   // static const BASE_URL = "http://192.168.43.65:8000/api/";
   // static const WS_URL = "ws://192.168.43.65:8000";

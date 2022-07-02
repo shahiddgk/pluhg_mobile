@@ -109,12 +109,12 @@ Widget waitingConnectionCard(
                           padding:
                               EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Color(0xFFA4A4A4),
+                            color: Color(0xFF18C424),
                             borderRadius: BorderRadius.circular(28),
                           ),
                           child: Center(
                             child: Text(
-                              _getUserName(data, _isRequester),
+                             "Accepted",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12.sp,
@@ -134,12 +134,12 @@ Widget waitingConnectionCard(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: Color(0xFFA4A4A4),
+                                color: Color(0xFF18C424),
                                 borderRadius: BorderRadius.circular(28),
                               ),
                               child: Center(
                                 child: Text(
-                                  _getUserName(data, _isRequester),
+                                  "Accepted",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 12.sp,

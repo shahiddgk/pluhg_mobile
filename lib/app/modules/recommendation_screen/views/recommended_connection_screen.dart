@@ -80,51 +80,18 @@ class RecommendedScreenView
                                           Row(
                                             // mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Container(
-                                                  height: 151.72.h,
-                                                  width: 87.2,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    5, 0, 0, 0),
-                                                            blurRadius: 20)
-                                                      ]),
-                                                  child: cardProfile2(
+                                              cardProfile2(
                                                       context,
                                                       responseData.userId!,
                                                       responseData.requester!,
                                                       "Requester",
-                                                      whoIConnected: true)),
-                                              SizedBox(
-                                                width: 16,
-                                              ),
-                                              Container(
-                                                  height: 151.72.h,
-                                                  width: 87.2,
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    5, 0, 0, 0),
-                                                            blurRadius: 20)
-                                                      ]),
-                                                  child: cardProfile2(
+                                                      whoIConnected: true),
+                                             cardProfile2(
                                                       context,
                                                       responseData.userId!,
                                                       responseData.contact!,
                                                       "Contact",
-                                                      whoIConnected: true)),
+                                                      whoIConnected: true),
                                             ],
                                           ),
                                         ],
@@ -143,222 +110,30 @@ class RecommendedScreenView
                                               date: formattedDate))
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 14.79,
-                                  ),
                                   if (responseData
                                           .requester?.message?.isNotEmpty ??
                                       false)
-                                    Text("Message to Requester"),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  if (responseData
-                                          .requester?.message?.isNotEmpty ??
-                                      false)
-                                    Container(
-                                      //  width: 307.22,
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white),
-                                      child: Text(
-                                        "${responseData.requester?.message}",
-                                        textAlign: TextAlign.justify,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                  SizedBox(
-                                    height: 14.79,
-                                  ),
+                                    messageCard(context, title: "Message to Requester", message: responseData.requester?.message),
+
                                   if (responseData
                                           .contact?.message?.isNotEmpty ??
                                       false)
-                                    Text("Message to Contact"),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  if (responseData
-                                          .contact?.message?.isNotEmpty ??
-                                      false)
-                                    Container(
-                                      //   width: 307.22,
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white),
-                                      child: Text(
-                                        "${responseData.contact?.message}",
-                                        textAlign: TextAlign.justify,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
+                                    messageCard(context, title: "Message to Contact", message: responseData.contact?.message),
+
                                   if (responseData.both?.isNotEmpty ?? false)
-                                    Text("Message to Both"),
-                                  SizedBox(
-                                    height: 6,
-                                  ),
-                                  if (responseData.both?.isNotEmpty ?? false)
-                                    Container(
-                                      //   width: 307.22,
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white),
-                                      child: Text(
-                                        "${responseData.both}",
-                                        textAlign: TextAlign.justify,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
+                                    messageCard(context, title: "Message to Both", message: responseData.both),
+
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 10.33,
-                          ),
-                          Container(
-                            width: 339,
-                            height: 89.06,
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Color(0xffEBEBEB),
-                                borderRadius: BorderRadius.circular(14)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Connection Status:",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600)),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    smallCard(
-                                        responseData.userId!,
-                                        responseData.requester!,
-                                        responseData.isRequesterAccepted,
-                                        whoIConnected: true),
-                                    smallCard(
-                                        responseData.userId!,
-                                        responseData.contact!,
-                                        responseData.isContactAccepted,
-                                        whoIConnected: true),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
+
+                          connectionStatusCard(context, responseData, whoIConnected: true),
+
                           responseData.closeConnection!
-                              ? Container(
-                                  height: 28.h,
-                                  margin: EdgeInsets.only(
-                                      top: 14.0.h,
-                                      left: 24.0.w,
-                                      right: 24.0.w,
-                                      bottom: 12.h),
-                                  decoration: BoxDecoration(
-                                    color: pluhgGrayColour,
-                                    borderRadius: BorderRadius.circular(28),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "Connection Closed",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ),
-                                )
-                              : Visibility(
-                                  visible: responseData.isContactAccepted! &&
-                                          responseData.isRequesterAccepted!
-                                      ? false
-                                      : true,
-                                  child: Text("Send Reminder To",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black)),
-                                ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          if (!responseData.closeConnection!)
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: size.width * 0.03),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Visibility(
-                                    visible: responseData.isRequesterAccepted!
-                                        ? false
-                                        : true,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return showPluhgDailog4(
-                                                  context,
-                                                  responseData
-                                                      .requesterPreMessage!,
-                                                  responseData.sId!,
-                                                  'requester');
-                                            });
-                                      },
-                                      child: button2("Requester"),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 7.05,
-                                  ),
-                                  Visibility(
-                                    visible: responseData.isContactAccepted!
-                                        ? false
-                                        : true,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return showPluhgDailog4(
-                                                  context,
-                                                  responseData
-                                                      .contactPreMessage!,
-                                                  responseData.sId!,
-                                                  'contact');
-                                            });
-                                      },
-                                      child: button2("Contact"),
-                                    ),
-                                  ),
+                              ? connectionClosedCard()
+                              : connectionRemainderCard(context, responseData),
                                 ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: size.width * 0.1,
                       ),
                     ),
                   ],

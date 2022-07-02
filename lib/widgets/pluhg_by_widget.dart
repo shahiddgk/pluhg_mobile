@@ -15,7 +15,7 @@ class PlugByWidgetCard extends StatelessWidget {
         maxWidth: MediaQuery.of(context).size.height < 812 ? 76.w : 100.w,
       ),
       padding: EdgeInsets.symmetric(
-        vertical: 9.45.h,
+        vertical: 9.45.h, horizontal: 5
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

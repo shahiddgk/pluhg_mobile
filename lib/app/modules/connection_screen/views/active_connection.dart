@@ -2,22 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/data/models/response/connection_response_model.dart';
-import 'package:plug/app/modules/connection_screen/controllers/connection_screen_controller.dart';
-import 'package:plug/app/widgets/button.dart';
+import 'package:plug/app/modules/connection_screen/controllers/active_connection_screen_controller.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
-import 'package:plug/screens/chat/chat_screen.dart';
 import 'package:plug/widgets/connection_profile_card.dart';
-import 'package:plug/widgets/dialog_box.dart';
 import 'package:plug/widgets/pluhg_by_widget.dart';
-import 'package:sn_progress_dialog/progress_dialog.dart';
 
-import '../../../data/http_manager.dart';
-import '../../../data/models/request/connection_request_model.dart';
 
-class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
+class ActiveConnectionScreenView
+    extends GetView<ActiveConnectionScreenController> {
   final ConnectionResponseModel data;
   final bool isRequester;
   final Function refreshActiveConnection;
@@ -29,6 +23,7 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     var dateValue = new DateFormat("yyyy-MM-ddTHH:mm:ssZ")
         .parseUTC(data.createdAt!)
         .toLocal();
@@ -61,231 +56,81 @@ class ActiveConnectionScreenView extends GetView<ConnectionScreenController> {
                   child: Column(
                     children: [
                       Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.w, vertical: size.width * 0.022),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: size.width * 0.03),
                         decoration: BoxDecoration(
                           color: Color(0xffEBEBEB),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            SizedBox(
-                              height: 16.h,
-                            ),
                             Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(width: 20.w),
                                 Column(
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
-                                          height: 151.72.h,
-                                          width: 87.2.w,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Color.fromARGB(
-                                                        5, 0, 0, 0),
-                                                    blurRadius: 20)
-                                              ]),
-                                          child: cardProfile2(
-                                              context,
-                                              data.userId!,
-                                              data.requester!,
-                                              "Requester"),
-                                        ),
-                                        SizedBox(
-                                          width: 16.w,
-                                        ),
-                                        Container(
-                                          height: 131.72.w,
-                                          width: 87.2.w,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Color.fromARGB(
-                                                        5, 0, 0, 0),
-                                                    blurRadius: 20)
-                                              ]),
-                                          child: cardProfile2(
-                                              context,
-                                              data.userId!,
-                                              data.requester!,
-                                              "Contact"),
-                                        ),
+                                        cardProfile2(context, data.userId!,
+                                            data.requester!, "Requester"),
+                                        cardProfile2(context, data.userId!,
+                                            data.contact!, "Contact"),
                                       ],
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  width: 20.w,
-                                ),
-                                PlugByWidgetCard(
-                                  userName:
-                                      (data.userId?.userName ?? "").isEmpty
-                                          ? data.userId?.name ?? ""
+                                Expanded(
+                                  child: PlugByWidgetCard(
+                                      userName: data.userId?.userName == null
+                                          ? "Pluhg user"
                                           : "@" + (data.userId?.userName ?? ""),
-                                  date: formattedDate,
+                                      date: formattedDate),
                                 )
                               ],
                             ),
-                            SizedBox(
-                              height: 24.0,
-                            ),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 20.w,
-                                ),
-                                Text(
-                                  "Message From \n @${data.userId?.userName}",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xff575858)),
-                                ),
-                              ],
-                            ),
-                            Container(height: 12.h),
-                            Container(
-                              height: Get.height / 5,
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.all(12.w),
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white),
-                              child: Text(
-                                (data.both ?? "").isEmpty ? "" : "${data.both}",
-                                textAlign: TextAlign.justify,
-                                maxLines: 25,
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 14.79,
-                            ),
+                            // SizedBox(
+                            //   height: 14.79,
+                            // ),
+                            if (data.both != null &&
+                                data.both != "" &&
+                                data.contact?.message != null &&
+                                data.contact != "" &&
+                                data.requester?.message != null &&
+                                data.requester != "")
+                              messageProfileCard(context, data),
+                            if (data.both != null && data.both != "")
+                              messageCard(context,
+                                  title: "Message to Both", message: data.both),
+
+                            if (data.requester != null &&
+                                isRequester &&
+                                data.requester?.message != null &&
+                                data.requester?.message != "")
+                              messageCard(context,
+                                  title: "Message to Requester",
+                                  message: data.requester?.message),
+
+                            if (!isRequester &&
+                                data.contact != null &&
+                                data.contact?.message != null &&
+                                data.contact?.message != "")
+                              messageCard(context,
+                                  title: "Message to Contact",
+                                  message: data.contact?.message),
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 10.33,
-                      ),
-                      SizedBox(
-                        height: 21,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (isRequester && !data.closeConnection!)
-                            GestureDetector(
-                              child:
-                                  button3("Close Connection", pluhgRedColour),
-                              onTap: () {
-                                //show dialog with rating
-                                showDialogWithRating(context);
-                              },
-                            ),
-                          if (data.closeConnection ?? false)
-                            button3("Connection Closed", pluhgGrayColour),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          outline_button("Conversation", onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChatScreen(
-                                          username_receiver: !isRequester
-                                              ? "@${data.requester?.refId?.userName}"
-                                              : "@${data.contact?.refId?.userName}",
-                                          name_receiver: !isRequester
-                                              ? (data.requester?.refId?.name ??
-                                                  "")
-                                              : (data.contact?.refId?.name ??
-                                                  ""),
-                                          profile_receiver:
-                                              "${APICALLS.imageBaseUrl}${!isRequester ? data.requester?.refId?.profileImage : data.contact?.refId?.profileImage}",
-                                          senderId: isRequester
-                                              ? (data.requester?.refId?.sId ??
-                                                  "")
-                                              : (data.contact?.refId?.sId ??
-                                                  ""),
-                                          recevierId: !isRequester
-                                              ? (data.requester?.refId?.sId ??
-                                                  "")
-                                              : (data.contact?.refId?.sId ??
-                                                  ""),
-                                        )));
-                          }),
-                        ],
-                      )
+                      connectionCloseCard(
+                          context, data, refreshActiveConnection,
+                          isRequester: isRequester),
                     ],
                   ),
                 ),
               ],
             )));
-  }
-
-  void showDialogWithRating(BuildContext buildContext) {
-    showDialog(
-        context: buildContext,
-        builder: (BuildContext context) {
-          return showPluhgRatingDialog(context, "Close connection",
-              "To close this connection, rate @${data.userId?.userName}’s connection recomendation",
-              onCLosed: (value) {
-            ProgressDialog pd = ProgressDialog(context: buildContext);
-            pd.show(
-              max: 100,
-              msg: 'Please wait...',
-              progressType: ProgressType.normal,
-              progressBgColor: Colors.transparent,
-            );
-            HTTPManager()
-                .closeConnection(ConnectionRequestModel(
-                    connectionId: data.sId ?? "",
-                    feedbackRating: value.toString()))
-                .then((value) {
-              pd.close();
-              showPluhgDailog2(
-                buildContext,
-                "Great!!!",
-                "You have successfully cancelled this  connection",
-                onCLosed: () {
-                  Navigator.pop(buildContext);
-                  refreshActiveConnection();
-                },
-              );
-            }).catchError((onError) {
-              pd.close();
-              showPluhgDailog(buildContext, "So sorry",
-                  "Couldn't complete your request, try again");
-            });
-            // APICALLS()
-            //     .closeConnection(connectionID: data["_id"], context: buildContext, rating: value.toString())
-            //     .then((value) {
-            //   if (value) {
-            //     //call active connection API again
-            //     pd.close();
-            //     showPluhgDailog2(buildContext, "Great!!!", "You have successfully cancelled this  connection",
-            //         onCLosed: () {
-            //       Navigator.pop(buildContext);
-            //       refreshActiveConnection();
-            //     });
-            //   } else {
-            //     pd.close();
-            //     showPluhgDailog(buildContext, "So sorry", "Couldn't complete your request, try again");
-            //   }
-            // });
-          });
-        });
   }
 }
