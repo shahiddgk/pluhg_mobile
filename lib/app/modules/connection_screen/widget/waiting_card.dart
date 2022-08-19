@@ -98,7 +98,7 @@ Widget waitingConnectionCard(
                       ),
                     ),
                   ),
-                  (_isRequester && (data?.isRequesterAccepted ?? false))
+                  (_isRequester && (data.isRequesterAccepted ?? false))
                       ? Container(
                           margin: EdgeInsets.only(
                             top: 12.0.h,
@@ -123,7 +123,7 @@ Widget waitingConnectionCard(
                             ),
                           ),
                         )
-                      : (!_isRequester && (data?.isContactAccepted ?? false))
+                      : (!_isRequester && (data.isContactAccepted ?? false))
                           ? Container(
                               margin: EdgeInsets.only(
                                 top: 12.0.h,

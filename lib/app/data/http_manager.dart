@@ -85,6 +85,7 @@ class HTTPManager {
   Future<GeneralResponseModel> updateProfileDetails(var imageFile,
       UpdateProfileRequestModel updateProfileRequestModel) async {
     final url = ApplicationURLs.API_UPDATE_PROFILE;
+    print(url);
     final GeneralResponseModel response = await _handler.postWithImage(
         url, updateProfileRequestModel.toJson(), imageFile);
     return response;
@@ -130,12 +131,25 @@ class HTTPManager {
     return notificationListModel;
   }
 
-  Future<GeneralResponseModel> readNotifications(
+  Future<NotificationListModel> readNotifications(
       NotificationRequestModel notificationRequestModel) async {
     final url = ApplicationURLs.API_READ_NOTIFICATIONS;
+    print(url);
     final GeneralResponseModel response =
         await _handler.post(url, notificationRequestModel.toJson());
-    return response;
+    NotificationListModel notificationListModel =
+        NotificationListModel.fromJson(response.data);
+    return notificationListModel;
+  }
+
+  Future<NotificationListModel> deleteNotifications(
+      NotificationRequestModel notificationRequestModel) async {
+    final url = ApplicationURLs.API_DELETE_NOTIFICATIONS;
+    final GeneralResponseModel response =
+        await _handler.post(url, notificationRequestModel.toJson());
+    NotificationListModel notificationListModel =
+        NotificationListModel.fromJson(response.data);
+    return notificationListModel;
   }
 
   Future<int> getNotificationCount() async {

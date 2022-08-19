@@ -10,11 +10,11 @@ import 'package:sn_progress_dialog/progress_dialog.dart';
 import '../app/data/http_manager.dart';
 import '../app/data/models/request/connection_request_model.dart';
 import '../app/data/models/response/connection_response_model.dart';
+import '../app/modules/chat_screen/chat/chat_screen.dart';
 import '../app/modules/home/views/home_view.dart';
 import '../app/widgets/button.dart';
 import '../app/widgets/colors.dart';
 import '../app/widgets/snack_bar.dart';
-import '../screens/chat/chat_screen.dart';
 import 'dialog_box.dart';
 
 Widget card(BuildContext context, RefId connector, Requester data,
@@ -31,7 +31,7 @@ Widget card(BuildContext context, RefId connector, Requester data,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: cachedNetworkImageWidget(
-          imageUrl: APICALLS.imageBaseUrl + (data?.refId?.profileImage ?? ""),
+          imageUrl: APICALLS.imageBaseUrl + (data.refId?.profileImage ?? ""),
           height: 64.w,
           width: 64.w,
           borderRadiusValue: 12.r,
@@ -66,7 +66,7 @@ String? extractUserName(RefId connector, Requester data, bool whoIConnected) {
     return name;
   }
   if (whoIConnected) {
-    return data?.name;
+    return data.name;
   }
   return "${connector.userName}'s Contact";
 }
@@ -272,6 +272,7 @@ Widget connectionStatusCard(
       children: [
         Text("Connection Status:",
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        responseData.closeConnection! ? Text("Connection Closed") :
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -430,7 +431,7 @@ Widget connectionAcceptDeclineCard(ConnectionResponseModel responseData,
                 showPluhgDailog2(
                   Get.context!,
                   "Success",
-                  "Accepted Successfully"!,
+                  "Accepted Successfully",
                   onCLosed: () {
                     print("[Dialogue:OnClose] go to HomeView [2]");
                     if (value.isRequesterAccepted! &&

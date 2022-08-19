@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -271,6 +272,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                           email: _email.text);
                                     }
                                     print("object SGS");
+                                    print(controller.image.value);
                                     print(_name.text.toString());
                                     print(_username.text.toString());
                                   } else {
@@ -414,16 +416,28 @@ class InfoTile extends StatelessWidget {
           border: UnderlineInputBorder(
             borderSide: BorderSide(color: Color(0xFF080F18), width: 2),
           ),
+          // focusedBorder: UnderlineInputBorder(
+          //   borderSide: BorderSide(color: Colors.black, width: 2),
+          // ),
+         // focusColor: Color(0xFF080F18),
+          hintText: hintText,
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2),
+            borderSide: BorderSide(
+              color: Color(0xFF080F18),
+            ),
           ),
           focusColor: Color(0xFF080F18),
-          labelText: hintText,
-          labelStyle: TextStyle(
-            fontSize: 14,
+          hintStyle: TextStyle(
             fontWeight: FontWeight.w300,
+            fontSize: 14.sp,
             color: Color(0xFF080F18),
           ),
+          //labelText: hintText,
+          // labelStyle: TextStyle(
+          //   fontSize: 14,
+          //   fontWeight: FontWeight.w300,
+          //   color: Color(0xFF080F18),
+          // ),
           prefixIconConstraints: BoxConstraints(
             minHeight: iconSize + 8,
             maxHeight: iconSize + 8,

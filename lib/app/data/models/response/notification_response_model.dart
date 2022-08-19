@@ -1,3 +1,5 @@
+import 'connection_response_model.dart';
+
 class NotificationResponseModel {
   int? status;
   String? sId;
@@ -6,6 +8,7 @@ class NotificationResponseModel {
   String? type;
   String? createdAt;
   String? updatedAt;
+  ConnectionResponseModel? connectionResponseModel;
 
   NotificationResponseModel(
       {this.status,
@@ -14,7 +17,8 @@ class NotificationResponseModel {
       this.notificationMsg,
       this.type,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.connectionResponseModel});
 
   NotificationResponseModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -27,6 +31,9 @@ class NotificationResponseModel {
     type = json['type'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    connectionResponseModel = json['connectionData'] != null
+        ? new ConnectionResponseModel.fromJson(json['connectionData'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -42,6 +49,7 @@ class NotificationResponseModel {
     data['type'] = this.type;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    data['connectionData'] = this.connectionResponseModel!.toJson();
     return data;
   }
 }
@@ -140,7 +148,7 @@ class NotificationMsg {
     body = json['body'];
     contentAvailable = json['content_available'];
     badge = json['badge'];
-    type = json['type'];
+    type = json['type'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -151,7 +159,7 @@ class NotificationMsg {
     data['body'] = this.body;
     data['content_available'] = this.contentAvailable;
     data['badge'] = this.badge;
-    data['type'] = this.type;
+    data['type'] = this.type.toString();
     return data;
   }
 }

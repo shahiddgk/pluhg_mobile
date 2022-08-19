@@ -48,6 +48,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
           onChanged: (value) {
             onChanged(value);
           },
+          textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
               hintText: messages_page == true
                   ? "Search messages"

@@ -6,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/values/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:plug/screens/chat/chat_widgets/document_viewer.dart';
 import 'package:dio/dio.dart';
 class DocumentWidget extends StatelessWidget {
   DocumentWidget(this.file, {Key? key}) : super(key: key);

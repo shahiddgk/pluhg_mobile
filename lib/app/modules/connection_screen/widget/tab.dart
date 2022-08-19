@@ -7,13 +7,14 @@ Widget connectionTab(
   bool active,
 ) {
   return Container(
+    alignment: Alignment.center,
     height: 50.h,
     margin:  EdgeInsets.symmetric(vertical: 6.0.h),
     decoration: BoxDecoration(
         color: active == true ? Colors.white : Colors.transparent,
         borderRadius: BorderRadius.circular(25)),
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 10.0),
       child: Center(
           child: Text(text,
               textAlign: TextAlign.center,

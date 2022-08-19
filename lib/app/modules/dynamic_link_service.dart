@@ -36,10 +36,10 @@ class DynamicLinkService {
       return;
     }
 
-    String? id = deepLink?.queryParameters["id"]!;
+    String? id = deepLink.queryParameters["id"]!;
     print('[_handleDeepLink] the dynamic link id is $id');
 
-    user.setDynamicLink(id!);
+    user.setDynamicLink(id);
     await UserState.store(user);
   }
 }

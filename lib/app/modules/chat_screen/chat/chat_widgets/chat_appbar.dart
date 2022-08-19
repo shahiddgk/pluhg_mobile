@@ -53,7 +53,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(height: 4.h),
+                Container(height: 3.h),
                 SizedBox(
                   child: Text(
                     name,
@@ -67,7 +67,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                   style:
                       TextStyle(color: AppColors.pluhgMenuGrayColour2, fontSize: 14.0.sp, fontWeight: FontWeight.w500),
                 ),
-                Container(height: 4.h),
+                Container(height: 3.h),
               ],
             ),
           ],

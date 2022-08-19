@@ -28,4 +28,7 @@ class AppColors {
   static const Color pluhgGreenLight = Color(0xFFE3FCE7);
   static const Color pluhgGreenDark = Color(0xFF27AE60);
 
+  static const Color recommendedText = Color(0xFF000BFF);
+  static const Color recommendedBackground = Color(0xFFeeeff8);
+
 }

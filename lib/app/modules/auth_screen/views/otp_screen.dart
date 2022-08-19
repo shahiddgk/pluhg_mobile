@@ -11,6 +11,7 @@ import 'package:plug/app/modules/auth_screen/controllers/otp_screen_controller.d
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/views/set_profile_screen.dart';
 import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/values/strings.dart';
 import 'package:plug/app/widgets/app_bar.dart';
 import 'package:plug/app/widgets/colors.dart';
@@ -91,6 +92,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
                                 hintCharacter: "-",
                                 hintStyle: TextStyle(color: Colors.black),
                                 backgroundColor: Colors.transparent,
+
                                 appContext: context,
                                 pastedTextStyle: TextStyle(
                                   color: Colors.green.shade600,
@@ -103,6 +105,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
 
                                 pinTheme: PinTheme(
                                   inactiveColor: Colors.black,
+                                  selectedFillColor: AppColors.pluhgColour,
                                   inactiveFillColor: Colors.white,
                                   shape: PinCodeFieldShape.circle,
                                   // borderRadius: BorderRadius.circular(50),
@@ -238,7 +241,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
           User user = await UserState.get();
           await UserState.store(
             User.registered(
-                token: value?.token ?? "",
+                token: value.token ?? "",
                 id: value.user?.data?.sId ?? "",
                 name: value.user?.data?.userName ?? "",
                 phone: value.user?.data?.phoneNumber ?? "",
@@ -249,7 +252,7 @@ class OTPScreenView extends GetView<OTPScreenController> {
                 countryCode: user.countryCode.isNotEmpty
                     ? user.countryCode
                     : User.DEFAULT_COUNTRY_CODE,
-                dynamicLink: existing.dynamicLink ?? ""),
+                dynamicLink: existing.dynamicLink),
           );
 
           Get.offAll(() => HomeView(index: 1));

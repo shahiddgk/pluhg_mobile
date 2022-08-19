@@ -54,7 +54,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       ChatScreenView(),
       ProfileScreenView()
     ];
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     // controller.goToDeepLink();
   }
 
@@ -188,7 +188,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     if (_timerLink != null) {
       _timerLink!.cancel();
     }

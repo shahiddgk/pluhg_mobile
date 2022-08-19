@@ -71,7 +71,7 @@ class PluhgContact {
   }
 }
 
-enum ContactType {
+enum ContactType {  
   email,
   phone,
 }

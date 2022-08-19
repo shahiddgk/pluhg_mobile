@@ -4,19 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
+import 'package:plug/app/modules/chat_screen/chat/chat_widgets/input_chat_widget.dart';
+import 'package:plug/app/modules/chat_screen/chat/dialog_options_android.dart';
+import 'package:plug/app/modules/chat_screen/chat/media_options/multi_document_picker.dart';
+import 'package:plug/app/modules/chat_screen/chat/media_options/multi_image_picker.dart';
 import 'package:plug/app/services/UserState.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/models/file_model.dart';
-import 'package:plug/screens/chat/chat_widgets/chat_appbar.dart';
-import 'package:plug/screens/chat/chat_widgets/chat_bubble.dart';
-import 'package:plug/screens/chat/chat_widgets/input_chat_widget.dart';
-import 'package:plug/screens/chat/media_options/dialog_options_android.dart';
-import 'package:plug/screens/chat/media_options/multi_document_picker.dart';
-import 'package:plug/screens/chat/media_options/multi_image_picker.dart';
+import 'package:plug/widgets/models/message.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
-
-import '../../../widgets/models/message.dart';
+import 'chat_widgets/chat_appbar.dart';
+import 'chat_widgets/chat_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen(

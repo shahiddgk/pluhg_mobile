@@ -174,8 +174,8 @@ class ContactController extends GetxController with ValidationMixin {
     pluhgContacts.removeWhere((element) {
       bool contactExists = false;
       element.contacts?.forEach((element) {
-        if (comparePhoneNumber(element?.value ?? "", user.phone) ||
-            comparePhoneNumber(element?.value ?? "", user.email)) {
+        if (comparePhoneNumber(element.value ?? "", user.phone) ||
+            comparePhoneNumber(element.value ?? "", user.email)) {
           contactExists = true;
           return;
         }
@@ -267,7 +267,7 @@ class ContactController extends GetxController with ValidationMixin {
   //Get Pluhg Contacts
   List<PluhgContact> get contacts_ => _allContacts.where((contact) {
         final regexp = RegExp(search.value, caseSensitive: false);
-        return regexp.hasMatch(contact?.name ?? "");
+        return regexp.hasMatch(contact.name ?? "");
       }).toList();
 
   List<PluhgContact> get fetchAllContacts => _allContacts;

@@ -58,6 +58,7 @@ class ContactView extends GetView<ContactController> {
                   controller.search.value = searchController.text;
                   print(searchController.text);
                 },
+                textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   hintText: "Search contact",
                   prefixIcon: Icon(

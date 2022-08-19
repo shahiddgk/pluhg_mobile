@@ -39,11 +39,6 @@ class ChatScreenController extends GetxController {
     User user = await UserState.get();
     userID = user.id;
 
-    /*socket = IO.io(APICALLS.ws_url, <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-    });*/
-
     /// LIST VIEW
     socket = IO.io(
         "${APICALLS.ws_url}",
@@ -77,11 +72,7 @@ class ChatScreenController extends GetxController {
 
     socket.emit('getMessageListing', {'userId': userId});
     socket.on('getListingResponse', (data) {
-      print("[ChatScreenController:getMessages] getListingResponse ${data.toString()}");
       var chatsArr = data['data'];
-
-      print("------------------------>AGAIN CALL");
-
       users.value = List<UserChat>.from(chatsArr.map((dynamic message) => UserChat.fromJson(message)).toList());
 
       total_unread_messages.value = 0;
@@ -89,13 +80,6 @@ class ChatScreenController extends GetxController {
       for (UserChat user in users) {
         total_unread_messages.value = total_unread_messages.value + user.unReadCount;
       }
-
-      /*if(total_unread_messages.value == 0) {
-        for (UserChat user in users) {
-          total_unread_messages.value = total_unread_messages.value + user.unReadCount;
-        }
-      }*/
-
       usersTemp = List<UserChat>.from(users.value);
     });
   }

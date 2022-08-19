@@ -1,5 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:plug/app/data/http_manager.dart';
@@ -83,14 +84,26 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                           },
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.person),
-                            labelText: "Set your User Name (unique)",
-                            labelStyle: TextStyle(
-                                color: Color(0xff707070),
-                                fontWeight: FontWeight.w400,
-                                fontFamily: "Muli",
-                                fontStyle: FontStyle.normal,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.02),
+                           hintText: "Set your User Name (unique)",
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xFF080F18),
+                              ),
+                            ),
+                            focusColor: Color(0xFF080F18),
+                            hintStyle: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 14.sp,
+                              color: Color(0xFF080F18),
+                            ),
+                           // labelText: "Set your User Name (unique)",
+                           //  labelStyle: TextStyle(
+                           //      color: Color(0xff707070),
+                           //      fontWeight: FontWeight.w400,
+                           //      fontFamily: "Muli",
+                           //      fontStyle: FontStyle.normal,
+                           //      fontSize:
+                           //          MediaQuery.of(context).size.height * 0.02),
                           ),
                         ),
                       ),
@@ -109,16 +122,28 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                 textCapitalization:
                                     TextCapitalization.sentences,
                                 decoration: InputDecoration(
-                                  labelText: "Set your email",
+                                  //labelText: "Set your email",
                                   prefixIcon: Icon(Icons.email_outlined),
-                                  labelStyle: TextStyle(
-                                      color: Color(0xff707070),
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: "Muli",
-                                      fontStyle: FontStyle.normal,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.02),
+                                  hintText: "Set your email",
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF080F18),
+                                    ),
+                                  ),
+                                  focusColor: Color(0xFF080F18),
+                                  hintStyle: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 14.sp,
+                                    color: Color(0xFF080F18),
+                                  ),
+                                  // labelStyle: TextStyle(
+                                  //     color: Color(0xff707070),
+                                  //     fontWeight: FontWeight.w400,
+                                  //     fontFamily: "Muli",
+                                  //     fontStyle: FontStyle.normal,
+                                  //     fontSize:
+                                  //         MediaQuery.of(context).size.height *
+                                  //             0.02),
                                 ),
                               ))
                           : Container(
@@ -273,7 +298,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
       User user = await UserState.get();
       await UserState.store(
         User.registered(
-            token: value?.token ?? "",
+            token: value.token ?? "",
             id: value.user?.data?.sId ?? "",
             name: value.user?.data?.userName ?? "",
             phone: value.user?.data?.phoneNumber ?? "",
@@ -284,7 +309,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
             countryCode: user.countryCode.isNotEmpty
                 ? user.countryCode
                 : User.DEFAULT_COUNTRY_CODE,
-            dynamicLink: user.dynamicLink ?? ""),
+            dynamicLink: user.dynamicLink),
       );
       Get.offAll(() => HomeView(index: 1));
     }).catchError((onError) {

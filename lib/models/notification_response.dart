@@ -1,7 +1,9 @@
 abstract class kindOf {
   static const RECOMMENDATION = 'recommendation';
   static const ACCEPT = 'accept';
+  static const ACCEPT_REPLY = 'acceptreply';
   static const DECLINE = 'decline';
+  static const DECLINE_REPLY = 'declinereply';
   static const NONE = 'none';
 }
 

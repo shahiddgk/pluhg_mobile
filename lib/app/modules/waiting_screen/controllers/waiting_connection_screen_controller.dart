@@ -14,6 +14,8 @@ class WaitingConnectionScreenController extends GetxController {
 
   Future<ConnectionResponseModel> getWaitingConnection(
       String connectionID) async {
+    print("Watiting Connection id checking");
+    print(connectionID);
     try {
       ConnectionResponseModel data = await HTTPManager().getConnectionDetails(
           path: ApplicationURLs.API_GET_WAITING_CONNECTION_DETAILS,

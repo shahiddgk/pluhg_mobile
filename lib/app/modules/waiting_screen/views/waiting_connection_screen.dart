@@ -132,11 +132,11 @@ class WaitingScreenView extends GetView<WaitingConnectionScreenController> {
                           ),
                           connectionStatusCard(context, responseData),
                           (controller.isRequester.value &&
-                                  (responseData?.isRequesterAccepted ?? false))
+                                  (responseData.isRequesterAccepted ?? false) || !responseData.isPending!)
                               ? Container()
                               : (!controller.isRequester.value &&
-                                      (responseData?.isContactAccepted ??
-                                          false))
+                                      (responseData.isContactAccepted ??
+                                          false) || !responseData.isPending!)
                                   ? Container() //connectionAcceptedTextCard(responseData, isRequester: controller.isRequester.value)
                                   : connectionAcceptDeclineCard(responseData,
                                       connectionID: connectionID),

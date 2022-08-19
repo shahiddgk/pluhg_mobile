@@ -3,13 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:plug/app/data/models/response/notification_response_model.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/app/widgets/simple_appbar.dart';
 import 'package:plug/models/notification_response.dart';
 
 import '../../../values/colors.dart';
+import '../../connection_screen/controllers/connection_screen_controller.dart';
+import '../../connection_screen/views/active_connection.dart';
+import '../../recommendation_screen/views/recommended_connection_screen.dart';
+import '../../waiting_screen/views/waiting_connection_screen.dart';
 import '../controllers/notification_screen_controller.dart';
 
 class NotificationScreenView extends GetView<NotificationScreenController> {
@@ -31,340 +34,309 @@ class NotificationScreenView extends GetView<NotificationScreenController> {
             return Center(
               child: pluhgProgress(),
             );
-          }
-          if (!snapshot.hasData) {
-            return Center(
-              child: Text("No Notification yet"),
-            );
-          }
-          if (snapshot.hasError) {
+          } else if (snapshot.hasError) {
             return Center(
               child: Text("Error Encountered, Sorry"),
             );
           } else {
-            //NotificationListModel notificationListModel = controller.data;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Notifications',
-                      style: TextStyle(
-                        color: pluhgColour,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        reverse: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: controller.data.value.values.length,
-                        itemBuilder: (ctx, i) => Obx(() {
-                              final notification =
-                              controller.data.value.values[i];
-                              final isRead =
-                                  controller.read[notification.sId] ??
-                                      notification.status == 1;
-                              return Slidable(
-                                  key: const ValueKey(0),
-                                  endActionPane: ActionPane(
-                                    motion: const ScrollMotion(),
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            if (!isRead) {
-                                              print("mark read clicked");
-                                             controller
-                                                  .markAsRead(i,notification);
-                                            }
-                                          },
-                                          child: SvgPicture.asset(
-                                            "assets/svg/notification_read.svg",
-                                            width: 50.w,
-                                            height: 50.h,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: SvgPicture.asset(
-                                            "assets/svg/notification_delete.svg",
-                                            width: 50.w,
-                                            height: 50.h,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Container(
-                                      padding: EdgeInsets.all(8.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: isRead
-                                            ? AppColors.pluhgWhite
-                                            : controller.data.value.values[i]
-                                                        .notificationMsg
-                                                        ?.type ==
-                                                    kindOf.ACCEPT
-                                                ? AppColors.pluhgGreenLight
-                                                : controller.data.value.values[i]
-                                                            .notificationMsg
-                                                            ?.type ==
-                                                        kindOf.DECLINE
-                                                    ? AppColors.pluhgRedLight
-                                                    : controller.data.value.values[i]
-                                                                .notificationMsg
-                                                                ?.type ==
-                                                            kindOf
-                                                                .RECOMMENDATION
-                                                        ? AppColors
-                                                            .pluhgYellowColourLight
-                                                        : AppColors.pluhgWhite,
-                                        border: Border.all(
-                                          color: isRead
-                                              ? AppColors.pluhgGreyColour
-                                              : Colors.transparent,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+            return snapshot.data.value.values.length == 0
+                ? Center(
+                    child: Text("No Notification yet"),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Notifications',
+                            style: TextStyle(
+                              color: pluhgColour,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Obx(() {
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                reverse: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: controller.data.value.values.length,
+                                itemBuilder: (ctx, i) {
+                                  final notification =
+                                      controller.data.value.values[i];
+                                  final isRead =
+                                      notification.status == 1 ? true : false;
+                                  // controller.read[notification.sId] ??
+                                  //     notification.status == 1;
+                                  return Slidable(
+                                      key: ValueKey(
+                                          controller.data.value.values[i].sId),
+                                      endActionPane: ActionPane(
+                                        motion: const ScrollMotion(),
                                         children: [
-                                          isRead
-                                              ? SvgPicture.asset(
-                                                  "assets/svg/logo_small_grey.svg")
-                                              : SvgPicture.asset(
-                                                  "assets/svg/logo_small_blue.svg"),
-                                          // cachedNetworkImageWidget(
-                                          //         imageUrl: APICALLS
-                                          //                 .imageBaseUrl +
-                                          //             '${notificationResponse.data[i].userId.profileImage}',
-                                          //         width: 50.w,
-                                          //         height: 50.w,
-                                          //       ),
-                                          Flexible(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    controller.data.value.values[i]
-                                                            .notificationMsg
-                                                            ?.title ??
-                                                        "",
-                                                    //"Connection recommendation",
-                                                    maxLines: 2,
-                                                    style: TextStyle(
-                                                      color: isRead
-                                                          ? AppColors
-                                                              .pluhgMenuBlackColour
-                                                          : controller.data.value.values[i]
-                                                                      .notificationMsg
-                                                                      ?.type ==
-                                                                  kindOf.ACCEPT
-                                                              ? AppColors
-                                                                  .pluhgGreenDark
-                                                              : controller.data.value.values[i]
-                                                                          .notificationMsg
-                                                                          ?.type ==
-                                                                      kindOf
-                                                                          .DECLINE
-                                                                  ? AppColors
-                                                                      .pluhgRedDark
-                                                                  : controller.data.value.values[i]
-                                                                              .notificationMsg
-                                                                              ?.type ==
-                                                                          kindOf
-                                                                              .RECOMMENDATION
-                                                                      ? AppColors
-                                                                          .pluhgOrangeColour
-                                                                      : AppColors
-                                                                          .pluhgMenuBlackColour,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    controller.data.value.values[i]
-                                                            .notificationMsg
-                                                            ?.body ??
-                                                        "",
-                                                    //"GoldenGril has recommended a recommendation between you and Johnny B. Quick.",
-                                                    maxLines: 4,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      color: AppColors
-                                                          .pluhgGrayColour3,
-                                                      fontSize: 14,
-                                                      //fontWeight: FontWeight.w300,
-                                                    ),
-                                                  ),
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.bottomRight,
-                                                    child: Text(
-                                                      controller.getTimeDifference(
-                                                          controller.data.value.values[i]
-                                                                  .createdAt ??
-                                                              ""),
-                                                      // "Just Now",
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        color: AppColors
-                                                            .pluhgGrayColour3,
-                                                        fontSize: 14,
-                                                        //fontWeight: FontWeight.w300,
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: InkWell(
+                                              onTap: () async {
+                                                if (!isRead) {
+                                                  print("mark read clicked");
+                                                  controller.markAsRead(
+                                                      i, notification);
+                                                }
+                                              },
+                                              child: SvgPicture.asset(
+                                                "assets/svg/notification_read.svg",
+                                                width: 50.w,
+                                                height: 50.h,
                                               ),
                                             ),
-                                          )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: InkWell(
+                                              onTap: () {
+                                                controller.deleteNotification(
+                                                    i, notification);
+                                              },
+                                              child: SvgPicture.asset(
+                                                "assets/svg/notification_delete.svg",
+                                                width: 50.w,
+                                                height: 50.h,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                  ));
-                            })),
-                    // ListView.builder(
-                    //   shrinkWrap: true,
-                    //   reverse: true,
-                    //   physics: NeverScrollableScrollPhysics(),
-                    //   itemCount: notificationResponse.data.length,
-                    //   itemBuilder: (ctx, i) => Container(
-                    //     color: Color(0xFFF9F9F9),
-                    //     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    //     child: Row(
-                    //       mainAxisSize: MainAxisSize.max,
-                    //       children: [
-                    //         ///OLD code
-                    //         /*CircleAvatar(
-                    //           radius: 50 / 2,
-                    //           backgroundImage: notificationResponse.data[i].userId.profileImage.isEmpty
-                    //               ? SvgPicture.asset(
-                    //                       "resources/svg/profile.svg")
-                    //                   as ImageProvider
-                    //               : NetworkImage(APICALLS.imageBaseUrl + '${notificationResponse.data[i].userId.profileImage}'),
-                    //         ),*/
-                    //
-                    //         CircleAvatar(
-                    //           radius: 50 / 2,
-                    //           child: notificationResponse
-                    //                   .data[i].userId.profileImage.isEmpty
-                    //               ? SvgPicture.asset(
-                    //                   "resources/svg/profile.svg")
-                    //               : cachedNetworkImageWidget(
-                    //                   imageUrl: APICALLS.imageBaseUrl +
-                    //                       '${notificationResponse.data[i].userId.profileImage}',
-                    //                   width: 50,
-                    //                   height: 50,
-                    //                 ),
-                    //         ),
-                    //
-                    //         SizedBox(width: 10),
-                    //         Expanded(
-                    //           child: Container(
-                    //             child: Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Container(
-                    //                   width: size.width - 36 - 45,
-                    //                   child: Text(
-                    //                     notificationResponse
-                    //                         .data[i].notificationMsg.body
-                    //                         .toString(),
-                    //                     maxLines: 2,
-                    //                     style: TextStyle(
-                    //                       color: Colors.black,
-                    //                       fontSize: 14,
-                    //                       fontWeight: FontWeight.w400,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //                 Row(
-                    //                   mainAxisSize: MainAxisSize.max,
-                    //                   mainAxisAlignment:
-                    //                       MainAxisAlignment.spaceBetween,
-                    //                   children: [
-                    //                     Text(
-                    //                       controller.getTimeDifference(
-                    //                           notificationResponse
-                    //                               .data[i].createdAt),
-                    //                       style: TextStyle(
-                    //                         color: Color(0xFF8E8E93),
-                    //                         fontSize: 12,
-                    //                         fontWeight: FontWeight.w400,
-                    //                       ),
-                    //                     ),
-                    //                     Obx(
-                    //                       () {
-                    //                         final notification =
-                    //                             notificationResponse.data[i];
-                    //                         final isRead = controller
-                    //                                 .read[notification.id] ??
-                    //                             notification.status == 1;
-                    //
-                    //                         return GestureDetector(
-                    //                           onTap: () async {
-                    //                             if (!isRead) {
-                    //                               final status =
-                    //                                   await controller
-                    //                                       .markAsRead(
-                    //                                           notification);
-                    //                               notificationResponse.data[i]
-                    //                                   .status = status ? 1 : 0;
-                    //                               // this.controller.update();
-                    //                             }
-                    //                           },
-                    //                           child: Text(
-                    //                             isRead
-                    //                                 ? "Seen"
-                    //                                 : 'Mark as Read',
-                    //                             style: TextStyle(
-                    //                               color: pluhgColour,
-                    //                               fontSize: 11,
-                    //                               fontWeight: FontWeight.w400,
-                    //                             ),
-                    //                           ),
-                    //                         );
-                    //                       },
-                    //                     ),
-                    //                   ],
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-            );
+                                      child: InkWell(
+                                        onTap: () {
+                                          if (!isRead) {
+                                            print("mark read clicked");
+                                            controller.markAsRead(
+                                                i, notification);
+                                          }
+                                          if (controller.user.value.id ==
+                                              controller
+                                                  .data
+                                                  .value
+                                                  .values[i]
+                                                  .connectionResponseModel
+                                                  ?.userId
+                                                  ?.sId) {
+                                            Get.to(
+                                              () => RecommendedScreenView(
+                                                connectionID: controller
+                                                    .data
+                                                    .value
+                                                    .values[i]
+                                                    .connectionResponseModel
+                                                    ?.sId,
+                                              ),
+                                            );
+                                          } else if ((controller
+                                                      .data
+                                                      .value
+                                                      .values[i]
+                                                      .connectionResponseModel
+                                                      ?.isRequesterAccepted ??
+                                                  false) &&
+                                              (controller
+                                                      .data
+                                                      .value
+                                                      .values[i]
+                                                      .connectionResponseModel
+                                                      ?.isContactAccepted ??
+                                                  false)) {
+                                            Get.to(
+                                              () => ActiveConnectionScreenView(
+                                                data: controller
+                                                    .data
+                                                    .value
+                                                    .values[i]
+                                                    .connectionResponseModel!,
+                                                isRequester: controller
+                                                    .user.value
+                                                    .compareId(
+                                                        '${controller.data.value.values[i].connectionResponseModel?.requester?.refId?.sId}'),
+                                                refreshActiveConnection: () {
+                                                  Get.put(ConnectionScreenController())
+                                                      .activeData();
+                                                },
+                                              ),
+                                            );
+                                          } else {
+                                            print(controller
+                                                .data
+                                                .value
+                                                .values[i]
+                                                .connectionResponseModel
+                                                ?.sId??"");
+                                            Get.to(() => WaitingScreenView(
+                                                  connectionID: controller
+                                                      .data
+                                                      .value
+                                                      .values[i]
+                                                      .connectionResponseModel
+                                                      ?.sId??"",
+                                                ));
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(8.0),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              color: isRead
+                                                  ? AppColors.pluhgWhite
+                                                  : getBackgroundColor(
+                                                      controller
+                                                          .data
+                                                          .value
+                                                          .values[i]
+                                                          .notificationMsg
+                                                          ?.type),
+                                              border: Border.all(
+                                                color: isRead
+                                                    ? AppColors.pluhgGreyColour
+                                                    : Colors.transparent,
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                isRead
+                                                    ? SvgPicture.asset(
+                                                        "assets/svg/logo_small_grey.svg")
+                                                    : SvgPicture.asset(
+                                                        "assets/svg/logo_small_blue.svg"),
+                                                Flexible(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          controller
+                                                                  .data
+                                                                  .value
+                                                                  .values[i]
+                                                                  .notificationMsg
+                                                                  ?.title ??
+                                                              "",
+                                                          maxLines: 2,
+                                                          style: TextStyle(
+                                                            color: isRead
+                                                                ? AppColors
+                                                                    .pluhgMenuBlackColour
+                                                                : getTextColor(
+                                                                    controller
+                                                                        .data
+                                                                        .value
+                                                                        .values[
+                                                                            i]
+                                                                        .notificationMsg
+                                                                        ?.type),
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          controller
+                                                                  .data
+                                                                  .value
+                                                                  .values[i]
+                                                                  .notificationMsg
+                                                                  ?.body ??
+                                                              "",
+                                                          maxLines: 4,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                            color: AppColors
+                                                                .pluhgGrayColour3,
+                                                            fontSize: 14,
+                                                            //fontWeight: FontWeight.w300,
+                                                          ),
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child: Text(
+                                                            controller.getTimeDifference(
+                                                                controller
+                                                                        .data
+                                                                        .value
+                                                                        .values[
+                                                                            i]
+                                                                        .createdAt ??
+                                                                    ""),
+                                                            // "Just Now",
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                              color: AppColors
+                                                                  .pluhgGrayColour3,
+                                                              fontSize: 14,
+                                                              //fontWeight: FontWeight.w300,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ));
+                                });
+                          }),
+                        ],
+                      ),
+                    ),
+                  );
           }
         },
       ),
     );
+  }
+
+  getTextColor(String? type) {
+    if (type == kindOf.ACCEPT || type == kindOf.ACCEPT_REPLY) {
+      return AppColors.pluhgGreenDark;
+    } else if (type == kindOf.DECLINE || type == kindOf.DECLINE_REPLY) {
+      return AppColors.pluhgRedDark;
+    } else if (type == kindOf.RECOMMENDATION) {
+      return AppColors.recommendedText;
+    } else {
+      return AppColors.pluhgMenuBlackColour;
+    }
+  }
+
+  getBackgroundColor(String? type) {
+    if (type == kindOf.ACCEPT || type == kindOf.ACCEPT_REPLY) {
+      return AppColors.pluhgGreenLight;
+    } else if (type == kindOf.DECLINE || type == kindOf.DECLINE_REPLY) {
+      return AppColors.pluhgRedLight;
+    } else if (type == kindOf.RECOMMENDATION) {
+      return AppColors.recommendedBackground;
+    } else {
+      return AppColors.pluhgWhite;
+    }
   }
 
   markAsRead(BuildContext context) {}

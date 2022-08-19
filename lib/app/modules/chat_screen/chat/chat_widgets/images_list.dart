@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plug/app/data/api_calls.dart';
-import 'package:plug/screens/chat/chat_widgets/fullscreen_image.dart';
+import 'package:plug/app/modules/chat_screen/chat/chat_widgets/fullscreen_image.dart';
 
 class ImageList extends StatelessWidget {
   ImageList(this.list);

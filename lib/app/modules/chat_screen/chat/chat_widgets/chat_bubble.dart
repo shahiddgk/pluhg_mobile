@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:plug/app/modules/chat_screen/chat/chat_widgets/show_document_widget.dart';
+import 'package:plug/app/modules/chat_screen/chat/chat_widgets/show_images_widget.dart';
 import 'package:plug/app/values/colors.dart';
-import 'package:plug/screens/chat/chat_widgets/show_document_widget.dart';
-import 'package:plug/screens/chat/chat_widgets/show_images_widget.dart';
 import 'package:plug/widgets/models/message.dart';
 import 'package:url_launcher/url_launcher.dart';
 

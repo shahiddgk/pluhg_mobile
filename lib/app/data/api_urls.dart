@@ -1,12 +1,10 @@
 class ApplicationURLs {
-  // static const BASE_URL = "https://api.pluhg.com/api/";
-  // static const WS_URL = "ws://api.pluhg.com";
+  static const BASE_URL = "https://api.pluhg.com/api/";
+  static const WS_URL = "ws://api.pluhg.com";
 
-  static const BASE_URL = "http://192.168.0.102:8000/api/";
-  static const WS_URL = "ws://192.168.0.102:8000";
+  // static const BASE_URL = "http://192.168.31.86:8000/api/";
+  // static const WS_URL = "ws://192.168.31.86:8000";
 
-  // static const BASE_URL = "http://192.168.43.65:8000/api/";
-  // static const WS_URL = "ws://192.168.43.65:8000";
 
   //Authentication
   static const API_LOGIN = BASE_URL + "login";
@@ -27,6 +25,7 @@ class ApplicationURLs {
       BASE_URL + "connect/waitingConnections";
   static const API_GET_NOTIFICATIONS = BASE_URL + "getNotificationList";
   static const API_READ_NOTIFICATIONS = BASE_URL + "readNotification";
+  static const API_DELETE_NOTIFICATIONS = BASE_URL + "deleteNotification";
   static const API_GET_NOTIFICATION_COUNT = BASE_URL + "getNotificationCount";
   static const API_GET_RECOMMENDED_CONNECTION_DETAILS =
       BASE_URL + "connect/getRecommendedConnectionsDetails/";

@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:plug/app/data/api_calls.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/search_app_bar.dart';
-import 'package:plug/screens/chat/chat_screen.dart';
 import 'package:plug/widgets/main_chat_widget.dart';
 
+import '../chat/chat_screen.dart';
 import '../controllers/chat_screen_controller.dart';
 
 class ChatScreenView extends GetView<ChatScreenController> {
@@ -55,28 +55,15 @@ class ChatScreenView extends GetView<ChatScreenController> {
                             senderId: controller.users[i].senderId,
                             recevierId: controller.users[i].recevierId,
                             clearUnReadMessageCount: (){
-
-
-                              print('CALL BACK CALL${controller.total_unread_messages.value}');
-
                               var tempUser = controller.users[i];
                               var temp = tempUser.unReadCount;
 
                               tempUser.unReadCount = 0;
                               var index = controller.users.removeAt(i);
                               controller.users.insert(i, tempUser);
-                              //controller.users[i].unReadCount = 0;
                               if(temp > 0) {
                                 controller.total_unread_messages.value = (controller.total_unread_messages.value - temp).toInt();
                               }
-                              /*controller.users.clear();
-                              controller.socket.close();
-                              controller.connect();*/
-
-
-                              print('CALL BACK END CALL }${controller.total_unread_messages.value}');
-
-
                             },
                         ));
                       }, // get last message item
