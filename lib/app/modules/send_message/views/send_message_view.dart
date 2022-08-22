@@ -303,6 +303,7 @@ class SendMessageView extends GetView<SendMessageController> {
   }
 
   Future onTap(context) async {
+
     controller.loading.value = true;
     HTTPManager()
         .connectTwoPeople(ConnectPeopleRequestModel(

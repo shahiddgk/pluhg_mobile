@@ -211,36 +211,38 @@ class _ChatScreenState extends State<ChatScreen> {
                   padding: EdgeInsets.all(4),
                   height: 200.h,
                   width: 240.w,
-                  child: DialogOptionsAndroid(
-                      send_camera_image: () {},
-                      send_document: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MultiDocumentPicker(
-                                      title: "Select File",
-                                      callback: upload_document,
-                                      writeMessage: (String? url, int time) async {
-                                        if (url != null) {
-                                          ///send message
-                                        }
-                                      },
-                                    )));
-                      },
-                      send_gallery_images: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MultiImagePicker(
-                                      title: "Choose Image",
-                                      callback: upload_document,
-                                      writeMessage: (String? url, int time) async {
-                                        if (url != null) {
-                                          ///send message
-                                        }
-                                      },
-                                    )));
-                      })));
+                  child: Expanded(
+                    child: DialogOptionsAndroid(
+                        send_camera_image: () {},
+                        send_document: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MultiDocumentPicker(
+                                        title: "Select File",
+                                        callback: upload_document,
+                                        writeMessage: (String? url, int time) async {
+                                          if (url != null) {
+                                            ///send message
+                                          }
+                                        },
+                                      )));
+                        },
+                        send_gallery_images: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MultiImagePicker(
+                                        title: "Choose Image",
+                                        callback: upload_document,
+                                        writeMessage: (String? url, int time) async {
+                                          if (url != null) {
+                                            ///send message
+                                          }
+                                        },
+                                      )));
+                        }),
+                  )));
         });
   }
 

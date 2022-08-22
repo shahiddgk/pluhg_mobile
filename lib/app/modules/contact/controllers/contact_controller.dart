@@ -141,6 +141,7 @@ class ContactController extends GetxController with ValidationMixin {
               prefix: int.parse(user.countryCode));
         }
         //try {
+
         bool isValid = await plugin.validate(contactPhoneNumber, region.code);
         if (isValid) {
           PhoneNumber phoneNumber =
