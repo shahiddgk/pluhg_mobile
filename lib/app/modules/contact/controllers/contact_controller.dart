@@ -141,7 +141,8 @@ class ContactController extends GetxController with ValidationMixin {
               prefix: int.parse(user.countryCode));
         }
         //try {
-
+        print("ASAD CONTACS");
+        print(contactPhoneNumber);
         bool isValid = await plugin.validate(contactPhoneNumber, region.code);
         if (isValid) {
           PhoneNumber phoneNumber =
@@ -150,6 +151,7 @@ class ContactController extends GetxController with ValidationMixin {
         } else {
           newPhoneNumber =
               contactPhoneNumber.replaceAll(new RegExp(r'^00+(?=.)'), '+');
+          print(newPhoneNumber);
         }
         element2.number = newPhoneNumber;
         // } catch (e) {
@@ -202,6 +204,7 @@ class ContactController extends GetxController with ValidationMixin {
     checkPermissions().then((value) {
       // if (value) {
       readContacts().then((contacts) {
+
         removeInvalidContacts(user, contacts).then((validContacts) {
           validateAndFormatContacts(user, validContacts)
               .then((validatedContacts) {

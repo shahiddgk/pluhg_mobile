@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -42,7 +43,7 @@ class ContactView extends GetView<ContactController> {
               onTap: () => Navigator.pop(context),
               child: Icon(
                 Icons.arrow_back_ios_outlined,
-                color: Colors.grey,
+                color: Colors.black,
               ),
             ),
             title: Container(
@@ -58,9 +59,10 @@ class ContactView extends GetView<ContactController> {
                   controller.search.value = searchController.text;
                   print(searchController.text);
                 },
-                textAlignVertical: TextAlignVertical.center,
+              //  textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   hintText: "Search contact",
+                  contentPadding: EdgeInsets.only(top: 5.2),
                   prefixIcon: Icon(
                     Icons.search_outlined,
                     color: Color(0xff080F18),
@@ -131,10 +133,10 @@ class ContactView extends GetView<ContactController> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               SizedBox(
-                height: 15.35.h,
+                height: 10.35.h,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 6),
                 child: Text(
                   "${controller.title.value}",
                   style: TextStyle(
@@ -145,7 +147,7 @@ class ContactView extends GetView<ContactController> {
                 ),
               ),
               SizedBox(
-                height: 26,
+                height: 5,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

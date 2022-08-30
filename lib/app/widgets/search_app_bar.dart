@@ -31,7 +31,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Icon(
                   Icons.arrow_back_ios_outlined,
-                  color: Colors.grey,
+                  color: Colors.black,
                 ),
               ),
             )
@@ -48,13 +48,14 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
           onChanged: (value) {
             onChanged(value);
           },
-          textAlignVertical: TextAlignVertical.center,
+          //textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 5.2),
               hintText: messages_page == true
                   ? "Search messages"
                   : "Search connections",
               prefixIcon: Padding(
-                  padding: EdgeInsets.all(8.w),
+                  padding: EdgeInsets.all(9.w),
                   child: SvgPicture.asset(
                     "assets/images/search.svg",
                     color: Color(0xff080F18),
@@ -88,7 +89,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
               enabledBorder: InputBorder.none,
               errorBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
-              contentPadding: EdgeInsets.all(12.0),
+              //contentPadding: EdgeInsets.all(12.0),
               // labelText: "Bill",
               hintStyle: TextStyle(
                   fontSize: 14,

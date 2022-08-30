@@ -195,6 +195,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   send_message(String text, type) {
+    print("SEND MESSAGE TEST");
     sendMessage_type(text, widget.senderId, widget.recevierId, type, []);
     _controller.clear();
   }

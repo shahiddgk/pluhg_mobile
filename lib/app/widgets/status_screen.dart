@@ -18,9 +18,7 @@ class StatusScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
+        body: Column(
       children: [
           SizedBox(
             height: 91.h,
@@ -65,7 +63,7 @@ class StatusScreen extends StatelessWidget {
             height: 20.h,
           )
       ],
-    ),
-        ));
+     ),
+    );
   }
 }

@@ -62,6 +62,8 @@ class HTTPManager {
   Future<GeneralResponseModel> connectTwoPeople(
       ConnectPeopleRequestModel connectionRequestModel) async {
     final url = ApplicationURLs.API_CONNECT_PEOPLE;
+    print("CONNECT 2 PEOPLE");
+    print(url);
     final GeneralResponseModel response =
         await _handler.post(url, connectionRequestModel.toJson());
     return response;
@@ -117,6 +119,8 @@ class HTTPManager {
 
   Future<ConnectionListModel> getWaitingConnections() async {
     final url = ApplicationURLs.API_GET_WAITING_CONNECTIONS;
+    print("getWaitingConnections");
+    print(url);
     final GeneralResponseModel response = await _handler.get(url);
     ConnectionListModel connectionListModel =
         ConnectionListModel.fromJson(response.data);
@@ -154,12 +158,17 @@ class HTTPManager {
 
   Future<int> getNotificationCount() async {
     final url = ApplicationURLs.API_GET_NOTIFICATION_COUNT;
+    print("Notification Count");
+    print(url);
     final GeneralResponseModel response = await _handler.get(url);
     return response.data["unReadCount"];
   }
 
   Future<ConnectionResponseModel> getConnectionDetails(
       {required String path, required String connectionId}) async {
+    print("getConnectionDetails");
+    print(path);
+    print(connectionId);
     final url = path;
     final GeneralResponseModel response =
         await _handler.get('$url$connectionId');
