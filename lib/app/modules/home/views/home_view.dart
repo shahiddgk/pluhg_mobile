@@ -50,7 +50,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     super.initState();
     controller.currentIndex.value = index;
     controller.connectionTabIndex.value = connectionTabIndex;
-    timer = Timer.periodic(Duration(seconds: 3), (Timer t) => controller.getNotificationCount());
+    timer = new Timer.periodic(Duration(seconds: 3), (Timer t) => controller.getNotificationCount());
     pages = [
       ConnectionScreenView(controller.connectionTabIndex),
       ConnectScreenView(),
