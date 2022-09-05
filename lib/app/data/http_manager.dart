@@ -129,6 +129,7 @@ class HTTPManager {
 
   Future<NotificationListModel> getNotifications() async {
     final url = ApplicationURLs.API_GET_NOTIFICATIONS;
+    print(url);
     final GeneralResponseModel response = await _handler.get(url);
     NotificationListModel notificationListModel =
         NotificationListModel.fromJson(response.data);
@@ -214,6 +215,9 @@ class HTTPManager {
   Future<List<PluhgContact>> checkIfPluhgUsers(
       CheckContactRequestModel checkContactRequestModel) async {
     final url = ApplicationURLs.API_CHECK_PLUHG_USERS;
+    print("PLUHG USER CHECKING");
+    print(url);
+    print(checkContactRequestModel.pluhgContacts?.length);
     final GeneralResponseModel response =
         await _handler.post(url, checkContactRequestModel.toJson());
     ContactResponseModel contactResponseModel =

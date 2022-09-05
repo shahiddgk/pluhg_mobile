@@ -39,6 +39,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   //Timer for retrieving dynamic in IOS
   Timer? _timerLink;
 
+  Timer? timer;
+
   _HomeViewState(this.index, this.connectionTabIndex);
 
   final controller = Get.put(HomeController());
@@ -48,6 +50,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     super.initState();
     controller.currentIndex.value = index;
     controller.connectionTabIndex.value = connectionTabIndex;
+    timer = Timer.periodic(Duration(seconds: 3), (Timer t) => controller.getNotificationCount());
     pages = [
       ConnectionScreenView(controller.connectionTabIndex),
       ConnectScreenView(),
@@ -189,6 +192,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    timer!.cancel();
     if (_timerLink != null) {
       _timerLink!.cancel();
     }
