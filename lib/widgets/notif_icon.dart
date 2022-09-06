@@ -40,7 +40,7 @@ class NotifIcon extends StatelessWidget {
               top: 0,
               right: 6,
               child:  Container(
-                decoration: BoxDecoration(color: AppColors.pluhgColour, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: AppColors.pluhgRedColour, shape: BoxShape.circle),
                 child: Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: Text(

@@ -258,13 +258,19 @@ Widget messageCard(BuildContext context, {String? title, String? message}) {
 }
 
 Widget connectionStatusCard(
+
     BuildContext context, ConnectionResponseModel responseData,
     {bool whoIConnected = false}) {
+  Size size = MediaQuery.of(context).size;
   return Container(
-    margin: EdgeInsets.symmetric(vertical: 10),
-    width: 339,
-    height: 89.06,
-    padding: EdgeInsets.all(10),
+    padding: EdgeInsets.symmetric(
+        horizontal: 16.w, vertical: size.width * 0.036),
+    margin: EdgeInsets.symmetric(
+      vertical: size.height*0.02,
+        horizontal: size.width * 0.04),
+    // width: 339,
+    // height: 89.06,
+    // padding: EdgeInsets.all(10),
     decoration: BoxDecoration(
         color: Color(0xffEBEBEB), borderRadius: BorderRadius.circular(14)),
     child: Column(

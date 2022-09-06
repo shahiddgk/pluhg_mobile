@@ -51,7 +51,7 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                 Container(
                   width: Get.width,
                   margin: EdgeInsets.symmetric(horizontal: 12.0.w),
-                  height: 42,
+                  height: 48,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(53),
                       color: Color(0xffEBEBEB)),
@@ -63,6 +63,7 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                           controller.currentIndex.value = 0;
                         },
                         child: Container(
+                          alignment: Alignment.center,
                           width: (MediaQuery.of(context).size.width - 4.w) / 4,
                           child: connectionTab(
                             "Accepted",
@@ -75,6 +76,7 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                           controller.currentIndex.value = 1;
                         },
                         child: Container(
+                          alignment: Alignment.center,
                           width: (MediaQuery.of(context).size.width - 4.w) / 4,
                           child: connectionTab(
                             "Waiting",
@@ -87,6 +89,7 @@ class  ConnectionScreenView extends GetView<ConnectionScreenController> {
                           controller.currentIndex.value = 2;
                         },
                         child: Container(
+                          alignment: Alignment.center,
                           width:
                               (MediaQuery.of(context).size.width - 4.w) / 2.5,
                           child: connectionTab(

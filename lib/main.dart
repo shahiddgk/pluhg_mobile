@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:plug/app/modules/home/controllers/home_controller.dart';
 import 'package:plug/app/modules/splash_screen/bindings/splash_screen_binding.dart';
 import 'package:plug/app/modules/splash_screen/controllers/notification_controller.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 
 import 'app/modules/AppLifeCycleController.dart';
@@ -48,6 +49,11 @@ void main() async {
         ],
         title: 'Pluhg',
         theme: ThemeData(
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: AppColors.pluhgColour,
+            selectionColor: AppColors.pluhgColour,
+            selectionHandleColor: AppColors.pluhgColour
+          ),
           fontFamily: "Axiforma",
           primaryColor: pluhgColour,
           backgroundColor: Colors.white,

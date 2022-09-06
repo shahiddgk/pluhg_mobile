@@ -8,6 +8,7 @@ import 'package:plug/app/data/models/request/profile_create_request_model.dart';
 import 'package:plug/app/modules/home/views/home_view.dart';
 import 'package:plug/app/modules/profile_screen/controllers/set_profile.dart';
 import 'package:plug/app/services/UserState.dart';
+import 'package:plug/app/values/colors.dart';
 import 'package:plug/app/widgets/colors.dart';
 import 'package:plug/app/widgets/progressbar.dart';
 import 'package:plug/utils/validation_mixin.dart';
@@ -75,6 +76,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                       Container(
                         width: Get.width - 24,
                         child: TextFormField(
+                          cursorColor: AppColors.pluhgColour,
                           textCapitalization: TextCapitalization.sentences,
                           controller: _nameController,
                           validator: (val) {
@@ -83,7 +85,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                             }
                           },
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.person),
+                            prefixIcon: Icon(Icons.person,color: AppColors.pluhgColour,),
                            hintText: "Set your User Name (unique)",
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -111,6 +113,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                           ? Container(
                               width: Get.width,
                               child: TextFormField(
+
                                 validator: (value) {
                                   String error = _validateEmail(value);
                                   if (error.isNotEmpty) {
@@ -123,7 +126,7 @@ class SetProfileScreenView extends GetView<SetProfileScreenController> {
                                     TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                   //labelText: "Set your email",
-                                  prefixIcon: Icon(Icons.email_outlined),
+                                  prefixIcon: Icon(Icons.email_outlined,color: AppColors.pluhgColour,),
                                   hintText: "Set your email",
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(

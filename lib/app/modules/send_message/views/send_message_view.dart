@@ -57,13 +57,18 @@ class SendMessageView extends GetView<SendMessageController> {
             ),
             child: Column(
               children: [
-                Text(
-                  "Would you like to add a message?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.w600,
-                    color: pluhgColour,
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                  ),
+                  child: Text(
+                    "Would you like to add a message?",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontSize: 28.sp,
+                      fontWeight: FontWeight.w600,
+                      color: pluhgColour,
+                    ),
                   ),
                 ),
                 Row(
@@ -82,7 +87,7 @@ class SendMessageView extends GetView<SendMessageController> {
                       ),
                       child: Column(
                         children: [
-                          SizedBox(height: 40.h),
+                          SizedBox(height: 20.h),
                           requesterName.isEmpty
                               ? Text("")
                               : requesterImage == null
@@ -132,7 +137,10 @@ class SendMessageView extends GetView<SendMessageController> {
                                         color: Colors.white,
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400)),
-                              ))
+                              )),
+                          SizedBox(
+                            height: 20.h,
+                          ),
                         ],
                       ),
                     ),
@@ -149,7 +157,7 @@ class SendMessageView extends GetView<SendMessageController> {
                       child: Column(
                         children: [
                           SizedBox(
-                            height: 40.h,
+                            height: 20.h,
                           ),
                           contactName.isEmpty
                               ? Text("")
@@ -197,7 +205,10 @@ class SendMessageView extends GetView<SendMessageController> {
                                         color: Colors.white,
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400)),
-                              ))
+                              )),
+                          SizedBox(
+                            height: 20.h,
+                          ),
                         ],
                       ),
                     ),
@@ -206,11 +217,18 @@ class SendMessageView extends GetView<SendMessageController> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Text("Send message to",
-                    style: TextStyle(
-                        color: Color(0xff263238),
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400)),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                  ),
+                  child: Text("Send message to",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Color(0xff263238),
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w400)),
+                ),
                 SizedBox(
                   height: 2.h,
                 ),
